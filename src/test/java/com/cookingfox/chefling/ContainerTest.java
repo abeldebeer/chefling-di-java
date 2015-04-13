@@ -75,6 +75,25 @@ public class ContainerTest {
         Assert.assertNotNull(result.second);
     }
 
+    @Test
+    public void create_multiple_constructors_selects_empty_constructor() throws ContainerException {
+        MultipleConstructorsTargetEmpty result = container.create(MultipleConstructorsTargetEmpty.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertNull(result.first);
+        Assert.assertNull(result.second);
+    }
+
+    @Test
+    public void create_multiple_constructors_selects_allowed_constructor() throws ContainerException {
+        MultipleConstructorsTargetAllowed result = container.create(MultipleConstructorsTargetAllowed.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.first);
+        Assert.assertNull(result.second);
+        Assert.assertNull(result.third);
+    }
+
     //----------------------------------------------------------------------------------------------
     // TEST CASES: 'GET' METHOD
     //----------------------------------------------------------------------------------------------

@@ -182,28 +182,66 @@ public class Container implements ContainerInterface {
         typeIsInstantiable(type);
 
         Constructor[] constructors = type.getDeclaredConstructors();
-        Constructor constructor = null;
+        Constructor selectedConstructor = null;
 
         for (Constructor current : constructors) {
-            // is the constructor public?
-            if (Modifier.isPublic(current.getModifiers())) {
-                if (constructor == null) {
-                    constructor = current;
-                }
+            // constructor not public? skip
+            if (!Modifier.isPublic(current.getModifiers())) {
+                continue;
+            }
 
-                // constructor has no parameters? select it.
-                if (current.getParameterTypes().length == 0) {
-                    constructor = current;
-                    break;
-                }
+            selectedConstructor = selectConstructorBasedOnParameters(current);
+
+            if (selectedConstructor != null) {
+                break;
             }
         }
 
-        if (constructor == null) {
-            throw new TypeNotInstantiableException(type, "its constructor is not public");
+        if (selectedConstructor == null) {
+            throw new TypeNotInstantiableException(type, "its constructor is not public or its parameters are not resolvable by the container");
         }
 
-        return constructor;
+        return selectedConstructor;
+    }
+
+    /**
+     * Check whether the constructor parameters are resolvable.
+     *
+     * @param constructor The constructor to check.
+     * @return The constructor if valid, else null.
+     */
+    protected Constructor selectConstructorBasedOnParameters(Constructor constructor) {
+        Class[] parameterTypes = constructor.getParameterTypes();
+
+        // no parameters? select this one
+        if (parameterTypes.length == 0) {
+            return constructor;
+        }
+
+        boolean allParametersResolvable = false;
+
+        // check if all parameters are resolvable by container
+        for (Class parameterType : parameterTypes) {
+            // has type instance / mapping: ok!
+            if (subTypes.containsKey(parameterType) || instances.containsKey(parameterType)) {
+                allParametersResolvable = true;
+                continue;
+            }
+
+            try {
+                // type is allowed?
+                typeIsInstantiable(parameterType);
+                allParametersResolvable = true;
+                continue;
+            } catch (TypeNotAllowedException e) {
+                // type not allowed / instantiable
+            }
+
+            allParametersResolvable = false;
+            break;
+        }
+
+        return allParametersResolvable ? constructor : null;
     }
 
     /**
