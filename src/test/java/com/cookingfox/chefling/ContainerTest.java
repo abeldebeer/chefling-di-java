@@ -320,6 +320,7 @@ public class ContainerTest {
             ProtectedClass.class,
             MemberClass.class,
             NoValueEnum.class,
+            ContainerException.class,
     };
 
     /**

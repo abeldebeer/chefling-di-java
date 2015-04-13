@@ -270,6 +270,8 @@ public class Container implements ContainerInterface {
             errorReason = "not public";
         } else if (type.isMemberClass() && !Modifier.isStatic(modifiers)) {
             errorReason = "a member class";
+        } else if (Throwable.class.isAssignableFrom(type)) {
+            errorReason = "an exception (extends Throwable)";
         }
 
         if (errorReason != null) {

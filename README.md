@@ -135,6 +135,7 @@ No, the following types are not allowed:
 - Annotations.
 - Non-static member classes.
 - Anonymous classes (`new Foo() { ... }`).
+- Exceptions (classes extending `java.lang.Throwable`).
 - `java.lang.Object` : it is the root of all objects.
 - `java.lang.Class` : it is the root class of every type.
 - `java.lang.String` : it is considered a primitive type.
