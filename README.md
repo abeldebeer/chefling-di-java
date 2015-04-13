@@ -59,12 +59,12 @@ and add the project declaration to your `pom.xml`:
 
 The Chefling Container interface defines the following methods:
 
-- `create(type)` : Creates a new instance of `type`, resolving its constructor dependencies.
-- `get(type)` : Returns a stored instance of `type`, or creates a new one and stores that.
-- `has(type)` : Returns whether an instance of `type` has been stored.
-- `map(type, subType)` : Maps a class or interface to an implementation. This way, when we request
+- `create(type)`: Creates a new instance of `type`, resolving its constructor dependencies.
+- `get(type)`: Returns a stored instance of `type`, or creates a new one and stores that.
+- `has(type)`: Returns whether an instance of `type` has been stored.
+- `map(type, subType)`: Maps a class or interface to an implementation. This way, when we request
 `type`, an instance of `subType` is returned.
-- `set(type, instance)` : Stores an instance of `type`, overwriting a previous mapping.
+- `set(type, instance)`: Stores an instance of `type`, overwriting a previous mapping.
 
 ## Usage
 
@@ -130,15 +130,15 @@ resolved with an instance of the mapped `Second` class.
 No, the following types are not allowed:
 
 - Classes that are not public.
-- Primitive types (e.g. boolean, int).
+- Primitive types (e.g. `boolean`, `int`).
 - `enum` types.
 - Annotations.
 - Non-static member classes.
 - Anonymous classes (`new Foo() { ... }`).
 - Exceptions (classes extending `java.lang.Throwable`).
-- `java.lang.Object` : it is the root of all objects.
-- `java.lang.Class` : it is the root class of every type.
-- `java.lang.String` : it is considered a primitive type.
+- `java.lang.Object`: it is the root of all objects.
+- `java.lang.Class`: it is the root class of every type.
+- `java.lang.String`: it is considered a primitive type.
 
 #### _Does Chefling detect circular dependencies?_
 
@@ -187,10 +187,11 @@ convention over configuration.
 
 #### _Why "Chefling"?_
 
-We used the analogy of cooking for dependency injection (we're Cooking Fox after all). When asking a
-chef to prepare a meal for, he/she prepares all the the necessary ingredients and uses these to cook
-the dish. This is basically what a DI container does. The word "Chefling" suggests a 'smaller' chef,
-which corresponds to the limited functionality of this library.
+As an analogy for dependency injection, we used cooking (we're Cooking Fox after all): when asking a
+chef to prepare a meal, he/she prepares all the necessary ingredients and uses these to cook the
+dish. This is basically what a DI container does: ask for an instance of a class and it will create
+one, resolving its dependencies. The word "Chefling" suggests a 'small' chef, which corresponds to
+the limited functionality and scope of this library.
 
 ## Copyright and license
 
