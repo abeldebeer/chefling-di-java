@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cookingfox</groupId>
+    <artifactId>chefling-di-java</artifactId>
+    <version>1.0.0</version>
+
+    <name>Chefling</name>
+    <description>
+        Chefling is a very simple dependency injection container written in pure Java.
+    </description>
+    <url>http://github.com/cookingfox/chefling-di-java</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+        <java.version>1.6</java.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/cookingfox/chefling-di-java/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Cooking Fox</name>
+        <url>http://cookingfox.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>abelcookingfox</id>
+            <name>Abel de Beer</name>
+            <email>abel@cookingfox.nl</email>
+            <url>https://github.com/cookingfox</url>
+            <organization>Cooking Fox</organization>
+            <organizationUrl>http://www.cookingfox.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Amsterdam</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>http://github.com/cookingfox/chefling-di-java</url>
+        <connection>scm:git:git://github.com/cookingfox/chefling-di-java.git</connection>
+        <developerConnection>
+            scm:git:ssh://git@github.com/cookingfox/chefling-di-java.git
+        </developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.2</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
