@@ -1,9 +1,59 @@
-# About Chefling for Java
+# Chefling DI for Java
 
 Chefling is a very simple dependency injection container written in pure Java. It does not rely on
 annotations, only does constructor injection and has limited (but powerful) configuration options.
 
 Chefling requires at minimum Java 6 or Android 2.3.
+
+[![Build Status](https://travis-ci.org/cookingfox/chefling-di-java.svg?branch=master)](https://travis-ci.org/cookingfox/chefling-di-java)
+
+## Download
+
+[![Download](https://api.bintray.com/packages/cookingfox/maven/chefling-di-java/images/download.svg) ](https://bintray.com/cookingfox/maven/chefling-di-java/_latestVersion)
+
+The distribution is hosted on [Bintray](https://bintray.com/cookingfox/maven/chefling-di-java/view).
+To include the package in your projects, you can add the jCenter repository.
+
+### Gradle
+
+Add jCenter to your `repositories` block:
+
+```groovy
+repositories {
+    jcenter()
+}
+```
+
+and add the project to the `dependencies` block in your `build.gradle`:
+
+```groovy
+dependencies {
+    compile 'com.cookingfox:chefling-di-java:1.0.0'
+}
+```
+
+### Maven
+
+Add jCenter to your repositories in `pom.xml` or `settings.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>jcenter</id>
+        <url>http://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+```
+
+and add the project declaration to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.cookingfox</groupId>
+    <artifactId>chefling-di-java</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ## Features
 
