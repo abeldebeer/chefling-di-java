@@ -6,9 +6,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -38,9 +41,7 @@ public class ContainerTest {
 
     @Test
     public void create_throws_when_type_not_instantiable() {
-        Class[] typesToCheck = joinArrays(notAllowedTypes, notInstantiableTypes);
-
-        for (Class type : typesToCheck) {
+        for (Class type : notInstantiableTypes) {
             try {
                 container.create(type);
 
@@ -137,6 +138,11 @@ public class ContainerTest {
     }
 
     @Test(expected = CircularDependencyDetectedException.class)
+    public void get_detect_circular_self() throws ContainerException {
+        container.get(CircularSelf.class);
+    }
+
+    @Test(expected = CircularDependencyDetectedException.class)
     public void get_detect_circular_simple() throws ContainerException {
         container.get(CircularSimple.A.class);
     }
@@ -208,12 +214,16 @@ public class ContainerTest {
 
     @Test
     public void map_throws_when_base_type_not_allowed() throws ContainerException {
-        for (Class type : notAllowedTypes) {
+        for (Map.Entry<Class, Class> entry : getNotAllowedSubTypes().entrySet()) {
             try {
-                container.map(MemberClass.class, ExtendedMemberClass.class);
+                container.map(entry.getKey(), entry.getValue());
 
-                Assert.fail("Did not receive expected exception for type " + type);
+                Assert.fail("Did not receive expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
+                if (!(e instanceof TypeNotAllowedException)) {
+                    System.out.println(e.getMessage());
+                }
+
                 Assert.assertTrue(e instanceof TypeNotAllowedException);
             }
         }
@@ -251,12 +261,11 @@ public class ContainerTest {
 
     @Test
     public void set_throws_when_type_not_allowed() {
-        for (Class type : notAllowedTypes) {
+        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
             try {
-                // note: using base Object class, because it will never reach the "instance of" check
-                container.set(type, new Object());
+                container.set(entry.getKey(), entry.getValue());
 
-                Assert.fail("Did not get expected exception for type " + type);
+                Assert.fail("Did not get expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
                 Assert.assertTrue(e instanceof TypeNotAllowedException);
             }
@@ -308,9 +317,9 @@ public class ContainerTest {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Examples of types that are not allowed.
+     * Examples of types that are not instantiable.
      */
-    private Class[] notAllowedTypes = {
+    private Class[] notInstantiableTypes = {
             Object.class,
             Class.class,
             String.class,
@@ -319,37 +328,62 @@ public class ContainerTest {
             PrivateClass.class,
             ProtectedClass.class,
             MemberClass.class,
-            NoValueEnum.class,
+            OneValueEnum.class,
             ContainerException.class,
-    };
-
-    /**
-     * Examples of types that are not instantiable.
-     */
-    private Class[] notInstantiableTypes = {
             NoMethodInterface.class,
             NoMethodAbstract.class,
             PrivateConstructor.class,
     };
 
+    /**
+     * Returns a map of classes that are not allowed and their instances.
+     */
+    private HashMap<Class, Object> getNotAllowedInstances() {
+        HashMap<Class, Object> notAllowedInstances = new HashMap<Class, Object>();
+        notAllowedInstances.put(Object.class, new Object());
+        notAllowedInstances.put(Class.class, Object.class);
+        notAllowedInstances.put(String.class, "");
+        notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
+        notAllowedInstances.put(PrivateClass.class, new PrivateClass());
+        notAllowedInstances.put(ProtectedClass.class, new ProtectedClass());
+        notAllowedInstances.put(MemberClass.class, new MemberClass());
+        notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
+        notAllowedInstances.put(Exception.class, new Exception());
+
+        // Note: can not use boolean in this context, because it will fail the `instanceof` test
+        // notAllowedInstances.put(boolean.class, false);
+
+        return notAllowedInstances;
+    }
+
+    /**
+     * Returns a map of classes that are not allowed and their sub classes.
+     */
+    private HashMap<Class, Class> getNotAllowedSubTypes() {
+        HashMap<Class, Class> notAllowedSubTypes = new HashMap<Class, Class>();
+        notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
+        notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
+        notAllowedSubTypes.put(Number.class, Integer.class);
+        notAllowedSubTypes.put(PrivateClass.class, getMock(PrivateClass.class).getClass());
+        notAllowedSubTypes.put(ProtectedClass.class, getMock(ProtectedClass.class).getClass());
+        notAllowedSubTypes.put(MemberClass.class, getMock(MemberClass.class).getClass());
+        notAllowedSubTypes.put(Exception.class, RuntimeException.class);
+
+        // Note: can not test the following types, because a mock can not be created
+        // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());
+        // notAllowedSubTypes.put(String.class, getMock(String.class).getClass());
+        // notAllowedSubTypes.put(OneValueEnum.class, getMock(OneValueEnum.class).getClass());
+
+        return notAllowedSubTypes;
+    }
+
+    private Object getMock(Class aClass) {
+        return Mockito.mock(aClass);
+    }
+
     //----------------------------------------------------------------------------------------------
     // HELPER METHODS
     //----------------------------------------------------------------------------------------------
-
-    /**
-     * Join two arrays.
-     */
-    public <T> T[] joinArrays(T[] a, T[] b) {
-        int aLen = a.length;
-        int bLen = b.length;
-
-        @SuppressWarnings("unchecked")
-        T[] c = (T[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
-        System.arraycopy(a, 0, c, 0, aLen);
-        System.arraycopy(b, 0, c, aLen, bLen);
-
-        return c;
-    }
 
     /**
      * Run a concurrency test on a specified number of threads.
@@ -401,9 +435,6 @@ public class ContainerTest {
     //----------------------------------------------------------------------------------------------
 
     public class MemberClass {
-    }
-
-    public class ExtendedMemberClass extends MemberClass {
     }
 
     private class PrivateClass {

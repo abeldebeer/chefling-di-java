@@ -20,7 +20,7 @@ public class Container implements ContainerInterface {
     /**
      * Stored instances, where key is the type and value is the instance.
      */
-    protected Map<Class, Object> instances;
+    protected HashMap<Class, Object> instances;
 
     /**
      * Temporary 'log' of the types that are in the process of being resolved, where key is the type
@@ -28,12 +28,12 @@ public class Container implements ContainerInterface {
      * successfully resolved, the entry is removed from the map. This map is used to detect circular
      * dependencies.
      */
-    protected Map<Class, Class> resolving;
+    protected LinkedHashMap<Class, Class> resolving;
 
     /**
      * Type map, where key is the type that is requested and value is the sub type that is created.
      */
-    protected Map<Class, Class> subTypes;
+    protected HashMap<Class, Class> subTypes;
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -144,8 +144,8 @@ public class Container implements ContainerInterface {
         }
 
         // validate the types
-        typeIsAllowed(type);
-        typeIsInstantiable(subType);
+        isAllowed(type);
+        isInstantiable(subType);
 
         subTypes.put(type, subType);
     }
@@ -156,12 +156,12 @@ public class Container implements ContainerInterface {
     @Override
     public <Type> void set(Class<Type> type, Type instance)
             throws NotAnInstanceOfTypeException, TypeNotAllowedException {
-        typeIsAllowed(type);
-
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {
             throw new NotAnInstanceOfTypeException(type, instance);
         }
+
+        isAllowed(type);
 
         instances.put(type, instance);
     }
@@ -179,7 +179,7 @@ public class Container implements ContainerInterface {
      * @throws TypeNotAllowedException
      */
     protected Constructor getDefaultConstructor(Class type) throws TypeNotAllowedException {
-        typeIsInstantiable(type);
+        isInstantiable(type);
 
         Constructor[] constructors = type.getDeclaredConstructors();
         Constructor selectedConstructor = null;
@@ -230,7 +230,7 @@ public class Container implements ContainerInterface {
 
             try {
                 // type is allowed?
-                typeIsInstantiable(parameterType);
+                isInstantiable(parameterType);
                 allParametersResolvable = true;
                 continue;
             } catch (TypeNotAllowedException e) {
@@ -245,22 +245,18 @@ public class Container implements ContainerInterface {
     }
 
     /**
-     * Validates the type and throws if it is not allowed.
+     * Is this type allowed to be mapped in the container?
      *
      * @param type The type to validate.
      * @throws TypeNotAllowedException
      */
-    protected void typeIsAllowed(Class type) throws TypeNotAllowedException {
+    protected void isAllowed(Class type) throws TypeNotAllowedException {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (type.equals(Object.class)) {
-            errorReason = "the root class of every object";
-        } else if (type.equals(Class.class)) {
-            errorReason = "the root class of every type";
-        } else if (type.equals(String.class)) {
-            errorReason = "considered primitive by the container";
-        } else if (type.isPrimitive()) {
+        if (isLanguageConstruct(type)) {
+            errorReason = "a Java language construct";
+        } else if (isPrimitiveOrWrapper(type)) {
             errorReason = "primitive";
         } else if (type.isEnum()) {
             errorReason = "an enum";
@@ -270,8 +266,6 @@ public class Container implements ContainerInterface {
             errorReason = "not public";
         } else if (type.isMemberClass() && !Modifier.isStatic(modifiers)) {
             errorReason = "a member class";
-        } else if (Throwable.class.isAssignableFrom(type)) {
-            errorReason = "an exception (extends Throwable)";
         }
 
         if (errorReason != null) {
@@ -280,13 +274,24 @@ public class Container implements ContainerInterface {
     }
 
     /**
-     * Validates the type and throws if it is not allowed or not instantiable.
+     * Is this type a language construct (in `java.lang` package)?
+     *
+     * @param type The type to validate
+     * @return Whether this class is in the `java.lang` package
+     */
+    protected boolean isLanguageConstruct(Class type) {
+        // use java.lang.Object class as example
+        return type.getName().startsWith(Object.class.getPackage().getName());
+    }
+
+    /**
+     * Can this type be instantiated?
      *
      * @param type The type to validate.
      * @throws TypeNotAllowedException
      */
-    protected void typeIsInstantiable(Class type) throws TypeNotAllowedException {
-        typeIsAllowed(type);
+    protected void isInstantiable(Class type) throws TypeNotAllowedException {
+        isAllowed(type);
 
         String errorReason = null;
 
@@ -299,6 +304,29 @@ public class Container implements ContainerInterface {
         if (errorReason != null) {
             throw new TypeNotInstantiableException(type, "it is ".concat(errorReason));
         }
+    }
+
+    /**
+     * Is the type a primitive (e.g. int) or primitive wrapper class (e.g. java.lang.Integer)?
+     *
+     * @param type The type to validate.
+     * @return Whether the type is primitive.
+     */
+    protected boolean isPrimitiveOrWrapper(Class type) {
+        if (type.isPrimitive()) {
+            return true;
+        }
+
+        Class[] wrapperClasses = {Boolean.class, Byte.class, Character.class, Double.class,
+                Float.class, Integer.class, Long.class, Short.class, Void.class};
+
+        for (Class wrapperClass : wrapperClasses) {
+            if (type.equals(wrapperClass)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
