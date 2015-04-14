@@ -348,7 +348,7 @@ public class ContainerTest {
         notAllowedInstances.put(ProtectedClass.class, new ProtectedClass());
         notAllowedInstances.put(MemberClass.class, new MemberClass());
         notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
-        notAllowedInstances.put(Exception.class, new Exception());
+        notAllowedInstances.put(ContainerException.class, new ContainerException(""));
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
@@ -367,7 +367,7 @@ public class ContainerTest {
         notAllowedSubTypes.put(PrivateClass.class, getMock(PrivateClass.class).getClass());
         notAllowedSubTypes.put(ProtectedClass.class, getMock(ProtectedClass.class).getClass());
         notAllowedSubTypes.put(MemberClass.class, getMock(MemberClass.class).getClass());
-        notAllowedSubTypes.put(Exception.class, RuntimeException.class);
+        notAllowedSubTypes.put(ContainerException.class, TypeNotAllowedException.class);
 
         // Note: can not test the following types, because a mock can not be created
         // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());

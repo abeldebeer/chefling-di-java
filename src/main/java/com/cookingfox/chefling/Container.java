@@ -258,6 +258,8 @@ public class Container implements ContainerInterface {
             errorReason = "a Java language construct";
         } else if (isPrimitiveOrWrapper(type)) {
             errorReason = "primitive";
+        } else if (Throwable.class.isAssignableFrom(type)) {
+            errorReason = "an exception (extends Throwable)";
         } else if (type.isEnum()) {
             errorReason = "an enum";
         } else if (type.isAnnotation()) {

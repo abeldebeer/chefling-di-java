@@ -129,14 +129,15 @@ resolved with an instance of the mapped `Second` class.
 
 No, the following types are not allowed:
 
-- Classes in the `java.lang` package: these are considered Java language constructs.
-Examples: `java.lang.String`, `java.lang.Object`, `java.lang.Exception`.
+- Classes in the `java.lang` package: these are considered Java language constructs. Examples:
+`java.lang.String`, `java.lang.Object`, `java.lang.Exception`.
 - Classes that are not public.
 - Primitive types (e.g. `boolean`, `int`).
+- Exceptions (extends `Throwable`).
 - `enum` types.
 - Annotations.
 - Non-static member classes.
-- Anonymous classes (`new Foo() { ... }`).
+- Anonymous classes.
 
 #### _Does Chefling detect circular dependencies?_
 
