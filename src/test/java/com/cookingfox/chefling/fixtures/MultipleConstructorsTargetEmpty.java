@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.fixtures;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 13/04/15.
+ * Class with multiple constructors, where the only resolvable constructor has no parameters.
  */
 public class MultipleConstructorsTargetEmpty {
 
