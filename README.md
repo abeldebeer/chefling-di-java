@@ -28,7 +28,7 @@ and add the project to the `dependencies` block in your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.cookingfox:chefling-di-java:1.0.1'
+    compile 'com.cookingfox:chefling-di-java:1.1.0'
 }
 ```
 
@@ -51,7 +51,7 @@ and add the project declaration to your `pom.xml`:
 <dependency>
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -122,6 +122,14 @@ mapped to the `Second` class.
 4. By calling the container's `get` method, the type is resolved. In this case the `Third` class
 receives the explicitly set instance of the `First` class from step 2. The `ISecond` dependency is
 resolved with an instance of the mapped `Second` class.
+
+### Default (static) Container
+
+Some applications need to have access to a `Container` instance across multiple processes. This is
+especially common in Android, in the case of services. For these occasions a convenience singleton
+method can be used: `Container.getDefault()`. This will create and return a static instance of the
+container. Please be aware that if you use `getDefault()` in one place, you need to use it
+everywhere, otherwise you will get different instances of the container anyway.
 
 ## F.A.Q.
 

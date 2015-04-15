@@ -6,7 +6,7 @@
 
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 
     <name>Chefling</name>
     <description>
@@ -36,7 +36,7 @@
 
     <organization>
         <name>Cooking Fox</name>
-        <url>http://cookingfox.com</url>
+        <url>http://www.cookingfox.com</url>
     </organization>
 
     <developers>

@@ -229,7 +229,8 @@ public class Container implements ContainerInterface {
         }
 
         if (selectedConstructor == null) {
-            throw new TypeNotInstantiableException(type, "its constructor is not public or its parameters are not resolvable by the container");
+            throw new TypeNotInstantiableException(type, "it has no public constructor or its " +
+                    "constructors have parameters that are not resolvable by the container");
         }
 
         return selectedConstructor;
@@ -285,10 +286,10 @@ public class Container implements ContainerInterface {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (isLanguageConstruct(type)) {
-            errorReason = "a Java language construct";
-        } else if (isPrimitiveOrWrapper(type)) {
+        if (isPrimitiveOrWrapper(type)) {
             errorReason = "primitive";
+        } else if (isLanguageConstruct(type)) {
+            errorReason = "a Java language construct";
         } else if (Throwable.class.isAssignableFrom(type)) {
             errorReason = "an exception (extends Throwable)";
         } else if (type.isEnum()) {
@@ -304,17 +305,6 @@ public class Container implements ContainerInterface {
         if (errorReason != null) {
             throw new TypeNotAllowedException(type, errorReason);
         }
-    }
-
-    /**
-     * Is this type a language construct (in `java.lang` package)?
-     *
-     * @param type The type to validate
-     * @return Whether this class is in the `java.lang` package
-     */
-    protected boolean isLanguageConstruct(Class type) {
-        // use java.lang.Object class as example
-        return type.getName().startsWith(Object.class.getPackage().getName());
     }
 
     /**
@@ -360,6 +350,16 @@ public class Container implements ContainerInterface {
         }
 
         return false;
+    }
+
+    /**
+     * Is this type a language construct (in `java.lang` package)?
+     *
+     * @param type The type to validate
+     * @return Whether this class is in the `java.lang` package
+     */
+    protected boolean isLanguageConstruct(Class type) {
+        return type.getName().startsWith("java.lang");
     }
 
     /**
