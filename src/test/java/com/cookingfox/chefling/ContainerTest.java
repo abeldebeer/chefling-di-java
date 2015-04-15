@@ -2,7 +2,10 @@ package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.*;
 import com.cookingfox.chefling.fixtures.*;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.HashMap;
@@ -306,6 +309,23 @@ public class ContainerTest {
 
         container.set(NoMethodInterface.class, instance);
         container.set(NoMethodAbstract.class, instance);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES: 'GET DEFAULT' METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void get_default_concurrent_uses_same_instance() {
+        final Container defaultContainer = Container.getDefault();
+
+        Runnable test = new Runnable() {
+            public void run() {
+                Assert.assertSame(defaultContainer, Container.getDefault());
+            }
+        };
+
+        runConcurrencyTest(test, 5);
     }
 
     //----------------------------------------------------------------------------------------------

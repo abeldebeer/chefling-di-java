@@ -35,6 +35,11 @@ public class Container implements ContainerInterface {
      */
     protected HashMap<Class, Class> subTypes;
 
+    /**
+     * Convenience singleton for apps using a process-wide Container instance.
+     */
+    protected static volatile Container defaultInstance;
+
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
@@ -164,6 +169,23 @@ public class Container implements ContainerInterface {
         isAllowed(type);
 
         instances.put(type, instance);
+    }
+
+    /**
+     * Convenience singleton for apps using a process-wide EventBus instance.
+     *
+     * @return Default Container instance.
+     */
+    public static Container getDefault() {
+        if (defaultInstance == null) {
+            synchronized (Container.class) {
+                if (defaultInstance == null) {
+                    defaultInstance = new Container();
+                }
+            }
+        }
+
+        return defaultInstance;
     }
 
     //----------------------------------------------------------------------------------------------
