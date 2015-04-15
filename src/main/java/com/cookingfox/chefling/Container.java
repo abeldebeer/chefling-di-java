@@ -166,6 +166,15 @@ public class Container implements ContainerInterface {
             throw new NotAnInstanceOfTypeException(type, instance);
         }
 
+        Class[] notAllowedTypes = {Container.class, ContainerInterface.class};
+
+        // check extra types that are not allowed in this operation
+        for (Class notAllowedType : notAllowedTypes) {
+            if (type.equals(notAllowedType)) {
+                throw new TypeNotAllowedException(type, "the Container instance that should not be overridden");
+            }
+        }
+
         isAllowed(type);
 
         instances.put(type, instance);

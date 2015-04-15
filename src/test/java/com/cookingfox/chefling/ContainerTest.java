@@ -219,11 +219,7 @@ public class ContainerTest {
 
                 Assert.fail("Did not receive expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
-                if (!(e instanceof TypeNotAllowedException)) {
-                    System.out.println(e.getMessage());
-                }
-
-                Assert.assertTrue(e instanceof TypeNotAllowedException);
+                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
             }
         }
     }
@@ -266,7 +262,7 @@ public class ContainerTest {
 
                 Assert.fail("Did not get expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
-                Assert.assertTrue(e instanceof TypeNotAllowedException);
+                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
             }
         }
     }
@@ -365,6 +361,8 @@ public class ContainerTest {
         notAllowedInstances.put(MemberClass.class, new MemberClass());
         notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
         notAllowedInstances.put(ContainerException.class, new ContainerException(""));
+        notAllowedInstances.put(Container.class, new Container());
+        notAllowedInstances.put(ContainerInterface.class, new Container());
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
