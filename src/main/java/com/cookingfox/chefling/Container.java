@@ -88,7 +88,7 @@ public class Container implements ContainerInterface {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public synchronized <Type> Type get(Class<Type> type)
+    public <Type> Type get(Class<Type> type)
             throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
         Type instance = (Type) instances.get(type);
 
@@ -104,21 +104,23 @@ public class Container implements ContainerInterface {
             typeToCreate = subTypes.get(type);
         }
 
-        // if the requested type is already being processed, it indicates a circular dependency
-        if (resolving.containsKey(type)) {
-            throw new CircularDependencyDetectedException(getDependencyTrace());
-        } else {
-            // store currently processed type
-            resolving.put(type, typeToCreate);
-        }
+        synchronized (resolving) {
+            // if the requested type is already being processed, it indicates a circular dependency
+            if (resolving.containsKey(type)) {
+                throw new CircularDependencyDetectedException(getDependencyTrace());
+            } else {
+                // store currently processed type
+                resolving.put(type, typeToCreate);
+            }
 
-        try {
-            // create and store instance
-            instance = create(typeToCreate);
-            instances.put(type, instance);
-        } finally {
-            // remove processed type
-            resolving.remove(type);
+            try {
+                // create and store instance
+                instance = create(typeToCreate);
+                instances.put(type, instance);
+            } finally {
+                // remove processed type
+                resolving.remove(type);
+            }
         }
 
         return instance;
@@ -136,13 +138,8 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#map(Class, Class)
      */
     @Override
-    public synchronized <Type> void map(Class<Type> type, Class<? extends Type> subType)
+    public <Type> void map(Class<Type> type, Class<? extends Type> subType)
             throws NotASubTypeException, TypeMappingAlreadyExistsException, TypeNotAllowedException {
-        // check whether a mapping already exists
-        if (subTypes.containsKey(type)) {
-            throw new TypeMappingAlreadyExistsException(type);
-        }
-
         // validate the sub type extends the type
         if (subType.equals(type) || !type.isAssignableFrom(subType)) {
             throw new NotASubTypeException(type, subType);
@@ -152,7 +149,14 @@ public class Container implements ContainerInterface {
         isAllowed(type);
         isInstantiable(subType);
 
-        subTypes.put(type, subType);
+        synchronized (subTypes) {
+            // check whether a mapping already exists
+            if (subTypes.containsKey(type)) {
+                throw new TypeMappingAlreadyExistsException(type);
+            }
+
+            subTypes.put(type, subType);
+        }
     }
 
     /**
@@ -181,7 +185,7 @@ public class Container implements ContainerInterface {
     }
 
     /**
-     * Convenience singleton for apps using a process-wide EventBus instance.
+     * Convenience singleton for apps using a process-wide Container instance.
      *
      * @return Default Container instance.
      */

@@ -247,7 +247,7 @@ public class ContainerTest {
 
         runConcurrencyTest(test, numTests);
 
-        Assert.assertEquals(numTests - 1, exceptions.size());
+        Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
     }
 
     //----------------------------------------------------------------------------------------------
