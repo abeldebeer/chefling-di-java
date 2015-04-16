@@ -160,7 +160,16 @@ public class Container implements ContainerInterface {
      */
     @Override
     public <T> void set(Class<T> type, T instance)
-            throws NotAnInstanceOfTypeException, TypeNotAllowedException {
+            throws NotAnInstanceOfTypeException, ReplaceInstanceNotAllowedException, TypeNotAllowedException {
+        set(type, instance, false);
+    }
+
+    /**
+     * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object, boolean)
+     */
+    @Override
+    public <T> void set(Class<T> type, T instance, boolean replace)
+            throws NotAnInstanceOfTypeException, ReplaceInstanceNotAllowedException, TypeNotAllowedException {
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {
             throw new NotAnInstanceOfTypeException(type, instance);
@@ -170,6 +179,11 @@ public class Container implements ContainerInterface {
         // requesting a container instance will always receive the same instance
         if (type.equals(Container.class) || type.equals(ContainerInterface.class)) {
             throw new TypeNotAllowedException(type, "the Container instance that should not be overridden");
+        }
+
+        // if an instance of type is already stored, throw
+        if (!replace && instances.containsKey(type)) {
+            throw new ReplaceInstanceNotAllowedException(type, instances.get(type), instance);
         }
 
         isAllowed(type);

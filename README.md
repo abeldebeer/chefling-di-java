@@ -59,12 +59,29 @@ and add the project declaration to your `pom.xml`:
 
 The Chefling Container interface defines the following methods:
 
-- `create(type)`: Creates a new instance of `type`, resolving its constructor dependencies.
-- `get(type)`: Returns a stored instance of `type`, or creates a new one and stores that.
-- `has(type)`: Returns whether an instance of `type` has been stored.
-- `map(type, subType)`: Maps a class or interface to an implementation. This way, when we request
-`type`, an instance of `subType` is returned.
-- `set(type, instance)`: Stores an instance of `type`, overwriting a previous mapping.
+- `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full
+dependency tree. The created instance is not stored, so only use this method when you need a new
+instance.
+
+- `Object get(Class type)`: If there is no stored instance of `type`, a new one is created using
+`create()`. If the type is mapped to a sub type using `map()`, it uses the sub type to create the
+instance. Once created, the instance is stored and returned.
+
+- `boolean has(Class type)`: Returns whether a stored instance is available for type. Does not take
+into account the type mappings from `map()`.
+
+- `void map(Class type, Class subType)`: Instructs the container to return an instance of `subType`
+when `type` is requested. This makes it possible to set a specific implementation of an interface or
+abstract class.
+
+- `void set(Class type, Object instance, boolean replace)`: Not all types can be resolved by the
+container (e.g. primitive types like `boolean`), so this method can be used to store a specific
+instance of a type. The `replace` parameter determines whether a previously stored instance for this
+type will be replaced: if `true`, the stored instance will be replaced silently; if false, an
+exception will be thrown (default). Use this method with caution, because it can lead to bugs that
+are hard to trace!
+
+[Take a look at the Container source code](src/main/java/com/cookingfox/chefling)
 
 ## Usage
 

@@ -7,7 +7,8 @@ package com.cookingfox.chefling.exception;
 public class NotASubTypeException extends ContainerException {
 
     public NotASubTypeException(Class type, Class subType) {
-        super(String.format("Type '%s' is not a sub type of '%s'", subType.getName(), type.getName()));
+        super(String.format("Type '%s' is not a sub type of '%s'",
+                subType.getName(), type.getName()));
     }
 
 }

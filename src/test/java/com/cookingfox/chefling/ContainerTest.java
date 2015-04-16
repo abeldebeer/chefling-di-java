@@ -286,17 +286,16 @@ public class ContainerTest {
         Assert.assertSame(instance, result);
     }
 
+    @Test(expected = ReplaceInstanceNotAllowedException.class)
+    public void set_throws_if_stored_instance_default() throws ContainerException {
+        container.set(NoConstructor.class, new NoConstructor());
+        container.set(NoConstructor.class, new NoConstructor());
+    }
+
     @Test
-    public void set_overwrites_previous_value() throws ContainerException {
-        NoConstructor generated = container.get(NoConstructor.class);
-        NoConstructor created = new NoConstructor();
-
-        container.set(NoConstructor.class, created);
-
-        NoConstructor result = container.get(NoConstructor.class);
-
-        Assert.assertSame(created, result);
-        Assert.assertNotSame(generated, result);
+    public void set_accepts_replace_stored_instance_if_allowed() throws ContainerException {
+        container.set(NoConstructor.class, new NoConstructor());
+        container.set(NoConstructor.class, new NoConstructor(), true);
     }
 
     @Test

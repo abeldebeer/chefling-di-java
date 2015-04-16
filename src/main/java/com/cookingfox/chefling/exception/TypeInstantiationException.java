@@ -6,7 +6,8 @@ package com.cookingfox.chefling.exception;
 public class TypeInstantiationException extends ContainerException {
 
     public TypeInstantiationException(Class type, Throwable cause) {
-        super(String.format("Type '%s' could not be instantiated: %s", type.getName(), cause.getMessage()));
+        super(String.format("Type '%s' could not be instantiated: %s",
+                type.getName(), cause.getMessage()));
     }
 
 }

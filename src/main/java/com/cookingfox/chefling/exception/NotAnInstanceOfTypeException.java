@@ -6,7 +6,8 @@ package com.cookingfox.chefling.exception;
 public class NotAnInstanceOfTypeException extends ContainerException {
 
     public NotAnInstanceOfTypeException(Class type, Object instance) {
-        super(String.format("Object '%s' is not an instance of '%s'", instance.getClass().getName(), type.getName()));
+        super(String.format("Object '%s' is not an instance of '%s'",
+                instance.getClass().getName(), type.getName()));
     }
 
 }
