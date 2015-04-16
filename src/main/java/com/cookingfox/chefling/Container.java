@@ -20,7 +20,7 @@ public class Container implements ContainerInterface {
     /**
      * Stored instances, where key is the type and value is the instance.
      */
-    protected HashMap<Class, Object> instances;
+    protected final Map<Class, Object> instances = new HashMap<Class, Object>();
 
     /**
      * Temporary 'log' of the types that are in the process of being resolved, where key is the type
@@ -28,12 +28,12 @@ public class Container implements ContainerInterface {
      * successfully resolved, the entry is removed from the map. This map is used to detect circular
      * dependencies.
      */
-    protected LinkedHashMap<Class, Class> resolving;
+    protected final Map<Class, Class> resolving = new LinkedHashMap<Class, Class>();
 
     /**
      * Type map, where key is the type that is requested and value is the sub type that is created.
      */
-    protected HashMap<Class, Class> subTypes;
+    protected final Map<Class, Class> subTypes = new HashMap<Class, Class>();
 
     /**
      * Convenience singleton for apps using a process-wide Container instance.
@@ -44,15 +44,11 @@ public class Container implements ContainerInterface {
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * Default constructor: initializes the container.
+     */
     public Container() {
-        instances = new HashMap<Class, Object>();
-        resolving = new LinkedHashMap<Class, Class>();
-        subTypes = new HashMap<Class, Class>();
-
-        // map this container instance to its class and interface, so clients requesting it will
-        // receive this instance
-        instances.put(Container.class, this);
-        instances.put(ContainerInterface.class, this);
+        initialize();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -170,13 +166,10 @@ public class Container implements ContainerInterface {
             throw new NotAnInstanceOfTypeException(type, instance);
         }
 
-        Class[] notAllowedTypes = {Container.class, ContainerInterface.class};
-
-        // check extra types that are not allowed in this operation
-        for (Class notAllowedType : notAllowedTypes) {
-            if (type.equals(notAllowedType)) {
-                throw new TypeNotAllowedException(type, "the Container instance that should not be overridden");
-            }
+        // the container mapping should not be overwritten: when it stays mapped to `this`, classes
+        // requesting a container instance will always receive the same instance
+        if (type.equals(Container.class) || type.equals(ContainerInterface.class)) {
+            throw new TypeNotAllowedException(type, "the Container instance that should not be overridden");
         }
 
         isAllowed(type);
@@ -204,6 +197,15 @@ public class Container implements ContainerInterface {
     //----------------------------------------------------------------------------------------------
     // PROTECTED METHODS
     //----------------------------------------------------------------------------------------------
+
+    /**
+     * Initializes the container.
+     */
+    protected void initialize() {
+        // map this instance to its class and interface
+        instances.put(Container.class, this);
+        instances.put(ContainerInterface.class, this);
+    }
 
     /**
      * Selects the most reasonable default constructor, based on its modifiers and parameters.
