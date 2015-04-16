@@ -60,7 +60,7 @@ public class Container implements ContainerInterface {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <Type> Type create(Class<Type> type)
+    public <T> T create(Class<T> type)
             throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
         Constructor constructor = getDefaultConstructor(type);
         Class[] parameterTypes = constructor.getParameterTypes();
@@ -73,7 +73,7 @@ public class Container implements ContainerInterface {
 
         try {
             // create a new instance, passing the constructor parameters
-            return (Type) constructor.newInstance(parameters);
+            return (T) constructor.newInstance(parameters);
         } catch (Exception e) {
             throw new TypeInstantiationException(type, e);
         }
@@ -84,15 +84,15 @@ public class Container implements ContainerInterface {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <Type> Type get(Class<Type> type)
+    public <T> T get(Class<T> type)
             throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
-        Type instance = (Type) instances.get(type);
+        T instance = (T) instances.get(type);
 
         if (instance != null) {
             return instance;
         }
 
-        Class<Type> typeToCreate = type;
+        Class<T> typeToCreate = type;
 
         // if this type has been mapped to another type (using the map() method), use the sub
         // type to create the instance
@@ -134,7 +134,7 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#map(Class, Class)
      */
     @Override
-    public <Type> void map(Class<Type> type, Class<? extends Type> subType)
+    public <T> void map(Class<T> type, Class<? extends T> subType)
             throws NotASubTypeException, TypeMappingAlreadyExistsException, TypeNotAllowedException {
         // validate the sub type extends the type
         if (subType.equals(type) || !type.isAssignableFrom(subType)) {
@@ -159,7 +159,7 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object)
      */
     @Override
-    public <Type> void set(Class<Type> type, Type instance)
+    public <T> void set(Class<T> type, T instance)
             throws NotAnInstanceOfTypeException, TypeNotAllowedException {
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {

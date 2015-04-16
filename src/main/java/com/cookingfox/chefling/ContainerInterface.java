@@ -12,12 +12,12 @@ public interface ContainerInterface {
      * Creates and returns a new instance of the provided type, attempting to resolve its full
      * dependency tree.
      *
-     * @param type   The type to instantiate.
-     * @param <Type> Ensures the returned object is cast to the expected type.
+     * @param type The type to instantiate.
+     * @param <T>  Ensures the returned object is cast to the expected type.
      * @return New instance of the type.
      * @throws ContainerException
      */
-    <Type> Type create(Class<Type> type) throws ContainerException;
+    <T> T create(Class<T> type) throws ContainerException;
 
     /**
      * Returns an instance of the provided type. If no stored instance exists, it attempts to create
@@ -25,12 +25,12 @@ public interface ContainerInterface {
      * mappings (from {@link #map(Class, Class)}) to ensure an instance of the correct class is
      * created. It returns the same instance on subsequent calls.
      *
-     * @param type   The type of the object you want to retrieve.
-     * @param <Type> Ensures the returned object is cast to the expected type.
+     * @param type The type of the object you want to retrieve.
+     * @param <T>  Ensures the returned object is cast to the expected type.
      * @return Instance of type.
      * @throws ContainerException
      */
-    <Type> Type get(Class<Type> type) throws ContainerException;
+    <T> T get(Class<T> type) throws ContainerException;
 
     /**
      * Returns whether a stored instance is available for the provided type. Does not take into
@@ -47,10 +47,10 @@ public interface ContainerInterface {
      *
      * @param type    The base type, which is used when requesting an instance.
      * @param subType The type that extends / implements the base type, which actually created.
-     * @param <Type>  Ensures the sub type extends the base type.
+     * @param <T>     Ensures the sub type extends the base type.
      * @throws ContainerException
      */
-    <Type> void map(Class<Type> type, Class<? extends Type> subType) throws ContainerException;
+    <T> void map(Class<T> type, Class<? extends T> subType) throws ContainerException;
 
     /**
      * Stores an instance of the provided type. If a stored value of this type is already available,
@@ -59,9 +59,9 @@ public interface ContainerInterface {
      *
      * @param type     The type you want to map the instance of.
      * @param instance The instance you want to store.
-     * @param <Type>   Ensures the instance is of the correct type.
+     * @param <T>      Ensures the instance is of the correct type.
      * @throws ContainerException
      */
-    <Type> void set(Class<Type> type, Type instance) throws ContainerException;
+    <T> void set(Class<T> type, T instance) throws ContainerException;
 
 }
