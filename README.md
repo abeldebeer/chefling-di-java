@@ -125,11 +125,11 @@ resolved with an instance of the mapped `Second` class.
 
 ### Default (static) Container
 
-Some applications need to have access to a `Container` instance across multiple processes. This is
-especially common in Android, in the case of services. For these occasions a convenience singleton
-method can be used: `Container.getDefault()`. This will create and return a static instance of the
-container. Please be aware that if you use `getDefault()` in one place, you need to use it
-everywhere, otherwise you will get different instances of the container anyway.
+Some applications need to have access to the same `Container` instance across multiple processes.
+This is especially common in Android, in the case of services. For these occasions a convenience
+singleton method can be used: `Container.getDefault()`. This will create and return a static
+instance of the container. Please be aware that if you use `getDefault()` in one place, you need to
+use it everywhere, otherwise you will get different instances of the container anyway.
 
 ## F.A.Q.
 
