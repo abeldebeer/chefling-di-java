@@ -28,7 +28,7 @@ and add the project to the `dependencies` block in your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.cookingfox:chefling-di-java:1.1.0'
+    compile 'com.cookingfox:chefling-di-java:2.0.0'
 }
 ```
 
@@ -51,7 +51,7 @@ and add the project declaration to your `pom.xml`:
 <dependency>
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -81,7 +81,9 @@ type will be replaced: if `true`, the stored instance will be replaced silently;
 exception will be thrown (default). Use this method with caution, because it can lead to bugs that
 are hard to trace!
 
-[Take a look at the Container source code](src/main/java/com/cookingfox/chefling)
+To understand the Container better,
+[take a look at the source code](src/main/java/com/cookingfox/chefling/Container.java), or
+[check out the unit tests](src/test/java/com/cookingfox/chefling/ContainerTest.java).
 
 ## Usage
 
@@ -140,7 +142,7 @@ mapped to the `Second` class.
 receives the explicitly set instance of the `First` class from step 2. The `ISecond` dependency is
 resolved with an instance of the mapped `Second` class.
 
-### Default (static) Container
+### Default (static) Container instance
 
 Some applications need to have access to the same `Container` instance across multiple processes.
 This is especially common in Android, in the case of services. For these occasions a convenience
