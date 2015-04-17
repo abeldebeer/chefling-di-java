@@ -31,6 +31,8 @@ public class ContainerTest {
 
     @After
     public void tearDown() throws Exception {
+        Assert.assertEquals(0, container.currentlyResolving.size());
+
         container = null;
     }
 
@@ -92,6 +94,15 @@ public class ContainerTest {
         Assert.assertNotNull(result.first);
         Assert.assertNull(result.second);
         Assert.assertNull(result.third);
+    }
+
+    @Test
+    public void create_should_use_subtype_mapping() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+
+        NoMethodInterface result = container.create(NoMethodInterface.class);
+
+        Assert.assertTrue(result instanceof NoMethodImplementation);
     }
 
     //----------------------------------------------------------------------------------------------

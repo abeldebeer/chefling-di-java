@@ -5,7 +5,8 @@ import com.cookingfox.chefling.exception.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,17 +24,15 @@ public class Container implements ContainerInterface {
     protected final Map<Class, Object> instances = new HashMap<Class, Object>();
 
     /**
-     * Temporary 'log' of the types that are in the process of being resolved, where key is the type
-     * that is requested and value is the type that is being resolved. After the type is
-     * successfully resolved, the entry is removed from the map. This map is used to detect circular
-     * dependencies.
+     * Temporary 'log' of the types that are in the process of being resolved. After the type is
+     * successfully resolved, the entry is removed. This is used to detect circular dependencies.
      */
-    protected final Map<Class, Class> resolving = new LinkedHashMap<Class, Class>();
+    protected final List<Class> currentlyResolving = new LinkedList<Class>();
 
     /**
      * Type map, where key is the type that is requested and value is the sub type that is created.
      */
-    protected final Map<Class, Class> subTypes = new HashMap<Class, Class>();
+    protected final Map<Class, Class> mappings = new HashMap<Class, Class>();
 
     /**
      * Convenience singleton for apps using a process-wide Container instance.
@@ -62,7 +61,13 @@ public class Container implements ContainerInterface {
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type)
             throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
-        Constructor constructor = getDefaultConstructor(type);
+        Class typeToCreate = type;
+
+        if (mappings.containsKey(type)) {
+            typeToCreate = mappings.get(type);
+        }
+
+        Constructor constructor = getDefaultConstructor(typeToCreate);
         Class[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
 
@@ -75,7 +80,7 @@ public class Container implements ContainerInterface {
             // create a new instance, passing the constructor parameters
             return (T) constructor.newInstance(parameters);
         } catch (Exception e) {
-            throw new TypeInstantiationException(type, e);
+            throw new TypeInstantiationException(typeToCreate, e);
         }
     }
 
@@ -92,30 +97,22 @@ public class Container implements ContainerInterface {
             return instance;
         }
 
-        Class<T> typeToCreate = type;
-
-        // if this type has been mapped to another type (using the map() method), use the sub
-        // type to create the instance
-        if (subTypes.containsKey(type)) {
-            typeToCreate = subTypes.get(type);
-        }
-
-        synchronized (resolving) {
+        synchronized (currentlyResolving) {
             // if the requested type is already being processed, it indicates a circular dependency
-            if (resolving.containsKey(type)) {
+            if (currentlyResolving.contains(type)) {
                 throw new CircularDependencyDetectedException(getDependencyTrace());
             } else {
                 // store currently processed type
-                resolving.put(type, typeToCreate);
+                currentlyResolving.add(type);
             }
 
             try {
                 // create and store instance
-                instance = create(typeToCreate);
+                instance = create(type);
                 instances.put(type, instance);
             } finally {
                 // remove processed type
-                resolving.remove(type);
+                currentlyResolving.remove(type);
             }
         }
 
@@ -145,13 +142,13 @@ public class Container implements ContainerInterface {
         isAllowed(type);
         isInstantiable(subType);
 
-        synchronized (subTypes) {
+        synchronized (mappings) {
             // check whether a mapping already exists
-            if (subTypes.containsKey(type)) {
+            if (mappings.containsKey(type)) {
                 throw new TypeMappingAlreadyExistsException(type);
             }
 
-            subTypes.put(type, subType);
+            mappings.put(type, subType);
         }
     }
 
@@ -275,7 +272,7 @@ public class Container implements ContainerInterface {
         // check if all parameters are resolvable by container
         for (Class parameterType : parameterTypes) {
             // has type instance / mapping: ok!
-            if (subTypes.containsKey(parameterType) || instances.containsKey(parameterType)) {
+            if (mappings.containsKey(parameterType) || instances.containsKey(parameterType)) {
                 allParametersResolvable = true;
                 continue;
             }
@@ -389,10 +386,10 @@ public class Container implements ContainerInterface {
      */
     protected StringBuilder getDependencyTrace() {
         StringBuilder builder = new StringBuilder();
-        Map.Entry<Class, Class> first = null;
-        Map.Entry<Class, Class> previous = null;
+        Class first = null;
+        Class previous = null;
 
-        for (Map.Entry<Class, Class> current : resolving.entrySet()) {
+        for (Class current : currentlyResolving) {
             // store first entry
             if (first == null) {
                 first = current;
@@ -405,9 +402,9 @@ public class Container implements ContainerInterface {
             }
 
             // add trace: previous > current
-            addDependencyTrace(builder, previous);
+            builder.append(previous.getName());
             builder.append(" > ");
-            addDependencyTrace(builder, current);
+            builder.append(current.getName());
             builder.append("\n");
 
             // set previous to current
@@ -415,31 +412,11 @@ public class Container implements ContainerInterface {
         }
 
         // add trace: previous (last) > first
-        addDependencyTrace(builder, previous);
+        builder.append(previous.getName());
         builder.append(" > ");
-        addDependencyTrace(builder, first);
+        builder.append(first.getName());
 
         return builder;
-    }
-
-    /**
-     * Add one dependency trace to the string builder.
-     *
-     * @param builder The string builder.
-     * @param entry   The current dependency entry.
-     */
-    protected void addDependencyTrace(StringBuilder builder, Map.Entry<Class, Class> entry) {
-        Class requestedType = entry.getKey();
-        Class typeToCreate = entry.getValue();
-
-        builder.append(typeToCreate.getName());
-
-        // add requested name for reference
-        if (!requestedType.equals(typeToCreate)) {
-            builder.append(" (");
-            builder.append(requestedType.getName());
-            builder.append(")");
-        }
     }
 
 }
