@@ -240,6 +240,12 @@ public class ContainerTest {
         container.map(NoMethodInterface.class, NoMethodAbstract.class);
     }
 
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void map_first_set_then_map_throws() throws ContainerException {
+        container.set(NoMethodInterface.class, new NoMethodImplementation());
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+    }
+
     @Test
     public void map_passes_concurrency_test() {
         int numTests = 10;
@@ -315,6 +321,12 @@ public class ContainerTest {
 
         container.set(NoMethodInterface.class, instance);
         container.set(NoMethodAbstract.class, instance);
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void set_first_map_then_set_throws() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.set(NoMethodInterface.class, new NoMethodImplementation());
     }
 
     //----------------------------------------------------------------------------------------------

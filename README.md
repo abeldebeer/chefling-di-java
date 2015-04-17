@@ -61,7 +61,8 @@ The Chefling Container interface defines the following methods:
 
 - `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full
 dependency tree. The created instance is not stored, so only use this method when you need a new
-instance.
+instance. It uses the type mappings that are done using `map()` to create an instance of the 
+expected type.
 
 - `Object get(Class type)`: If there is no stored instance of `type`, a new one is created using
 `create()`. If the type is mapped to a sub type using `map()`, it uses the sub type to create the
@@ -72,14 +73,16 @@ into account the type mappings from `map()`.
 
 - `void map(Class type, Class subType)`: Instructs the container to return an instance of `subType`
 when `type` is requested. This makes it possible to set a specific implementation of an interface or
-abstract class.
+abstract class. When an instance of `type` has already been stored an exception will be thrown, 
+because it cannot override this value.
 
 - `void set(Class type, Object instance, boolean replace)`: Not all types can be resolved by the
 container (e.g. primitive types like `boolean`), so this method can be used to store a specific
 instance of a type. The `replace` parameter determines whether a previously stored instance for this
 type will be replaced: if `true`, the stored instance will be replaced silently; if false, an
 exception will be thrown (default). Use this method with caution, because it can lead to bugs that
-are hard to trace!
+are hard to trace! If a mapping for this type (using `map()`) already exists, an exception will be 
+thrown.
 
 To understand the Container better,
 [take a look at the source code](src/main/java/com/cookingfox/chefling/Container.java), or

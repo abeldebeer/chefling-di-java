@@ -59,8 +59,7 @@ public class Container implements ContainerInterface {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T create(Class<T> type)
-            throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
+    public <T> T create(Class<T> type) throws ContainerException {
         Class typeToCreate = type;
 
         if (mappings.containsKey(type)) {
@@ -89,8 +88,7 @@ public class Container implements ContainerInterface {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(Class<T> type)
-            throws CircularDependencyDetectedException, TypeInstantiationException, TypeNotAllowedException {
+    public <T> T get(Class<T> type) throws ContainerException {
         T instance = (T) instances.get(type);
 
         if (instance != null) {
@@ -131,8 +129,7 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#map(Class, Class)
      */
     @Override
-    public <T> void map(Class<T> type, Class<? extends T> subType)
-            throws NotASubTypeException, TypeMappingAlreadyExistsException, TypeNotAllowedException {
+    public <T> void map(Class<T> type, Class<? extends T> subType) throws ContainerException {
         // validate the sub type extends the type
         if (subType.equals(type) || !type.isAssignableFrom(subType)) {
             throw new NotASubTypeException(type, subType);
@@ -143,8 +140,8 @@ public class Container implements ContainerInterface {
         isInstantiable(subType);
 
         synchronized (mappings) {
-            // check whether a mapping already exists
-            if (mappings.containsKey(type)) {
+            // check whether a mapping or instance already exists
+            if (mappings.containsKey(type) || instances.containsKey(type)) {
                 throw new TypeMappingAlreadyExistsException(type);
             }
 
@@ -156,8 +153,7 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object)
      */
     @Override
-    public <T> void set(Class<T> type, T instance)
-            throws NotAnInstanceOfTypeException, ReplaceInstanceNotAllowedException, TypeNotAllowedException {
+    public <T> void set(Class<T> type, T instance) throws ContainerException {
         set(type, instance, false);
     }
 
@@ -165,11 +161,15 @@ public class Container implements ContainerInterface {
      * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object, boolean)
      */
     @Override
-    public <T> void set(Class<T> type, T instance, boolean replace)
-            throws NotAnInstanceOfTypeException, ReplaceInstanceNotAllowedException, TypeNotAllowedException {
+    public <T> void set(Class<T> type, T instance, boolean replace) throws ContainerException {
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {
             throw new NotAnInstanceOfTypeException(type, instance);
+        }
+
+        // if a mapping for type exists, throw
+        if (mappings.containsKey(type)) {
+            throw new TypeMappingAlreadyExistsException(type);
         }
 
         // the container mapping should not be overwritten: when it stays mapped to `this`, classes

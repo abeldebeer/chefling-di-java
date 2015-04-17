@@ -10,7 +10,9 @@ public interface ContainerInterface {
 
     /**
      * Creates a new instance of `type`, attempting to resolve its full dependency tree. The created
-     * instance is not stored, so only use this method when you need a new instance.
+     * instance is not stored, so only use this method when you need a new instance. It uses the
+     * type mappings that are done using {@link #map(Class, Class)} to create an instance of the
+     * expected type.
      *
      * @param type The type to instantiate.
      * @param <T>  Ensures the returned object is cast to the expected type.
@@ -43,7 +45,9 @@ public interface ContainerInterface {
 
     /**
      * Instructs the container to return an instance of `subType` when `type` is requested. This
-     * makes it possible to set a specific implementation of an interface or abstract class.
+     * makes it possible to set a specific implementation of an interface or abstract class. When
+     * an instance of `type` has already been stored an exception will be thrown, because it cannot
+     * override this value.
      *
      * @param type    The base type, which is used when requesting an instance.
      * @param subType The type that extends / implements the base type, which is actually created.
@@ -54,8 +58,9 @@ public interface ContainerInterface {
 
     /**
      * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
-     * method can be used to store a specific instance of a type. If a previously stored instance
-     * is available an exception will be thrown, because it is not allowed to be replaced.
+     * method can be used to store a specific instance of a type. An exception will be thrown if a
+     * previously stored instance or mapping (using {@link #map(Class, Class)}) for this type
+     * already exists.
      *
      * @param type     The type you want to map the instance of.
      * @param instance The instance you want to store.
@@ -68,11 +73,12 @@ public interface ContainerInterface {
      * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
      * method can be used to store a specific instance of a type. The `replace` parameter determines
      * whether a previously stored instance for this type will be replaced. Use this method with
-     * caution, because it can lead to bugs that are hard to trace!
+     * caution, because it can lead to bugs that are hard to trace! If a mapping for this type
+     * (using {@link #map(Class, Class)}) already exists, an exception will be thrown.
      *
      * @param type     The type you want to map the instance of.
      * @param instance The instance you want to store.
-     * @param replace  If 'true': replace a previously stored instance for this type. If false:
+     * @param replace  If `true`: replace a previously stored instance for this type. If `false`:
      *                 throw an exception (default).
      * @param <T>      Ensures the instance is of the correct type.
      * @throws ContainerException
