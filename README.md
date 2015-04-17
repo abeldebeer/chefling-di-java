@@ -166,6 +166,20 @@ No, the following types are not allowed:
 - Non-static member classes.
 - Anonymous classes.
 
+These types are not allowed because the container would not know how to resolve them automatically.
+Either because there is no logical default (e.g. `boolean`, `String`), or because no instance can
+be created of the type (e.g. `enum`, annotation).
+
+#### _Java supports multiple constructors. How does Chefling decide which one to use?_
+
+The `create()` method walks through all constructors and picks one when either:
+
+- The constructor has no parameters. It makes it the most reasonable default.
+- All constructor parameters are resolvable by the container. (see question above)
+
+If no 'default' constructor can be picked, an exception will be thrown. This will also be the case
+if the class has no `public` constructors.
+
 #### _Does Chefling detect circular dependencies?_
 
 Yes, an exception will be thrown. The only proper way of handling circular dependencies is to change
