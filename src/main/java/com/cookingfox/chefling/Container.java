@@ -30,9 +30,10 @@ public class Container implements ContainerInterface {
     protected final List<Class> currentlyResolving = new LinkedList<Class>();
 
     /**
-     * Type map, where key is the type that is requested and value is the sub type that is created.
+     * Type map, where key is the type that is requested and value is either a sub type that needs
+     * to be created (through {@link #map(Class, Class)}) or a Factory.
      */
-    protected final Map<Class, Class> mappings = new HashMap<Class, Class>();
+    protected final Map<Class, Object> mappings = new HashMap<Class, Object>();
 
     /**
      * Convenience singleton for apps using a process-wide Container instance.
@@ -60,10 +61,13 @@ public class Container implements ContainerInterface {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type) throws ContainerException {
+        Object mapping = mappings.get(type);
         Class typeToCreate = type;
 
-        if (mappings.containsKey(type)) {
-            typeToCreate = mappings.get(type);
+        if (mapping instanceof Factory) {
+            return resolveUsingFactory((Factory<T>) mapping, type);
+        } else if (mapping instanceof Class) {
+            typeToCreate = (Class) mapping;
         }
 
         Constructor constructor = getDefaultConstructor(typeToCreate);
@@ -81,6 +85,17 @@ public class Container implements ContainerInterface {
         } catch (Exception e) {
             throw new TypeInstantiationException(typeToCreate, e);
         }
+    }
+
+    @Override
+    public <T> void factory(Class<T> type, Factory<T> factory) throws ContainerException {
+        isAllowed(type);
+
+        if (has(type)) {
+            throw new TypeMappingAlreadyExistsException(type);
+        }
+
+        mappings.put(type, factory);
     }
 
     /**
@@ -172,18 +187,12 @@ public class Container implements ContainerInterface {
             throw new TypeMappingAlreadyExistsException(type);
         }
 
-        // the container mapping should not be overwritten: when it stays mapped to `this`, classes
-        // requesting a container instance will always receive the same instance
-        if (type.equals(Container.class) || type.equals(ContainerInterface.class)) {
-            throw new TypeNotAllowedException(type, "the Container instance that should not be overridden");
-        }
+        isAllowed(type);
 
         // if an instance of type is already stored, throw
         if (!replace && instances.containsKey(type)) {
             throw new ReplaceInstanceNotAllowedException(type, instances.get(type), instance);
         }
-
-        isAllowed(type);
 
         instances.put(type, instance);
     }
@@ -216,6 +225,27 @@ public class Container implements ContainerInterface {
         // map this instance to its class and interface
         instances.put(Container.class, this);
         instances.put(ContainerInterface.class, this);
+    }
+
+    /**
+     * Resolves a type using a Factory instance. Throws if the returned value is null or invalid.
+     *
+     * @param factory The Factory object.
+     * @param type    The expected type that the Factory should return.
+     * @param <T>     Ensures the return value is cast to expected type.
+     * @return The created instance.
+     * @throws ContainerException
+     */
+    protected <T> T resolveUsingFactory(Factory<T> factory, Class<T> type) throws ContainerException {
+        T instance = factory.create(this);
+
+        if (instance == null) {
+            throw new FactoryReturnedNullException(type);
+        } else if (!type.isInstance(instance)) {
+            throw new FactoryReturnedUnexpectedValueException(type, instance);
+        }
+
+        return instance;
     }
 
     /**
@@ -315,6 +345,10 @@ public class Container implements ContainerInterface {
             errorReason = "primitive";
         } else if (isLanguageConstruct(type)) {
             errorReason = "a Java language construct";
+        } else if (ContainerInterface.class.isAssignableFrom(type)) {
+            errorReason = "the Container instance that should not be overridden";
+        } else if (Factory.class.isAssignableFrom(type)) {
+            errorReason = "an implementation of the Factory interface, which has a specific use in the Container";
         } else if (Throwable.class.isAssignableFrom(type)) {
             errorReason = "an exception (extends Throwable)";
         } else if (type.isEnum()) {
@@ -420,9 +454,11 @@ public class Container implements ContainerInterface {
         }
 
         // add trace: previous (last) > first
-        builder.append(previous.getName());
-        builder.append(" > ");
-        builder.append(first.getName());
+        if (previous != null) {
+            builder.append(previous.getName());
+            builder.append(" > ");
+            builder.append(first.getName());
+        }
 
         return builder;
     }

@@ -22,6 +22,16 @@ public interface ContainerInterface {
     <T> T create(Class<T> type) throws ContainerException;
 
     /**
+     * Map a type to a Factory, so that it will create an instance of `type` when it is requested.
+     *
+     * @param type    The type of the object that will be created by the factory.
+     * @param factory A factory instance.
+     * @param <T>     Ensures a factory of the expected type is passed.
+     * @throws ContainerException
+     */
+    <T> void factory(Class<T> type, Factory<T> factory) throws ContainerException;
+
+    /**
      * If there is no stored instance of the provided type, a new one is created using
      * {@link #create(Class)}. If the type is mapped to a sub type using {@link #map(Class, Class)},
      * it uses the sub type to create the instance. Once created, the instance is stored and

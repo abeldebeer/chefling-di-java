@@ -109,6 +109,96 @@ public class ContainerTest {
     }
 
     //----------------------------------------------------------------------------------------------
+    // TEST CASES: `FACTORY` METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void factory_throws_if_type_not_allowed() {
+        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
+            try {
+                container.factory(entry.getKey(), new Factory() {
+                    @Override
+                    public Object create(ContainerInterface container) throws ContainerException {
+                        return null;
+                    }
+                });
+
+                Assert.fail("Did not receive expected exception for type " + entry.getKey());
+            } catch (ContainerException e) {
+                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
+            }
+        }
+    }
+
+    @Test
+    public void factory_simple_resolves_expected() throws ContainerException {
+        final LinkedList<Integer> callHashCodes = new LinkedList<Integer>();
+
+        container.factory(NoConstructor.class, new Factory<NoConstructor>() {
+            @Override
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
+                callHashCodes.add(hashCode());
+                return new NoConstructor();
+            }
+        });
+
+        NoConstructor result = container.get(NoConstructor.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertEquals(1, callHashCodes.size());
+    }
+
+    @Test(expected = FactoryReturnedNullException.class)
+    public void factory_throws_if_returns_null() throws ContainerException {
+        container.factory(NoConstructor.class, new Factory<NoConstructor>() {
+            @Override
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        });
+
+        container.get(NoConstructor.class);
+    }
+
+    @Test(expected = FactoryReturnedUnexpectedValueException.class)
+    public void factory_throws_if_returns_invalid() throws ContainerException {
+        Factory factory = new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return "wtf!";
+            }
+        };
+
+        container.factory(NoConstructor.class, factory);
+
+        container.get(NoConstructor.class);
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void factory_throws_if_type_already_mapped() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+
+        container.factory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        });
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void factory_throws_if_type_already_set() throws ContainerException {
+        container.set(NoMethodInterface.class, new NoMethodImplementation());
+
+        container.factory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        });
+    }
+
+    //----------------------------------------------------------------------------------------------
     // TEST CASES: 'GET' METHOD
     //----------------------------------------------------------------------------------------------
 
@@ -379,6 +469,8 @@ public class ContainerTest {
             NoMethodInterface.class,
             NoMethodAbstract.class,
             PrivateConstructor.class,
+            Container.class,
+            Factory.class,
     };
 
     /**
@@ -397,6 +489,12 @@ public class ContainerTest {
         notAllowedInstances.put(ContainerException.class, new ContainerException(""));
         notAllowedInstances.put(Container.class, new Container());
         notAllowedInstances.put(ContainerInterface.class, new Container());
+        notAllowedInstances.put(Factory.class, new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        });
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
@@ -416,6 +514,9 @@ public class ContainerTest {
         notAllowedSubTypes.put(ProtectedClass.class, getMock(ProtectedClass.class).getClass());
         notAllowedSubTypes.put(MemberClass.class, getMock(MemberClass.class).getClass());
         notAllowedSubTypes.put(ContainerException.class, TypeNotAllowedException.class);
+        notAllowedSubTypes.put(Container.class, getMock(Container.class).getClass());
+        notAllowedSubTypes.put(ContainerInterface.class, getMock(ContainerInterface.class).getClass());
+        notAllowedSubTypes.put(Factory.class, getMock(Factory.class).getClass());
 
         // Note: can not test the following types, because a mock can not be created
         // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());
