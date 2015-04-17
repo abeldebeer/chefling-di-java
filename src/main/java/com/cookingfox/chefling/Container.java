@@ -122,7 +122,7 @@ public class Container implements ContainerInterface {
      */
     @Override
     public boolean has(Class type) {
-        return instances.containsKey(type);
+        return instances.containsKey(type) || mappings.containsKey(type);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Container implements ContainerInterface {
 
         synchronized (mappings) {
             // check whether a mapping or instance already exists
-            if (mappings.containsKey(type) || instances.containsKey(type)) {
+            if (has(type)) {
                 throw new TypeMappingAlreadyExistsException(type);
             }
 
@@ -231,11 +231,15 @@ public class Container implements ContainerInterface {
 
         Constructor[] constructors = type.getDeclaredConstructors();
         Constructor selectedConstructor = null;
+        boolean nonPublicConstructor = false;
 
         for (Constructor current : constructors) {
             // constructor not public? skip
             if (!Modifier.isPublic(current.getModifiers())) {
+                nonPublicConstructor = true;
                 continue;
+            } else {
+                nonPublicConstructor = false;
             }
 
             selectedConstructor = selectConstructorBasedOnParameters(current);
@@ -246,8 +250,12 @@ public class Container implements ContainerInterface {
         }
 
         if (selectedConstructor == null) {
-            throw new TypeNotInstantiableException(type, "it has no public constructor or its " +
-                    "constructors have parameters that are not resolvable by the container");
+            if (nonPublicConstructor) {
+                throw new TypeNotInstantiableException(type, "it has no public constructor");
+            } else {
+                throw new TypeNotInstantiableException(type, "its constructors have parameters " +
+                        "that are not resolvable by the container");
+            }
         }
 
         return selectedConstructor;
@@ -272,7 +280,7 @@ public class Container implements ContainerInterface {
         // check if all parameters are resolvable by container
         for (Class parameterType : parameterTypes) {
             // has type instance / mapping: ok!
-            if (mappings.containsKey(parameterType) || instances.containsKey(parameterType)) {
+            if (has(parameterType)) {
                 allParametersResolvable = true;
                 continue;
             }

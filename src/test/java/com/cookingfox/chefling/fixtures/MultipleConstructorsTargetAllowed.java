@@ -7,23 +7,28 @@ public class MultipleConstructorsTargetAllowed {
 
     public NoConstructor first;
 
-    public String second;
+    public NoMethodInterface second;
 
-    public Object third;
+    public String third;
 
-    public MultipleConstructorsTargetAllowed(NoConstructor first, String second, Object third) {
+    public Object fourth;
+
+    public MultipleConstructorsTargetAllowed(NoConstructor first, NoMethodInterface second, String third, Object fourth) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.fourth = fourth;
+    }
+
+    public MultipleConstructorsTargetAllowed(NoConstructor first, NoMethodInterface second, String third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public MultipleConstructorsTargetAllowed(NoConstructor first, String second) {
+    public MultipleConstructorsTargetAllowed(NoConstructor first, NoMethodInterface second) {
         this.first = first;
         this.second = second;
-    }
-
-    public MultipleConstructorsTargetAllowed(NoConstructor first) {
-        this.first = first;
     }
 
 }

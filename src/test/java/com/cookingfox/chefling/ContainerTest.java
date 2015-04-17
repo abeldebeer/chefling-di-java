@@ -88,12 +88,15 @@ public class ContainerTest {
 
     @Test
     public void create_multiple_constructors_selects_allowed_constructor() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+
         MultipleConstructorsTargetAllowed result = container.create(MultipleConstructorsTargetAllowed.class);
 
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.first);
-        Assert.assertNull(result.second);
+        Assert.assertNotNull(result.second);
         Assert.assertNull(result.third);
+        Assert.assertNull(result.fourth);
     }
 
     @Test
@@ -184,17 +187,26 @@ public class ContainerTest {
     //----------------------------------------------------------------------------------------------
 
     @Test
-    public void has_returns_false_if_no_value() {
-        boolean result = container.has(NoConstructor.class);
+    public void has_returns_false_if_no_instance_or_mapping() {
+        boolean result = container.has(NoMethodInterface.class);
 
         Assert.assertFalse(result);
     }
 
     @Test
-    public void has_returns_true_if_value() throws ContainerException {
-        container.set(NoConstructor.class, new NoConstructor());
+    public void has_returns_true_if_instance() throws ContainerException {
+        container.set(NoMethodInterface.class, new NoMethodImplementation());
 
-        boolean result = container.has(NoConstructor.class);
+        boolean result = container.has(NoMethodInterface.class);
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void has_returns_true_if_mapping() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+
+        boolean result = container.has(NoMethodInterface.class);
 
         Assert.assertTrue(result);
     }

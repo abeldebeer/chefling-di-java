@@ -35,11 +35,11 @@ public interface ContainerInterface {
     <T> T get(Class<T> type) throws ContainerException;
 
     /**
-     * Returns whether a stored instance is available for the provided type. Does not take into
-     * account the type mappings from {@link #map(Class, Class)}.
+     * Returns whether a stored instance or mapping (from {@link #map(Class, Class)}) exists for
+     * `type`.
      *
      * @param type The type you want to check.
-     * @return 'true' if a stored value is available, 'false' otherwise.
+     * @return 'true' if a stored instance or mapping exists, 'false' otherwise.
      */
     boolean has(Class type);
 

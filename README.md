@@ -68,8 +68,8 @@ expected type.
 `create()`. If the type is mapped to a sub type using `map()`, it uses the sub type to create the
 instance. Once created, the instance is stored and returned.
 
-- `boolean has(Class type)`: Returns whether a stored instance is available for type. Does not take
-into account the type mappings from `map()`.
+- `boolean has(Class type)`: Returns whether a stored instance or mapping (from `map()`) exists for 
+`type`.
 
 - `void map(Class type, Class subType)`: Instructs the container to return an instance of `subType`
 when `type` is requested. This makes it possible to set a specific implementation of an interface or
