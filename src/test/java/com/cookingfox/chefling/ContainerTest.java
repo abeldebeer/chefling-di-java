@@ -165,6 +165,7 @@ public class ContainerTest {
         container.get(NoConstructor.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected = FactoryReturnedUnexpectedValueException.class)
     public void factory_throws_if_returns_invalid() throws ContainerException {
         Factory factory = new Factory() {
@@ -461,12 +462,6 @@ public class ContainerTest {
     public void set_throws_if_stored_instance_default() throws ContainerException {
         container.set(NoConstructor.class, new NoConstructor());
         container.set(NoConstructor.class, new NoConstructor());
-    }
-
-    @Test
-    public void set_accepts_replace_stored_instance_if_allowed() throws ContainerException {
-        container.set(NoConstructor.class, new NoConstructor());
-        container.set(NoConstructor.class, new NoConstructor(), true);
     }
 
     @Test

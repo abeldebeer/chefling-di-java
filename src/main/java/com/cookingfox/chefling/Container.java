@@ -181,14 +181,6 @@ public class Container implements ContainerInterface {
      */
     @Override
     public <T> void set(Class<T> type, T instance) throws ContainerException {
-        set(type, instance, false);
-    }
-
-    /**
-     * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object, boolean)
-     */
-    @Override
-    public <T> void set(Class<T> type, T instance, boolean replace) throws ContainerException {
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {
             throw new NotAnInstanceOfTypeException(type, instance);
@@ -202,7 +194,7 @@ public class Container implements ContainerInterface {
         isAllowed(type);
 
         // if an instance of type is already stored, throw
-        if (!replace && instances.containsKey(type)) {
+        if (instances.containsKey(type)) {
             throw new ReplaceInstanceNotAllowedException(type, instances.get(type), instance);
         }
 

@@ -86,20 +86,4 @@ public interface ContainerInterface {
      */
     <T> void set(Class<T> type, T instance) throws ContainerException;
 
-    /**
-     * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
-     * method can be used to store a specific instance of a type. The `replace` parameter determines
-     * whether a previously stored instance for this type will be replaced. Use this method with
-     * caution, because it can lead to bugs that are hard to trace! If a mapping for this type
-     * (using {@link #map(Class, Class)}) already exists, an exception will be thrown.
-     *
-     * @param type     The type you want to map the instance of.
-     * @param instance The instance you want to store.
-     * @param replace  If `true`: replace a previously stored instance for this type. If `false`:
-     *                 throw an exception (default).
-     * @param <T>      Ensures the instance is of the correct type.
-     * @throws ContainerException
-     */
-    <T> void set(Class<T> type, T instance, boolean replace) throws ContainerException;
-
 }
