@@ -87,6 +87,9 @@ public class Container implements ContainerInterface {
         }
     }
 
+    /**
+     * @see com.cookingfox.chefling.ContainerInterface#factory(Class, Factory)
+     */
     @Override
     public <T> void factory(Class<T> type, Factory<T> factory) throws ContainerException {
         isAllowed(type);
@@ -154,7 +157,7 @@ public class Container implements ContainerInterface {
         isAllowed(type);
         isInstantiable(subType);
 
-        synchronized (mappings) {
+        synchronized (this) {
             // check whether a mapping or instance already exists
             if (has(type)) {
                 throw new TypeMappingAlreadyExistsException(type);
@@ -162,6 +165,15 @@ public class Container implements ContainerInterface {
 
             mappings.put(type, subType);
         }
+    }
+
+    /**
+     * @see com.cookingfox.chefling.ContainerInterface#remove(Class)
+     */
+    @Override
+    public void remove(Class type) {
+        instances.remove(type);
+        mappings.remove(type);
     }
 
     /**

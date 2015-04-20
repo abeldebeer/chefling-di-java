@@ -114,14 +114,16 @@ public class ContainerTest {
 
     @Test
     public void factory_throws_if_type_not_allowed() {
+        Factory factory = new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
         for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
             try {
-                container.factory(entry.getKey(), new Factory() {
-                    @Override
-                    public Object create(ContainerInterface container) throws ContainerException {
-                        return null;
-                    }
-                });
+                container.factory(entry.getKey(), factory);
 
                 Assert.fail("Did not receive expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
@@ -134,13 +136,15 @@ public class ContainerTest {
     public void factory_simple_resolves_expected() throws ContainerException {
         final LinkedList<Integer> callHashCodes = new LinkedList<Integer>();
 
-        container.factory(NoConstructor.class, new Factory<NoConstructor>() {
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
             public NoConstructor create(ContainerInterface container) throws ContainerException {
                 callHashCodes.add(hashCode());
                 return new NoConstructor();
             }
-        });
+        };
+
+        container.factory(NoConstructor.class, factory);
 
         NoConstructor result = container.get(NoConstructor.class);
 
@@ -150,13 +154,14 @@ public class ContainerTest {
 
     @Test(expected = FactoryReturnedNullException.class)
     public void factory_throws_if_returns_null() throws ContainerException {
-        container.factory(NoConstructor.class, new Factory<NoConstructor>() {
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
             public NoConstructor create(ContainerInterface container) throws ContainerException {
                 return null;
             }
-        });
+        };
 
+        container.factory(NoConstructor.class, factory);
         container.get(NoConstructor.class);
     }
 
@@ -165,37 +170,38 @@ public class ContainerTest {
         Factory factory = new Factory() {
             @Override
             public Object create(ContainerInterface container) throws ContainerException {
-                return "wtf!";
+                return "some unexpected value";
             }
         };
 
         container.factory(NoConstructor.class, factory);
-
         container.get(NoConstructor.class);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
     public void factory_throws_if_type_already_mapped() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
-
-        container.factory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
             public NoMethodInterface create(ContainerInterface container) throws ContainerException {
                 return null;
             }
-        });
+        };
+
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.factory(NoMethodInterface.class, factory);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
     public void factory_throws_if_type_already_set() throws ContainerException {
-        container.set(NoMethodInterface.class, new NoMethodImplementation());
-
-        container.factory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
             public NoMethodInterface create(ContainerInterface container) throws ContainerException {
                 return null;
             }
-        });
+        };
+
+        container.set(NoMethodInterface.class, new NoMethodImplementation());
+        container.factory(NoMethodInterface.class, factory);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -367,6 +373,52 @@ public class ContainerTest {
         runConcurrencyTest(test, numTests);
 
         Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES: 'REMOVE' METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void remove_stored_instance_removes_instance() throws ContainerException {
+        NoConstructor instance = new NoConstructor();
+
+        container.set(NoConstructor.class, instance);
+
+        Assert.assertTrue(container.has(NoConstructor.class));
+
+        container.remove(NoConstructor.class);
+
+        Assert.assertFalse(container.has(NoConstructor.class));
+    }
+
+    @Test
+    public void remove_subtype_mapping_removes_mapping() throws ContainerException {
+        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+
+        Assert.assertTrue(container.has(NoMethodInterface.class));
+
+        container.remove(NoMethodInterface.class);
+
+        Assert.assertFalse(container.has(NoMethodInterface.class));
+    }
+
+    @Test
+    public void remove_factory_mapping_removes_mapping() throws ContainerException {
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+            @Override
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
+                return new NoConstructor();
+            }
+        };
+
+        container.factory(NoConstructor.class, factory);
+
+        Assert.assertTrue(container.has(NoConstructor.class));
+
+        container.remove(NoConstructor.class);
+
+        Assert.assertFalse(container.has(NoConstructor.class));
     }
 
     //----------------------------------------------------------------------------------------------

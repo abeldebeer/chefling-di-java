@@ -67,6 +67,13 @@ public interface ContainerInterface {
     <T> void map(Class<T> type, Class<? extends T> subType) throws ContainerException;
 
     /**
+     * Remove a stored instance and/or mapping for the provided type.
+     *
+     * @param type The type to remove the instance / mapping for.
+     */
+    void remove(Class type);
+
+    /**
      * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
      * method can be used to store a specific instance of a type. An exception will be thrown if a
      * previously stored instance or mapping (using {@link #map(Class, Class)}) for this type
