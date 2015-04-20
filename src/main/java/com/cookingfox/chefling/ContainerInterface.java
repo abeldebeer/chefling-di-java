@@ -11,7 +11,7 @@ public interface ContainerInterface {
     /**
      * Creates a new instance of `type`, attempting to resolve its full dependency tree. The created
      * instance is not stored, so only use this method when you need a new instance. It uses the
-     * type mappings that are done using {@link #map(Class, Class)} to create an instance of the
+     * type mappings that are done using {@link #mapType(Class, Class)} to create an instance of the
      * expected type.
      *
      * @param type The type to instantiate.
@@ -22,18 +22,8 @@ public interface ContainerInterface {
     <T> T create(Class<T> type) throws ContainerException;
 
     /**
-     * Map a type to a Factory, so that it will create an instance of `type` when it is requested.
-     *
-     * @param type    The type of the object that will be created by the factory.
-     * @param factory A factory instance.
-     * @param <T>     Ensures a factory of the expected type is passed.
-     * @throws ContainerException
-     */
-    <T> void factory(Class<T> type, Factory<T> factory) throws ContainerException;
-
-    /**
      * If there is no stored instance of the provided type, a new one is created using
-     * {@link #create(Class)}. If the type is mapped to a sub type using {@link #map(Class, Class)},
+     * {@link #create(Class)}. If the type is mapped to a sub type using {@link #mapType(Class, Class)},
      * it uses the sub type to create the instance. Once created, the instance is stored and
      * returned.
      *
@@ -45,13 +35,36 @@ public interface ContainerInterface {
     <T> T get(Class<T> type) throws ContainerException;
 
     /**
-     * Returns whether a stored instance or mapping (from {@link #map(Class, Class)}) exists for
+     * Returns whether a stored instance or mapping (from {@link #mapType(Class, Class)}) exists for
      * `type`.
      *
      * @param type The type you want to check.
      * @return 'true' if a stored instance or mapping exists, 'false' otherwise.
      */
     boolean has(Class type);
+
+    /**
+     * Map a type to a Factory, so that it will create an instance of `type` when it is requested.
+     *
+     * @param type    The type of the object that will be created by the factory.
+     * @param factory A factory instance.
+     * @param <T>     Ensures a factory of the expected type is passed.
+     * @throws ContainerException
+     */
+    <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException;
+
+    /**
+     * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
+     * method can be used to store a specific instance of a type. An exception will be thrown if a
+     * previously stored instance or mapping (using {@link #mapType(Class, Class)}) for this type
+     * already exists.
+     *
+     * @param type     The type you want to map the instance of.
+     * @param instance The instance you want to store.
+     * @param <T>      Ensures the instance is of the correct type.
+     * @throws ContainerException
+     */
+    <T> void mapInstance(Class<T> type, T instance) throws ContainerException;
 
     /**
      * Instructs the container to return an instance of `subType` when `type` is requested. This
@@ -64,7 +77,7 @@ public interface ContainerInterface {
      * @param <T>     Ensures the sub type extends the base type.
      * @throws ContainerException
      */
-    <T> void map(Class<T> type, Class<? extends T> subType) throws ContainerException;
+    <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException;
 
     /**
      * Remove a stored instance and/or mapping for the provided type.
@@ -72,18 +85,5 @@ public interface ContainerInterface {
      * @param type The type to remove the instance / mapping for.
      */
     void remove(Class type);
-
-    /**
-     * Not all types can be resolved by the container (e.g. primitive types like `boolean`), so this
-     * method can be used to store a specific instance of a type. An exception will be thrown if a
-     * previously stored instance or mapping (using {@link #map(Class, Class)}) for this type
-     * already exists.
-     *
-     * @param type     The type you want to map the instance of.
-     * @param instance The instance you want to store.
-     * @param <T>      Ensures the instance is of the correct type.
-     * @throws ContainerException
-     */
-    <T> void set(Class<T> type, T instance) throws ContainerException;
 
 }

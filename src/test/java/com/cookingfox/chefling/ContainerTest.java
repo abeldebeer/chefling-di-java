@@ -88,7 +88,7 @@ public class ContainerTest {
 
     @Test
     public void create_multiple_constructors_selects_allowed_constructor() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         MultipleConstructorsTargetAllowed result = container.create(MultipleConstructorsTargetAllowed.class);
 
@@ -101,108 +101,11 @@ public class ContainerTest {
 
     @Test
     public void create_should_use_subtype_mapping() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         NoMethodInterface result = container.create(NoMethodInterface.class);
 
         Assert.assertTrue(result instanceof NoMethodImplementation);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // TEST CASES: `FACTORY` METHOD
-    //----------------------------------------------------------------------------------------------
-
-    @Test
-    public void factory_throws_if_type_not_allowed() {
-        Factory factory = new Factory() {
-            @Override
-            public Object create(ContainerInterface container) throws ContainerException {
-                return null;
-            }
-        };
-
-        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
-            try {
-                container.factory(entry.getKey(), factory);
-
-                Assert.fail("Did not receive expected exception for type " + entry.getKey());
-            } catch (ContainerException e) {
-                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
-            }
-        }
-    }
-
-    @Test
-    public void factory_simple_resolves_expected() throws ContainerException {
-        final LinkedList<Integer> callHashCodes = new LinkedList<Integer>();
-
-        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
-            @Override
-            public NoConstructor create(ContainerInterface container) throws ContainerException {
-                callHashCodes.add(hashCode());
-                return new NoConstructor();
-            }
-        };
-
-        container.factory(NoConstructor.class, factory);
-
-        NoConstructor result = container.get(NoConstructor.class);
-
-        Assert.assertNotNull(result);
-        Assert.assertEquals(1, callHashCodes.size());
-    }
-
-    @Test(expected = FactoryReturnedNullException.class)
-    public void factory_throws_if_returns_null() throws ContainerException {
-        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
-            @Override
-            public NoConstructor create(ContainerInterface container) throws ContainerException {
-                return null;
-            }
-        };
-
-        container.factory(NoConstructor.class, factory);
-        container.get(NoConstructor.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected = FactoryReturnedUnexpectedValueException.class)
-    public void factory_throws_if_returns_invalid() throws ContainerException {
-        Factory factory = new Factory() {
-            @Override
-            public Object create(ContainerInterface container) throws ContainerException {
-                return "some unexpected value";
-            }
-        };
-
-        container.factory(NoConstructor.class, factory);
-        container.get(NoConstructor.class);
-    }
-
-    @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void factory_throws_if_type_already_mapped() throws ContainerException {
-        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
-            @Override
-            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
-                return null;
-            }
-        };
-
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
-        container.factory(NoMethodInterface.class, factory);
-    }
-
-    @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void factory_throws_if_type_already_set() throws ContainerException {
-        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
-            @Override
-            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
-                return null;
-            }
-        };
-
-        container.set(NoMethodInterface.class, new NoMethodImplementation());
-        container.factory(NoMethodInterface.class, factory);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -239,7 +142,7 @@ public class ContainerTest {
 
     @Test
     public void get_mapped_type_creates_mapped() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         NoMethodInterface result = container.get(NoMethodInterface.class);
 
@@ -259,7 +162,7 @@ public class ContainerTest {
 
     @Test(expected = CircularDependencyDetectedException.class)
     public void get_detect_circular_complex() throws ContainerException {
-        container.map(CircularComplex.CInterface.class, CircularComplex.C.class);
+        container.mapType(CircularComplex.CInterface.class, CircularComplex.C.class);
         container.get(CircularComplex.A.class);
     }
 
@@ -292,7 +195,7 @@ public class ContainerTest {
 
     @Test
     public void has_returns_true_if_instance() throws ContainerException {
-        container.set(NoMethodInterface.class, new NoMethodImplementation());
+        container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
 
         boolean result = container.has(NoMethodInterface.class);
 
@@ -301,7 +204,7 @@ public class ContainerTest {
 
     @Test
     public void has_returns_true_if_mapping() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         boolean result = container.has(NoMethodInterface.class);
 
@@ -309,33 +212,186 @@ public class ContainerTest {
     }
 
     //----------------------------------------------------------------------------------------------
-    // TEST CASES: 'MAP' METHOD
+    // TEST CASES: `MAP FACTORY` METHOD
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void map_throws_when_mapping_exists() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
-    }
+    @Test
+    public void mapFactory_throws_if_type_not_allowed() {
+        Factory factory = new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
 
-    @Test(expected = NotASubTypeException.class)
-    public void map_throws_when_sub_type_same_as_type() throws ContainerException {
-        container.map(NoMethodImplementation.class, NoMethodImplementation.class);
-    }
+        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
+            try {
+                container.mapFactory(entry.getKey(), factory);
 
-    @Test(expected = NotASubTypeException.class)
-    public void map_throws_when_sub_type_not_extends_type() throws ContainerException {
-        Class type = NoConstructor.class;
-        Class subType = Object.class;
-
-        container.map(type, subType);
+                Assert.fail("Did not receive expected exception for type " + entry.getKey());
+            } catch (ContainerException e) {
+                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
+            }
+        }
     }
 
     @Test
-    public void map_throws_when_base_type_not_allowed() throws ContainerException {
+    public void mapFactory_simple_resolves_expected() throws ContainerException {
+        final LinkedList<Integer> callHashCodes = new LinkedList<Integer>();
+
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+            @Override
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
+                callHashCodes.add(hashCode());
+                return new NoConstructor();
+            }
+        };
+
+        container.mapFactory(NoConstructor.class, factory);
+
+        NoConstructor result = container.get(NoConstructor.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertEquals(1, callHashCodes.size());
+    }
+
+    @Test(expected = FactoryReturnedNullException.class)
+    public void mapFactory_throws_if_returns_null() throws ContainerException {
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+            @Override
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
+        container.mapFactory(NoConstructor.class, factory);
+        container.get(NoConstructor.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected = FactoryReturnedUnexpectedValueException.class)
+    public void mapFactory_throws_if_returns_invalid() throws ContainerException {
+        Factory factory = new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return "some unexpected value";
+            }
+        };
+
+        container.mapFactory(NoConstructor.class, factory);
+        container.get(NoConstructor.class);
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void mapFactory_throws_if_type_already_mapped() throws ContainerException {
+        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapFactory(NoMethodInterface.class, factory);
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void mapFactory_throws_if_type_already_set() throws ContainerException {
+        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
+        container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+        container.mapFactory(NoMethodInterface.class, factory);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES: 'MAP INSTANCE' METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void mapInstance_throws_when_type_not_allowed() {
+        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
+            try {
+                container.mapInstance(entry.getKey(), entry.getValue());
+
+                Assert.fail("Did not get expected exception for type " + entry.getKey());
+            } catch (ContainerException e) {
+                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
+            }
+        }
+    }
+
+    @Test(expected = NotAnInstanceOfTypeException.class)
+    public void mapInstance_throws_if_instance_not_instanceof_type() throws ContainerException {
+        // use variable to prevent generic warning
+        Class type = NoConstructor.class;
+
+        container.mapInstance(type, new Object());
+    }
+
+    @Test
+    public void mapInstance_stores_instance() throws ContainerException {
+        NoConstructor instance = new NoConstructor();
+
+        container.mapInstance(NoConstructor.class, instance);
+
+        NoConstructor result = container.get(NoConstructor.class);
+
+        Assert.assertSame(instance, result);
+    }
+
+    @Test(expected = ReplaceInstanceNotAllowedException.class)
+    public void mapInstance_throws_if_stored_instance_default() throws ContainerException {
+        container.mapInstance(NoConstructor.class, new NoConstructor());
+        container.mapInstance(NoConstructor.class, new NoConstructor());
+    }
+
+    @Test
+    public void mapInstance_accepts_implementation() throws ContainerException {
+        NoMethodImplementation instance = new NoMethodImplementation();
+
+        container.mapInstance(NoMethodInterface.class, instance);
+        container.mapInstance(NoMethodAbstract.class, instance);
+    }
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void mapInstance_first_mapType_then_mapInstance_throws() throws ContainerException {
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES: 'MAP SUB TYPE' METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test(expected = TypeMappingAlreadyExistsException.class)
+    public void mapType_throws_when_mapping_exists() throws ContainerException {
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+    }
+
+    @Test(expected = NotASubTypeException.class)
+    public void mapType_throws_when_sub_type_same_as_type() throws ContainerException {
+        container.mapType(NoMethodImplementation.class, NoMethodImplementation.class);
+    }
+
+    @Test(expected = NotASubTypeException.class)
+    public void mapType_throws_when_sub_type_not_extends_type() throws ContainerException {
+        Class type = NoConstructor.class;
+        Class subType = Object.class;
+
+        container.mapType(type, subType);
+    }
+
+    @Test
+    public void mapType_throws_when_base_type_not_allowed() throws ContainerException {
         for (Map.Entry<Class, Class> entry : getNotAllowedSubTypes().entrySet()) {
             try {
-                container.map(entry.getKey(), entry.getValue());
+                container.mapType(entry.getKey(), entry.getValue());
 
                 Assert.fail("Did not receive expected exception for type " + entry.getKey());
             } catch (ContainerException e) {
@@ -345,18 +401,18 @@ public class ContainerTest {
     }
 
     @Test(expected = TypeNotInstantiableException.class)
-    public void map_throws_when_sub_type_not_instantiable() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodAbstract.class);
+    public void mapType_throws_when_sub_type_not_instantiable() throws ContainerException {
+        container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void map_first_set_then_map_throws() throws ContainerException {
-        container.set(NoMethodInterface.class, new NoMethodImplementation());
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+    public void mapType_first_mapInstance_then_mapType_throws() throws ContainerException {
+        container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
     }
 
     @Test
-    public void map_passes_concurrency_test() {
+    public void mapType_passes_concurrency_test() {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<Exception>();
 
@@ -364,7 +420,7 @@ public class ContainerTest {
             @Override
             public void run() {
                 try {
-                    container.map(NoMethodInterface.class, NoMethodImplementation.class);
+                    container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
                 } catch (ContainerException e) {
                     exceptions.add(e);
                 }
@@ -384,7 +440,7 @@ public class ContainerTest {
     public void remove_stored_instance_removes_instance() throws ContainerException {
         NoConstructor instance = new NoConstructor();
 
-        container.set(NoConstructor.class, instance);
+        container.mapInstance(NoConstructor.class, instance);
 
         Assert.assertTrue(container.has(NoConstructor.class));
 
@@ -395,7 +451,7 @@ public class ContainerTest {
 
     @Test
     public void remove_subtype_mapping_removes_mapping() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         Assert.assertTrue(container.has(NoMethodInterface.class));
 
@@ -413,69 +469,13 @@ public class ContainerTest {
             }
         };
 
-        container.factory(NoConstructor.class, factory);
+        container.mapFactory(NoConstructor.class, factory);
 
         Assert.assertTrue(container.has(NoConstructor.class));
 
         container.remove(NoConstructor.class);
 
         Assert.assertFalse(container.has(NoConstructor.class));
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // TEST CASES: 'SET' METHOD
-    //----------------------------------------------------------------------------------------------
-
-    @Test
-    public void set_throws_when_type_not_allowed() {
-        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
-            try {
-                container.set(entry.getKey(), entry.getValue());
-
-                Assert.fail("Did not get expected exception for type " + entry.getKey());
-            } catch (ContainerException e) {
-                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
-            }
-        }
-    }
-
-    @Test(expected = NotAnInstanceOfTypeException.class)
-    public void set_throws_if_instance_not_instanceof_type() throws ContainerException {
-        // use variable to prevent generic warning
-        Class type = NoConstructor.class;
-
-        container.set(type, new Object());
-    }
-
-    @Test
-    public void set_stores_instance() throws ContainerException {
-        NoConstructor instance = new NoConstructor();
-
-        container.set(NoConstructor.class, instance);
-
-        NoConstructor result = container.get(NoConstructor.class);
-
-        Assert.assertSame(instance, result);
-    }
-
-    @Test(expected = ReplaceInstanceNotAllowedException.class)
-    public void set_throws_if_stored_instance_default() throws ContainerException {
-        container.set(NoConstructor.class, new NoConstructor());
-        container.set(NoConstructor.class, new NoConstructor());
-    }
-
-    @Test
-    public void set_accepts_implementation() throws ContainerException {
-        NoMethodImplementation instance = new NoMethodImplementation();
-
-        container.set(NoMethodInterface.class, instance);
-        container.set(NoMethodAbstract.class, instance);
-    }
-
-    @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void set_first_map_then_set_throws() throws ContainerException {
-        container.map(NoMethodInterface.class, NoMethodImplementation.class);
-        container.set(NoMethodInterface.class, new NoMethodImplementation());
     }
 
     //----------------------------------------------------------------------------------------------

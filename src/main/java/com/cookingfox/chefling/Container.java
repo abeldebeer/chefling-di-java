@@ -31,7 +31,7 @@ public class Container implements ContainerInterface {
 
     /**
      * Type map, where key is the type that is requested and value is either a sub type that needs
-     * to be created (through {@link #map(Class, Class)}) or a Factory.
+     * to be created (through {@link #mapType(Class, Class)}) or a Factory.
      */
     protected final Map<Class, Object> mappings = new HashMap<Class, Object>();
 
@@ -88,20 +88,6 @@ public class Container implements ContainerInterface {
     }
 
     /**
-     * @see com.cookingfox.chefling.ContainerInterface#factory(Class, Factory)
-     */
-    @Override
-    public <T> void factory(Class<T> type, Factory<T> factory) throws ContainerException {
-        isAllowed(type);
-
-        if (has(type)) {
-            throw new TypeMappingAlreadyExistsException(type);
-        }
-
-        mappings.put(type, factory);
-    }
-
-    /**
      * @see com.cookingfox.chefling.ContainerInterface#get(Class)
      */
     @Override
@@ -144,10 +130,49 @@ public class Container implements ContainerInterface {
     }
 
     /**
-     * @see com.cookingfox.chefling.ContainerInterface#map(Class, Class)
+     * @see com.cookingfox.chefling.ContainerInterface#mapFactory(Class, Factory)
      */
     @Override
-    public <T> void map(Class<T> type, Class<? extends T> subType) throws ContainerException {
+    public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
+        isAllowed(type);
+
+        if (has(type)) {
+            throw new TypeMappingAlreadyExistsException(type);
+        }
+
+        mappings.put(type, factory);
+    }
+
+    /**
+     * @see com.cookingfox.chefling.ContainerInterface#mapInstance(Class, Object)
+     */
+    @Override
+    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
+        // validate the instance is an instance of type
+        if (!type.isInstance(instance)) {
+            throw new NotAnInstanceOfTypeException(type, instance);
+        }
+
+        // if a mapping for type exists, throw
+        if (mappings.containsKey(type)) {
+            throw new TypeMappingAlreadyExistsException(type);
+        }
+
+        isAllowed(type);
+
+        // if an instance of type is already stored, throw
+        if (instances.containsKey(type)) {
+            throw new ReplaceInstanceNotAllowedException(type, instances.get(type), instance);
+        }
+
+        instances.put(type, instance);
+    }
+
+    /**
+     * @see com.cookingfox.chefling.ContainerInterface#mapType(Class, Class)
+     */
+    @Override
+    public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
         // validate the sub type extends the type
         if (subType.equals(type) || !type.isAssignableFrom(subType)) {
             throw new NotASubTypeException(type, subType);
@@ -174,31 +199,6 @@ public class Container implements ContainerInterface {
     public void remove(Class type) {
         instances.remove(type);
         mappings.remove(type);
-    }
-
-    /**
-     * @see com.cookingfox.chefling.ContainerInterface#set(Class, Object)
-     */
-    @Override
-    public <T> void set(Class<T> type, T instance) throws ContainerException {
-        // validate the instance is an instance of type
-        if (!type.isInstance(instance)) {
-            throw new NotAnInstanceOfTypeException(type, instance);
-        }
-
-        // if a mapping for type exists, throw
-        if (mappings.containsKey(type)) {
-            throw new TypeMappingAlreadyExistsException(type);
-        }
-
-        isAllowed(type);
-
-        // if an instance of type is already stored, throw
-        if (instances.containsKey(type)) {
-            throw new ReplaceInstanceNotAllowedException(type, instances.get(type), instance);
-        }
-
-        instances.put(type, instance);
     }
 
     /**
