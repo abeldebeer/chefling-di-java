@@ -1,10 +1,8 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.command.*;
-import com.cookingfox.chefling.exception.CommandInstantiationException;
 import com.cookingfox.chefling.exception.ContainerException;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,31 +130,21 @@ public class Container implements ContainerInterface {
     //----------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    protected <T> T getCommand(Class<T> commandClass) throws CommandInstantiationException {
-        T command = (T) commands.get(commandClass);
-
-        // no stored command instance? create it
-        if (command == null) {
-            // use first constructor to create command instance
-            Constructor constructor = commandClass.getDeclaredConstructors()[0];
-            Object[] params = {this, instances, mappings};
-
-            try {
-                // create and store command instance
-                command = (T) constructor.newInstance(params);
-                commands.put(commandClass, command);
-            } catch (Exception e) {
-                throw new CommandInstantiationException(commandClass, e);
-            }
-        }
-
-        return command;
+    protected <T> T getCommand(Class<T> commandClass) {
+        return (T) commands.get(commandClass);
     }
 
     /**
      * Initializes the container.
      */
     protected void initialize() {
+        // create operation commands
+        commands.put(CreateCommand.class, new CreateCommand(this, instances, mappings));
+        commands.put(GetCommand.class, new GetCommand(this, instances, mappings));
+        commands.put(MapFactoryCommand.class, new MapFactoryCommand(this, instances, mappings));
+        commands.put(MapInstanceCommand.class, new MapInstanceCommand(this, instances, mappings));
+        commands.put(MapTypeCommand.class, new MapTypeCommand(this, instances, mappings));
+
         // map this instance to its class and interface
         instances.put(Container.class, this);
         instances.put(ContainerInterface.class, this);
