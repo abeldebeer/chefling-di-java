@@ -2,6 +2,7 @@ package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
+import com.cookingfox.chefling.LifeCycle;
 import com.cookingfox.chefling.exception.*;
 
 import java.lang.reflect.Constructor;
@@ -47,7 +48,11 @@ public class CreateCommand extends AbstractCommand {
 
         try {
             // create a new instance, passing the constructor parameters
-            return (T) constructor.newInstance(parameters);
+            T instance = (T) constructor.newInstance(parameters);
+
+            lifecycleCreate(instance);
+
+            return instance;
         } catch (Exception e) {
             throw new TypeInstantiationException(typeToCreate, e);
         }
@@ -100,6 +105,12 @@ public class CreateCommand extends AbstractCommand {
         return selectedConstructor;
     }
 
+    protected void lifecycleCreate(Object instance) {
+        if (instance instanceof LifeCycle) {
+            ((LifeCycle) instance).create();
+        }
+    }
+
     /**
      * Resolves a type using a Factory instance. Throws if the returned value is null or invalid.
      *
@@ -117,6 +128,8 @@ public class CreateCommand extends AbstractCommand {
         } else if (!type.isInstance(instance)) {
             throw new FactoryReturnedUnexpectedValueException(type, instance);
         }
+
+        lifecycleCreate(instance);
 
         return instance;
     }

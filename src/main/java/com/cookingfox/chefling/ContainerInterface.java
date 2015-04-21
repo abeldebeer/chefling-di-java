@@ -86,4 +86,9 @@ public interface ContainerInterface {
      */
     void remove(Class type);
 
+    /**
+     * Removes all stored instances and mappings.
+     */
+    void reset();
+
 }

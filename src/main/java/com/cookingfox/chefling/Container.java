@@ -109,6 +109,27 @@ public class Container implements ContainerInterface {
     }
 
     /**
+     * @see com.cookingfox.chefling.ContainerInterface#reset()
+     */
+    @Override
+    public void reset() {
+        for (Map.Entry<Class, Object> entry : instances.entrySet()) {
+            Object instance = entry.getValue();
+
+            // call object life cycle destroy
+            if (instance instanceof LifeCycle) {
+                ((LifeCycle) instance).destroy();
+            }
+        }
+
+        commands.clear();
+        instances.clear();
+        mappings.clear();
+
+        initialize();
+    }
+
+    /**
      * Convenience singleton for apps using a process-wide Container instance.
      *
      * @return Default Container instance.
