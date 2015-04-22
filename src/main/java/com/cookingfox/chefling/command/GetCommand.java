@@ -5,11 +5,10 @@ import com.cookingfox.chefling.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.exception.ContainerException;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Implementation of {@link ContainerInterface#get(Class)}.
  */
 public class GetCommand extends AbstractCommand {
 
@@ -21,12 +20,15 @@ public class GetCommand extends AbstractCommand {
      * Temporary 'log' of the types that are in the process of being resolved. After the type is
      * successfully resolved, the entry is removed. This is used to detect circular dependencies.
      */
-    protected final List<Class> currentlyResolving = new LinkedList<Class>();
+    protected final LinkedList<Class> currentlyResolving = new LinkedList<Class>();
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     */
     public GetCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
@@ -35,6 +37,9 @@ public class GetCommand extends AbstractCommand {
     // PUBLIC METHODS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see ContainerInterface#get(Class)
+     */
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> type) throws ContainerException {
         T instance = (T) instances.get(type);

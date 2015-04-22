@@ -8,7 +8,7 @@ import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Implementation of {@link ContainerInterface#mapType(Class, Class)}.
  */
 public class MapTypeCommand extends AbstractCommand {
 
@@ -16,6 +16,9 @@ public class MapTypeCommand extends AbstractCommand {
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     */
     public MapTypeCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
@@ -24,6 +27,9 @@ public class MapTypeCommand extends AbstractCommand {
     // PUBLIC METHODS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see ContainerInterface#mapType(Class, Class)
+     */
     public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
         // validate the sub type extends the type
         if (subType.equals(type) || !type.isAssignableFrom(subType)) {

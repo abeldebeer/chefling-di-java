@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.exception;
 
 /**
- * Base exception class for the container.
+ * Base exception class for the Container.
  */
 public class ContainerException extends Exception {
 

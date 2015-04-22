@@ -21,7 +21,7 @@ public class Container implements ContainerInterface {
     protected final Map<Class, Object> commands = new HashMap<Class, Object>();
 
     /**
-     * Stores instances, either created by the container or mapped using
+     * Stores instances, either created by the Container or mapped using
      * {@link #mapInstance(Class, Object)}, where the key is the type and the value is the instance.
      */
     protected final Map<Class, Object> instances = new HashMap<Class, Object>();
@@ -42,7 +42,7 @@ public class Container implements ContainerInterface {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Default constructor: initializes the container.
+     * Default constructor: initializes the Container.
      */
     public Container() {
         initialize();

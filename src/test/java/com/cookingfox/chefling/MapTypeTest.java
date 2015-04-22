@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Test cases for {@link Container#mapType(Class, Class)}.
  */
 public class MapTypeTest extends AbstractTest {
 

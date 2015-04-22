@@ -8,7 +8,7 @@ import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Implementation of {@link ContainerInterface#mapFactory(Class, Factory)}.
  */
 public class MapFactoryCommand extends AbstractCommand {
 
@@ -16,6 +16,9 @@ public class MapFactoryCommand extends AbstractCommand {
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     */
     public MapFactoryCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
@@ -24,6 +27,9 @@ public class MapFactoryCommand extends AbstractCommand {
     // PUBLIC METHODS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see ContainerInterface#mapFactory(Class, Factory)
+     */
     public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
         isAllowed(type);
 

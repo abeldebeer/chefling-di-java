@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Base test class for {@link Container} tests.
  */
 public abstract class AbstractTest {
 

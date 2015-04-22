@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Implementation of {@link ContainerInterface#create(Class)}.
  */
 public class CreateCommand extends AbstractCommand {
 
@@ -18,6 +18,9 @@ public class CreateCommand extends AbstractCommand {
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     */
     public CreateCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
@@ -26,6 +29,9 @@ public class CreateCommand extends AbstractCommand {
     // PUBLIC METHODS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @see ContainerInterface#create(Class)
+     */
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type) throws ContainerException {
         Object mapping = mappings.get(type);
@@ -120,7 +126,7 @@ public class CreateCommand extends AbstractCommand {
                 throw new TypeNotInstantiableException(type, "it has no public constructor");
             } else {
                 throw new TypeNotInstantiableException(type, "its constructors have parameters " +
-                        "that are not resolvable by the container");
+                        "that are not resolvable by the Container");
             }
         }
 
@@ -164,7 +170,7 @@ public class CreateCommand extends AbstractCommand {
 
         boolean allParametersResolvable = false;
 
-        // check if all parameters are resolvable by container
+        // check if all parameters are resolvable by Container
         for (Class parameterType : parameterTypes) {
             // has type instance / mapping: ok!
             if (container.has(parameterType)) {

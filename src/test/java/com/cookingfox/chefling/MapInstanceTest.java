@@ -14,7 +14,7 @@ import org.junit.Test;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Test cases for {@link Container#mapInstance(Class, Object)}.
  */
 public class MapInstanceTest extends AbstractTest {
 

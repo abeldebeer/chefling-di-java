@@ -1,8 +1,8 @@
 package com.cookingfox.chefling;
 
 /**
- * Implement this interface to have the container call the onCreate() and onDestroy() methods in
- * your class.
+ * By implementing this interface, the Container will call its methods when an instance of the type
+ * is created and destroyed.
  */
 public interface LifeCycle {
 

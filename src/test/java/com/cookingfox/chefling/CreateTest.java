@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Test cases for {@link Container#create(Class)}.
  */
 public class CreateTest extends AbstractTest {
 

@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests all container functionality.
+ * Test cases for general {@link Container} methods.
  */
 public class ContainerTest extends AbstractTest {
 

@@ -3,20 +3,22 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.exception.ContainerException;
 
 /**
- * Defines a factory method that creates an instance of a (non-resolvable) type when it is
- * requested. This is desirable when a type's dependencies are more complex than, for example, a
- * class with a one-parameter constructor.
+ * The Factory defines one method that is used to create an instance of type {@link T}. A Factory
+ * is generally used when the type can not be resolved by the Container, for example when its
+ * constructor parameters are of a primitive type (boolean, int). Using a Factory is more efficient
+ * than mapping an instance directly, because it will only be called once it is requested.
  *
- * @param <T>
+ * @param <T> Hints at the type of object the Factory should create.
  */
 public interface Factory<T> {
 
     /**
-     * Factory method to create an instance of the type. The container is injected so that it can
-     * be used to request dependencies.
+     * Factory method that will create an instance of type {@link T}. The current Container instance
+     * is provided, so that it can be used to request other dependencies. It is up to the developer
+     * to return an instance of the correct type.
      *
-     * @param container The container instance that initiated this factory.
-     * @return An instance of type `T`.
+     * @param container The current Container instance.
+     * @return An instance of type {@link T}.
      * @throws ContainerException
      */
     T create(ContainerInterface container) throws ContainerException;

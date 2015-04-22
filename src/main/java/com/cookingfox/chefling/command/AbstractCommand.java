@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 20/04/15.
+ * Base command class for Container operations.
  */
 public abstract class AbstractCommand {
 
@@ -17,16 +17,32 @@ public abstract class AbstractCommand {
     // PROTECTED PROPERTIES
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * A reference to the current Container instance.
+     */
     protected final ContainerInterface container;
 
+    /**
+     * A reference to the current Container stored instances.
+     */
     protected final Map<Class, Object> instances;
 
+    /**
+     * A reference to the current Container mappings.
+     */
     protected final Map<Class, Object> mappings;
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * Create a new Command.
+     *
+     * @param container A reference to the current Container instance.
+     * @param instances A reference to the current Container stored instances.
+     * @param mappings  A reference to the current Container mappings.
+     */
     public AbstractCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         this.container = container;
         this.instances = instances;
@@ -38,7 +54,7 @@ public abstract class AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Is this type allowed to be mapped in the container?
+     * Is this type allowed to be mapped in the Container?
      *
      * @param type The type to validate.
      * @throws TypeNotAllowedException
@@ -47,10 +63,10 @@ public abstract class AbstractCommand {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (isPrimitiveOrWrapper(type)) {
-            errorReason = "primitive";
-        } else if (isLanguageConstruct(type)) {
+        if (isLanguageConstruct(type)) {
             errorReason = "a Java language construct";
+        } else if (isPrimitiveOrWrapper(type)) {
+            errorReason = "primitive";
         } else if (ContainerInterface.class.isAssignableFrom(type)) {
             errorReason = "the Container instance that should not be overridden";
         } else if (Factory.class.isAssignableFrom(type)) {

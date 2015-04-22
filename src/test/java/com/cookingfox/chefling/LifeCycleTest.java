@@ -2,13 +2,11 @@ package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.fixtures.LifeCycleWithCallLog;
-import com.cookingfox.chefling.fixtures.NoMethodImplementation;
-import com.cookingfox.chefling.fixtures.NoMethodInterface;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 21/04/15.
+ * Test cases for {@link LifeCycle} integration in the Container.
  */
 public class LifeCycleTest extends AbstractTest {
 

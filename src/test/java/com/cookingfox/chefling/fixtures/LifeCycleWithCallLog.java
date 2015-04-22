@@ -5,7 +5,7 @@ import com.cookingfox.chefling.LifeCycle;
 import java.util.LinkedList;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 21/04/15.
+ * Example {@link LifeCycle} implementation, that logs the calls to its methods.
  */
 public class LifeCycleWithCallLog implements LifeCycle {
 
