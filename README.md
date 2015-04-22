@@ -1,3 +1,8 @@
+### _Note: the documentation for Chefling is currently outdated!_
+
+_Chefling version 3 is stable and ready to be used (see "Download"), but the documentation is in the 
+process of being updated._
+
 # Chefling DI for Java
 
 Chefling is a very simple dependency injection container written in pure Java. It does not rely on
@@ -28,7 +33,7 @@ and add the project to the `dependencies` block in your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.cookingfox:chefling-di-java:2.0.0'
+    compile 'com.cookingfox:chefling-di-java:3.0.0'
 }
 ```
 
@@ -51,7 +56,7 @@ and add the project declaration to your `pom.xml`:
 <dependency>
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
