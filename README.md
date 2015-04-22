@@ -1,7 +1,8 @@
 ### _Note: the documentation for Chefling is currently outdated!_
 
 _Chefling version 3 is stable and ready to be used (see "Download"), but the documentation is in the 
-process of being updated._
+process of being updated. To understand Chefling's behavior,
+[see the Container interface](src/main/java/com/cookingfox/chefling/ContainerInterface.java)._
 
 # Chefling DI for Java
 
