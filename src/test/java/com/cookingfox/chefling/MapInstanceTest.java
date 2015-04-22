@@ -1,6 +1,9 @@
 package com.cookingfox.chefling;
 
-import com.cookingfox.chefling.exception.*;
+import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.NotAnInstanceOfTypeException;
+import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
+import com.cookingfox.chefling.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.fixtures.NoConstructor;
 import com.cookingfox.chefling.fixtures.NoMethodAbstract;
 import com.cookingfox.chefling.fixtures.NoMethodImplementation;
@@ -51,7 +54,7 @@ public class MapInstanceTest extends AbstractTest {
         Assert.assertSame(instance, result);
     }
 
-    @Test(expected = ReplaceInstanceNotAllowedException.class)
+    @Test(expected = TypeMappingAlreadyExistsException.class)
     public void mapInstance_throws_if_stored_instance_default() throws ContainerException {
         container.mapInstance(NoConstructor.class, new NoConstructor());
         container.mapInstance(NoConstructor.class, new NoConstructor());

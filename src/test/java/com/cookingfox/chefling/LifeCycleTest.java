@@ -16,8 +16,8 @@ public class LifeCycleTest extends AbstractTest {
     public void create_type_calls_lifecycle_create() throws ContainerException {
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
 
-        Assert.assertTrue(instance.createCalled);
-        Assert.assertFalse(instance.destroyCalled);
+        Assert.assertEquals(1, instance.onCreateCalls.size());
+        Assert.assertEquals(0, instance.onDestroyCalls.size());
     }
 
     @Test
@@ -33,18 +33,19 @@ public class LifeCycleTest extends AbstractTest {
 
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
 
-        Assert.assertTrue(instance.createCalled);
-        Assert.assertFalse(instance.destroyCalled);
+        Assert.assertEquals(1, instance.onCreateCalls.size());
+        Assert.assertEquals(0, instance.onDestroyCalls.size());
     }
 
     @Test
-    public void reset_removes_mappings_and_instances() throws ContainerException {
-        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
-        container.get(NoMethodInterface.class);
+    public void create_instance_calls_lifecycle_create() throws ContainerException {
+        LifeCycleWithCallLog instance = new LifeCycleWithCallLog();
 
-        container.reset();
+        container.mapInstance(LifeCycleWithCallLog.class, instance);
+        container.create(LifeCycleWithCallLog.class);
 
-        Assert.assertFalse(container.has(NoMethodInterface.class));
+        Assert.assertEquals(1, instance.onCreateCalls.size());
+        Assert.assertEquals(0, instance.onDestroyCalls.size());
     }
 
     @Test
@@ -53,17 +54,18 @@ public class LifeCycleTest extends AbstractTest {
 
         container.reset();
 
-        Assert.assertTrue(instance.createCalled);
-        Assert.assertTrue(instance.destroyCalled);
+        Assert.assertEquals(1, instance.onCreateCalls.size());
+        Assert.assertEquals(1, instance.onDestroyCalls.size());
     }
 
     @Test
-    public void reset_reinitializes_container() throws ContainerException {
-        Assert.assertTrue(container.has(Container.class));
+    public void remove_calls_lifecycle_destroy() throws ContainerException {
+        LifeCycleWithCallLog instance = container.get(LifeCycleWithCallLog.class);
 
-        container.reset();
+        container.remove(LifeCycleWithCallLog.class);
 
-        Assert.assertTrue(container.has(Container.class));
+        Assert.assertEquals(1, instance.onCreateCalls.size());
+        Assert.assertEquals(1, instance.onDestroyCalls.size());
     }
 
 }

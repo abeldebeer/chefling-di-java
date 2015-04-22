@@ -29,15 +29,45 @@ public class CreateCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type) throws ContainerException {
         Object mapping = mappings.get(type);
-        Class typeToCreate = type;
+        T instance;
 
         if (mapping instanceof Factory) {
-            return resolveUsingFactory((Factory<T>) mapping, type);
+            // use factory to create instance
+            instance = resolveUsingFactory((Factory<T>) mapping, type);
+        } else if (type.isInstance(mapping)) {
+            // mapping is instance
+            instance = (T) mapping;
         } else if (mapping instanceof Class) {
-            typeToCreate = (Class) mapping;
+            // create instance using mapped type
+            instance = createInstance((Class<T>) mapping);
+        } else {
+            // no mapping: create instance using provided type
+            instance = createInstance(type);
         }
 
-        Constructor constructor = getDefaultConstructor(typeToCreate);
+        // call life cycle onCreate
+        if (instance instanceof LifeCycle) {
+            ((LifeCycle) instance).onCreate();
+        }
+
+        return instance;
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED METHODS
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance of `type`, attempting to resolve its full dependency tree.
+     *
+     * @param type The type to instantiate.
+     * @param <T>  Ensures the returned object is cast to the expected type.
+     * @return New instance of the type.
+     * @throws ContainerException
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> T createInstance(Class<T> type) throws ContainerException {
+        Constructor constructor = getDefaultConstructor(type);
         Class[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
 
@@ -48,19 +78,11 @@ public class CreateCommand extends AbstractCommand {
 
         try {
             // create a new instance, passing the constructor parameters
-            T instance = (T) constructor.newInstance(parameters);
-
-            lifecycleCreate(instance);
-
-            return instance;
+            return (T) constructor.newInstance(parameters);
         } catch (Exception e) {
-            throw new TypeInstantiationException(typeToCreate, e);
+            throw new TypeInstantiationException(type, e);
         }
     }
-
-    //----------------------------------------------------------------------------------------------
-    // PROTECTED METHODS
-    //----------------------------------------------------------------------------------------------
 
     /**
      * Selects the most reasonable default constructor, based on its modifiers and parameters.
@@ -105,12 +127,6 @@ public class CreateCommand extends AbstractCommand {
         return selectedConstructor;
     }
 
-    protected void lifecycleCreate(Object instance) {
-        if (instance instanceof LifeCycle) {
-            ((LifeCycle) instance).create();
-        }
-    }
-
     /**
      * Resolves a type using a Factory instance. Throws if the returned value is null or invalid.
      *
@@ -128,8 +144,6 @@ public class CreateCommand extends AbstractCommand {
         } else if (!type.isInstance(instance)) {
             throw new FactoryReturnedUnexpectedValueException(type, instance);
         }
-
-        lifecycleCreate(instance);
 
         return instance;
     }

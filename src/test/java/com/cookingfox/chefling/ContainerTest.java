@@ -1,12 +1,11 @@
 package com.cookingfox.chefling;
 
-import com.cookingfox.chefling.exception.*;
-import com.cookingfox.chefling.fixtures.*;
+import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.fixtures.NoConstructor;
+import com.cookingfox.chefling.fixtures.NoMethodImplementation;
+import com.cookingfox.chefling.fixtures.NoMethodInterface;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Tests all container functionality.
@@ -45,6 +44,11 @@ public class ContainerTest extends AbstractTest {
     //----------------------------------------------------------------------------------------------
     // TEST CASES: 'REMOVE' METHOD
     //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void remove_no_value_does_not_throw() throws ContainerException {
+        container.remove(NoConstructor.class);
+    }
 
     @Test
     public void remove_stored_instance_removes_instance() throws ContainerException {
@@ -86,6 +90,29 @@ public class ContainerTest extends AbstractTest {
         container.remove(NoConstructor.class);
 
         Assert.assertFalse(container.has(NoConstructor.class));
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES: 'RESET' METHOD
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void reset_removes_mappings_and_instances() throws ContainerException {
+        container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        container.get(NoMethodInterface.class);
+
+        container.reset();
+
+        Assert.assertFalse(container.has(NoMethodInterface.class));
+    }
+
+    @Test
+    public void reset_reinitializes_container() throws ContainerException {
+        Assert.assertTrue(container.has(Container.class));
+
+        container.reset();
+
+        Assert.assertTrue(container.has(Container.class));
     }
 
     //----------------------------------------------------------------------------------------------

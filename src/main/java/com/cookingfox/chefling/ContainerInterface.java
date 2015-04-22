@@ -80,9 +80,11 @@ public interface ContainerInterface {
     <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException;
 
     /**
-     * Remove a stored instance and/or mapping for the provided type.
+     * Removes a stored instance and/or mapping for the provided type. If the instance is an
+     * instance of {@link LifeCycle}, it will call its onDestroy method.
      *
      * @param type The type to remove the instance / mapping for.
+     * @see LifeCycle#onDestroy()
      */
     void remove(Class type);
 

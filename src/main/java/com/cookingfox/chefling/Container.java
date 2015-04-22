@@ -16,18 +16,19 @@ public class Container implements ContainerInterface {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Stored command instances, where key is the command class.
+     * Stores operation commands, where the key is the command class and the value is the instance.
      */
     protected final Map<Class, Object> commands = new HashMap<Class, Object>();
 
     /**
-     * Stored instances, where key is the type and value is the instance.
+     * Stores instances, either created by the container or mapped using
+     * {@link #mapInstance(Class, Object)}, where the key is the type and the value is the instance.
      */
     protected final Map<Class, Object> instances = new HashMap<Class, Object>();
 
     /**
-     * Type map, where key is the type that is requested and value is either a sub type that needs
-     * to be created (through {@link #mapType(Class, Class)}) or a Factory.
+     * Stores type mappings, where the key is the type and the value is the mapping provided by the
+     * {@link #mapFactory(Class, Factory)} and {@link #mapType(Class, Class)} methods.
      */
     protected final Map<Class, Object> mappings = new HashMap<Class, Object>();
 
@@ -104,6 +105,9 @@ public class Container implements ContainerInterface {
      */
     @Override
     public void remove(Class type) {
+        // call destroy method for life cycle objects
+        lifeCycleDestroy(instances.get(type));
+
         instances.remove(type);
         mappings.remove(type);
     }
@@ -113,13 +117,9 @@ public class Container implements ContainerInterface {
      */
     @Override
     public void reset() {
+        // call destroy method for life cycle objects
         for (Map.Entry<Class, Object> entry : instances.entrySet()) {
-            Object instance = entry.getValue();
-
-            // call object life cycle destroy
-            if (instance instanceof LifeCycle) {
-                ((LifeCycle) instance).destroy();
-            }
+            lifeCycleDestroy(entry.getValue());
         }
 
         commands.clear();
@@ -150,6 +150,13 @@ public class Container implements ContainerInterface {
     // PROTECTED METHODS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * Get one of the operation commands by its type.
+     *
+     * @param commandClass Class of the command.
+     * @param <T>          Ensures the instance is cast to the expected type.
+     * @return A command instance.
+     */
     @SuppressWarnings("unchecked")
     protected <T> T getCommand(Class<T> commandClass) {
         return (T) commands.get(commandClass);
@@ -169,6 +176,17 @@ public class Container implements ContainerInterface {
         // map this instance to its class and interface
         instances.put(Container.class, this);
         instances.put(ContainerInterface.class, this);
+    }
+
+    /**
+     * Call the {@link LifeCycle#onDestroy()} method if the object is a {@link LifeCycle} instance.
+     *
+     * @param instance An object.
+     */
+    protected void lifeCycleDestroy(Object instance) {
+        if (instance instanceof LifeCycle) {
+            ((LifeCycle) instance).onDestroy();
+        }
     }
 
 }

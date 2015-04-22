@@ -1,19 +1,19 @@
 package com.cookingfox.chefling;
 
 /**
- * Implement this interface to have the container call the create() and destroy() methods in your
- * class.
+ * Implement this interface to have the container call the onCreate() and onDestroy() methods in
+ * your class.
  */
 public interface LifeCycle {
 
     /**
      * Initialize the object.
      */
-    void create();
+    void onCreate();
 
     /**
      * Clean up the object.
      */
-    void destroy();
+    void onDestroy();
 
 }
