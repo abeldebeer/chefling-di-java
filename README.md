@@ -1,9 +1,3 @@
-### _Note: the documentation for Chefling is currently outdated!_
-
-_Chefling version 3 is stable and ready to be used (see "Download"), but the documentation is in the 
-process of being updated. To understand Chefling's behavior,
-[see the Container interface](src/main/java/com/cookingfox/chefling/ContainerInterface.java)._
-
 # Chefling DI for Java
 
 Chefling is a very simple dependency injection container written in pure Java. It does not rely on
@@ -65,34 +59,43 @@ and add the project declaration to your `pom.xml`:
 
 The Chefling Container interface defines the following methods:
 
-- `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full
-dependency tree. The created instance is not stored, so only use this method when you need a new
-instance. It uses the type mappings that are done using `map()` to create an instance of the 
-expected type.
+- `Object get(Class type)`: Returns an instance of `type`. If a previously stored instance exists, 
+it will always return that same instance. If there is no stored instance, it will create a new one 
+using `create()`, and store and return that.
 
-- `Object get(Class type)`: If there is no stored instance of `type`, a new one is created using
-`create()`. If the type is mapped to a sub type using `map()`, it uses the sub type to create the
-instance. Once created, the instance is stored and returned.
+- `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full 
+dependency tree. The instance is not stored (that's what `get()` is for), so only use this method 
+directly when you need a ___new___ instance. It uses the type mappings (from the `map..` methods) to 
+create the instance. If no mapping is available, it attempts to resolve the dependencies by 
+inspecting the constructor parameters. If the created instance implements the `LifeCycle` interface 
+(see "Usage" -> "LifeCycle"), its `onCreate()` method will be called.
 
-- `boolean has(Class type)`: Returns whether a stored instance or mapping (from `map()`) exists for 
-`type`.
+- `void mapFactory(Class type, Factory factory)`: Map `type` to a `Factory` instance (see "Usage" -> 
+"Factory"), which will create an instance of `type` when it is requested (by `create()`). Which 
+specific instance will be created by the Factory is up to the developer. If the Factory returns 
+`null`, or a value of a different type, then an exception will be thrown by the Container.
 
-- `void map(Class type, Class subType)`: Instructs the container to return an instance of `subType`
-when `type` is requested. This makes it possible to set a specific implementation of an interface or
-abstract class. When an instance of `type` has already been stored an exception will be thrown, 
-because it cannot override this value.
+- `void mapInstance(Class type, instance)`: Map `type` to a specific instance, which will be 
+returned when `type` is requested. This is useful when `type` has dependencies (constructor 
+parameters) that are not resolvable by the Container (e.g. `int`, `boolean`).
 
-- `void set(Class type, Object instance, boolean replace)`: Not all types can be resolved by the
-container (e.g. primitive types like `boolean`), so this method can be used to store a specific
-instance of a type. The `replace` parameter determines whether a previously stored instance for this
-type will be replaced: if `true`, the stored instance will be replaced silently; if false, an
-exception will be thrown (default). Use this method with caution, because it can lead to bugs that
-are hard to trace! If a mapping for this type (using `map()`) already exists, an exception will be 
-thrown.
+- `void mapType(Class type, Class subType)`: Map `type` to a class (`subType`) that extends it. This 
+makes it possible to set a specific implementation of an interface or abstract class. When `type` is 
+requested an instance of `subType` will be created.
 
-To understand the Container better,
-[take a look at the source code](src/main/java/com/cookingfox/chefling/Container.java), or
-[check out the unit tests](src/test/java/com/cookingfox/chefling/ContainerTest.java).
+- `boolean has(Class type)`: Returns whether a stored instance or mapping (from the `map..` methods) 
+exists for `type`.
+
+- `void remove(Class type)`: Removes a stored instance and/or mapping for `type`. If an instance 
+exists and it implements `LifeCycle`, its `onDestroy()` method will be called.
+
+- `void reset()`: Removes all stored instances and mappings. Use this method to clean up the 
+Container in your application's destroy procedure. For every instance that implements `LifeCycle`, 
+its `onDestroy()` method will be called.
+
+To understand the Container internals,
+[take a look at the source code](src/main/java/com/cookingfox/chefling), or
+[check out the unit tests](src/test/java/com/cookingfox/chefling).
 
 ## Usage
 
@@ -126,11 +129,11 @@ Container container = new Container();
 
 // store a specific instance
 First myFirst = new First("unique id");
-container.set(First.class, myFirst);
+container.mapInstance(First.class, myFirst);
 
 // map interface to implementation:
 // the container will create an instance of Second when ISecond is requested
-container.map(ISecond.class, Second.class);
+container.mapType(ISecond.class, Second.class);
 
 // the container resolves the requested type (Third) and its dependencies
 Third third = container.get(Third.class);
@@ -142,14 +145,14 @@ third.second instanceof Second; // true
 Explanation:
 
 1. The `Third` class has two dependencies: `First` (class) and `ISecond` (interface).
-2. By using the container's `set` method, a specific instance can be stored for a type. In the above
-example, an instance of `First` is stored, which holds a unique id.
-3. The container's `map` method is used to map one type to a sub type. This way you can map an
+2. By using the container's `mapInstance` method, a specific instance can be stored for a type. In 
+the above example, an instance of `First` is stored, which holds a unique id.
+3. The container's `mapType` method is used to map one type to a sub type. This way you can map an
 interface or abstract class to a concrete implementation. In the example, the `ISecond` interface is
 mapped to the `Second` class.
 4. By calling the container's `get` method, the type is resolved. In this case the `Third` class
-receives the explicitly set instance of the `First` class from step 2. The `ISecond` dependency is
-resolved with an instance of the mapped `Second` class.
+receives the explicitly mapped instance of the `First` class from step 2. The `ISecond` dependency 
+is resolved with an instance of the mapped `Second` class.
 
 ### Default (static) Container instance
 
@@ -158,6 +161,56 @@ This is especially common in Android, in the case of services. For these occasio
 singleton method can be used: `Container.getDefault()`. This will create and return a static
 instance of the container. Please be aware that if you use `getDefault()` in one place, you need to
 use it everywhere, otherwise you will get different instances of the container anyway.
+
+### LifeCycle
+
+The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/LifeCycle.java) allows 
+implementing classes to hook into the life cycle processes of the Container:
+
+- When `Container.create()` is called and an instance of the requested type is created, it will call 
+its `onCreate()` method. This will also happen for types that have been mapped using the `map..` 
+methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific instance of the 
+class, and it implements the `LifeCycle` interface, then its `onCreate()` method will be called.
+
+- The `remove()` and `reset()` methods will call the `onDestroy` method of instances that implement
+the `LifeCycle` interface.
+
+### Factory
+
+The [`Factory` interface](src/main/java/com/cookingfox/chefling/Factory.java) defines one method 
+(`create()`) that is used to create an instance of the provided type. A Factory is generally used 
+when the type can not be resolved by the Container, for example when its constructor parameters are 
+of a primitive type (boolean, int). Using a Factory is more efficient than mapping an instance 
+directly, because it will only be called once it is requested (lazy loaded).
+
+Example:
+
+```java
+class Bar {}
+
+class Foo {
+    Bar bar;
+    String value;
+
+    Foo(Bar bar, String value) {
+        this.bar = bar;
+        this.value = value;
+    }
+}
+
+Container container = new Container();
+
+// map type `Foo` to factory
+container.mapFactory(Foo.class, new Factory<Foo>() {
+    public Foo create(ContainerInterface container) throws ContainerException {
+        // the create method receives a Container instance, which can be used to get dependencies
+        return new Foo(container.get(Bar.class), "some arbitrary value");
+    }
+});
+
+// ask the Container for an instance of `Foo`, which will invoke the Factory
+Foo instance = container.get(Foo.class);
+```
 
 ## F.A.Q.
 

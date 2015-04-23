@@ -25,7 +25,7 @@ public interface ContainerInterface {
 
     /**
      * Returns an instance of `type`. If a previously stored instance exists, it will always return
-     * that same instance. If there is no stored instance, it will create a new one, using
+     * that same instance. If there is no stored instance, it will create a new one using
      * {@link #create(Class)}, and store and return that.
      *
      * @param type The type (class, interface) of the object you want to retrieve.
