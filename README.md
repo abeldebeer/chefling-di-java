@@ -203,8 +203,9 @@ Container container = new Container();
 
 // map type `Foo` to factory
 container.mapFactory(Foo.class, new Factory<Foo>() {
+    // the create method receives a Container instance, 
+    // which can be used to get dependencies
     public Foo create(ContainerInterface container) throws ContainerException {
-        // the create method receives a Container instance, which can be used to get dependencies
         return new Foo(container.get(Bar.class), "some arbitrary value");
     }
 });
