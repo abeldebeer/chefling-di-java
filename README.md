@@ -57,7 +57,8 @@ and add the project declaration to your `pom.xml`:
 
 ## Features
 
-The Chefling Container interface defines the following methods:
+The Chefling [Container interface](src/main/java/com/cookingfox/chefling/ContainerInterface.java) 
+defines the following methods:
 
 - `Object get(Class type)`: Returns an instance of `type`. If a previously stored instance exists, 
 it will always return that same instance. If there is no stored instance, it will create a new one 
