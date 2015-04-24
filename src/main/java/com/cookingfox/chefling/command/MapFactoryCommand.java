@@ -3,7 +3,6 @@ package com.cookingfox.chefling.command;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
 
 import java.util.Map;
 
@@ -31,13 +30,11 @@ public class MapFactoryCommand extends AbstractCommand {
      * @see ContainerInterface#mapFactory(Class, Factory)
      */
     public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
-        isAllowed(type);
+        // Note: it is not possible here to check whether the factory will actually return an
+        // instance of the expected type. This would require inspecting <T>, but the value of <T> is
+        // not available during runtime, due to the generics type erasure.
 
-        if (container.has(type)) {
-            throw new TypeMappingAlreadyExistsException(type);
-        }
-
-        mappings.put(type, factory);
+        addMapping(type, factory);
     }
 
 }

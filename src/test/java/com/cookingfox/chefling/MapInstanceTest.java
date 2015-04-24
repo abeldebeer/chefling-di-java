@@ -11,6 +11,7 @@ import com.cookingfox.chefling.fixtures.NoMethodInterface;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -72,6 +73,27 @@ public class MapInstanceTest extends AbstractTest {
     public void mapInstance_first_mapType_then_mapInstance_throws() throws ContainerException {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+    }
+
+    @Test
+    public void mapInstance_passes_concurrency_test() throws ContainerException {
+        int numTests = 10;
+        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
+
+        Runnable test = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+                } catch (ContainerException e) {
+                    exceptions.add(e);
+                }
+            }
+        };
+
+        runConcurrencyTest(test, numTests);
+
+        Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
     }
 
 }

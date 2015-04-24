@@ -2,14 +2,13 @@ package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.NotAnInstanceOfTypeException;
 
 import java.util.Map;
 
 /**
- * Implementation of {@link ContainerInterface#mapInstance(Class, Object)}.
+ * Implementation of {@link ContainerInterface#remove(Class)}.
  */
-public class MapInstanceCommand extends AbstractCommand {
+public class RemoveCommand extends AbstractCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -18,7 +17,7 @@ public class MapInstanceCommand extends AbstractCommand {
     /**
      * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
      */
-    public MapInstanceCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public RemoveCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 
@@ -27,15 +26,16 @@ public class MapInstanceCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see ContainerInterface#mapInstance(Class, Object)
+     * @see ContainerInterface#remove(Class)
      */
-    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
-        // validate the instance is an instance of type
-        if (!type.isInstance(instance)) {
-            throw new NotAnInstanceOfTypeException(type, instance);
-        }
+    public void remove(Class type) throws ContainerException {
+        isAllowed(type);
 
-        addMapping(type, instance);
+        // call destroy method for life cycle objects
+        lifeCycleDestroy(instances.get(type));
+
+        instances.remove(type);
+        mappings.remove(type);
     }
 
 }

@@ -2,6 +2,9 @@ package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
+import com.cookingfox.chefling.LifeCycle;
+import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
 import com.cookingfox.chefling.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.exception.TypeNotInstantiableException;
 
@@ -52,6 +55,26 @@ public abstract class AbstractCommand {
     //----------------------------------------------------------------------------------------------
     // PROTECTED METHODS
     //----------------------------------------------------------------------------------------------
+
+    /**
+     * Checks whether `type` is allowed and whether a mapping already exists. If everything is okay,
+     * the mapping will be added, otherwise an exception will be thrown.
+     *
+     * @param type  The type to map.
+     * @param value The value for the mapping.
+     * @throws ContainerException
+     */
+    protected void addMapping(Class type, Object value) throws ContainerException {
+        isAllowed(type);
+
+        synchronized (container) {
+            if (container.has(type)) {
+                throw new TypeMappingAlreadyExistsException(type);
+            }
+
+            mappings.put(type, value);
+        }
+    }
 
     /**
      * Is this type allowed to be mapped in the Container?
@@ -141,6 +164,17 @@ public abstract class AbstractCommand {
      */
     protected boolean isLanguageConstruct(Class type) {
         return type.getName().startsWith("java.lang");
+    }
+
+    /**
+     * Call the {@link LifeCycle#onDestroy()} method if the object is a {@link LifeCycle} instance.
+     *
+     * @param instance An object.
+     */
+    protected void lifeCycleDestroy(Object instance) {
+        if (instance instanceof LifeCycle) {
+            ((LifeCycle) instance).onDestroy();
+        }
     }
 
 }

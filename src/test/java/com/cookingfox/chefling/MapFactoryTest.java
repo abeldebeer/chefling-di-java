@@ -112,4 +112,31 @@ public class MapFactoryTest extends AbstractTest {
         container.mapFactory(NoMethodInterface.class, factory);
     }
 
+    @Test
+    public void mapFactory_passes_concurrency_test() throws ContainerException {
+        int numTests = 10;
+        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
+        final Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
+        Runnable test = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    container.mapFactory(NoMethodInterface.class, factory);
+                } catch (ContainerException e) {
+                    exceptions.add(e);
+                }
+            }
+        };
+
+        runConcurrencyTest(test, numTests);
+
+        Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
+    }
+
 }

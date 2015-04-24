@@ -3,7 +3,6 @@ package com.cookingfox.chefling.command;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.NotASubTypeException;
-import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
 
 import java.util.Map;
 
@@ -36,18 +35,10 @@ public class MapTypeCommand extends AbstractCommand {
             throw new NotASubTypeException(type, subType);
         }
 
-        // validate the types
-        isAllowed(type);
+        // check whether the sub type is instantiable
         isInstantiable(subType);
 
-        synchronized (container) {
-            // check whether a mapping or instance already exists
-            if (container.has(type)) {
-                throw new TypeMappingAlreadyExistsException(type);
-            }
-
-            mappings.put(type, subType);
-        }
+        addMapping(type, subType);
     }
 
 }

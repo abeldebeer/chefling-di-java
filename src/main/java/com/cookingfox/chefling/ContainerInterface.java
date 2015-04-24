@@ -46,8 +46,9 @@ public interface ContainerInterface {
     /**
      * Map `type` to a Factory, which will create an instance of `type` when it is requested (by
      * {@link #create(Class)}). Which specific instance will be created by the Factory is up to the
-     * developer. If the Factory returns `null`, or a value of a different type, then an exception
-     * will be thrown by the Container.
+     * developer. The return value is validated by the Container: if `null` or another unexpected
+     * value is returned, an exception will be thrown. If a mapping for `type` already exists when
+     * this method is called, an exception will be thrown.
      *
      * @param type    The type (class, interface) of the object that will be created by the Factory.
      * @param factory A factory instance.
@@ -61,7 +62,8 @@ public interface ContainerInterface {
      * Map `type` to a specific instance, which will be returned when `type` is requested. This is
      * useful when `type` has dependencies (constructor parameters) that are not resolvable by the
      * Container (e.g. `int`, `boolean`). This instance will be processed by {@link #create(Class)},
-     * to make sure the object is properly initialized.
+     * to make sure the object is properly initialized. If a mapping for `type` already exists when
+     * this method is called, an exception will be thrown.
      *
      * @param type     The type (class, interface) you want to map the instance of.
      * @param instance The instance you want to store.
@@ -73,7 +75,8 @@ public interface ContainerInterface {
     /**
      * Map `type` to a class (`subType`) that extends it. This makes it possible to set a specific
      * implementation of an interface or abstract class. When `type` is requested an instance of
-     * `subType` will be created.
+     * `subType` will be created. If a mapping for `type` already exists when this method is called,
+     * an exception will be thrown.
      *
      * @param type    The base type (class, interface), which is used when requesting an instance.
      * @param subType The type that extends / implements the base type, which is actually created.
@@ -87,9 +90,10 @@ public interface ContainerInterface {
      * {@link LifeCycle}, its {@link LifeCycle#onDestroy()} method will be called.
      *
      * @param type The type to remove the instance / mapping for.
+     * @throws ContainerException
      * @see LifeCycle#onDestroy()
      */
-    void remove(Class type);
+    void remove(Class type) throws ContainerException;
 
     /**
      * Removes all stored instances and mappings. Use this method to clean up the Container in your

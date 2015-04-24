@@ -1,15 +1,13 @@
 package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.ContainerInterface;
-import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.NotAnInstanceOfTypeException;
 
 import java.util.Map;
 
 /**
- * Implementation of {@link ContainerInterface#mapInstance(Class, Object)}.
+ * Implementation of {@link ContainerInterface#reset()}.
  */
-public class MapInstanceCommand extends AbstractCommand {
+public class ResetCommand extends AbstractCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -18,7 +16,7 @@ public class MapInstanceCommand extends AbstractCommand {
     /**
      * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
      */
-    public MapInstanceCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public ResetCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 
@@ -27,15 +25,16 @@ public class MapInstanceCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see ContainerInterface#mapInstance(Class, Object)
+     * @see ContainerInterface#reset()
      */
-    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
-        // validate the instance is an instance of type
-        if (!type.isInstance(instance)) {
-            throw new NotAnInstanceOfTypeException(type, instance);
+    public void reset() {
+        // call destroy method for life cycle objects
+        for (Map.Entry<Class, Object> entry : instances.entrySet()) {
+            lifeCycleDestroy(entry.getValue());
         }
 
-        addMapping(type, instance);
+        instances.clear();
+        mappings.clear();
     }
 
 }
