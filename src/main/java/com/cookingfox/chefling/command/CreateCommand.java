@@ -73,7 +73,15 @@ public class CreateCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     protected <T> T createInstance(Class<T> type) throws ContainerException {
-        Constructor constructor = getDefaultConstructor(type);
+        Class typeToCreate = type;
+
+        // if this type is mapped to another type (through `mapType()`), then use that type to
+        // create the instance
+        while (mappings.containsKey(typeToCreate)) {
+            typeToCreate = (Class) mappings.get(typeToCreate);
+        }
+
+        Constructor constructor = getDefaultConstructor(typeToCreate);
         Class[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
 
@@ -86,7 +94,7 @@ public class CreateCommand extends AbstractCommand {
             // create a new instance, passing the constructor parameters
             return (T) constructor.newInstance(parameters);
         } catch (Exception e) {
-            throw new TypeInstantiationException(type, e);
+            throw new TypeInstantiationException(typeToCreate, e);
         }
     }
 

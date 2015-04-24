@@ -64,6 +64,12 @@ public class MapTypeTest extends AbstractTest {
     }
 
     @Test
+    public void mapType_allows_to_map_to_previous_mapping() throws ContainerException {
+        container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
+    }
+
+    @Test
     public void mapType_passes_concurrency_test() {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<Exception>();

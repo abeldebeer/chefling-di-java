@@ -123,6 +123,21 @@ public abstract class AbstractTest {
     protected static class ProtectedClass {
     }
 
+    public static class A {
+    }
+
+    public static class B extends A {
+    }
+
+    public static class C extends B {
+    }
+
+    public static class D extends C {
+    }
+
+    public static class E extends D {
+    }
+
     //----------------------------------------------------------------------------------------------
     // HELPER METHODS
     //----------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.RemoveTypeNotAllowedException;
 import com.cookingfox.chefling.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.fixtures.NoConstructor;
 import com.cookingfox.chefling.fixtures.NoMethodImplementation;
@@ -74,9 +75,49 @@ public class RemoveTest extends AbstractTest {
 
                 Assert.fail("Did not get expected exception for type " + type);
             } catch (ContainerException e) {
-                Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
+                Assert.assertTrue(e.getMessage(), e instanceof RemoveTypeNotAllowedException);
             }
         }
+    }
+
+    @Test
+    public void remove_quadruply_mapped_types_top_removes_top() throws ContainerException {
+        container.mapType(D.class, E.class);
+        container.mapType(C.class, D.class);
+        container.mapType(B.class, C.class);
+        container.mapType(A.class, B.class);
+
+        Assert.assertTrue("has D", container.has(D.class));
+        Assert.assertTrue("has C", container.has(C.class));
+        Assert.assertTrue("has B", container.has(B.class));
+        Assert.assertTrue("has A", container.has(A.class));
+
+        container.remove(A.class);
+
+        Assert.assertTrue("has D", container.has(D.class));
+        Assert.assertTrue("has C", container.has(C.class));
+        Assert.assertTrue("has B", container.has(B.class));
+        Assert.assertFalse("not has A", container.has(A.class));
+    }
+
+    @Test
+    public void remove_quadruply_mapped_types_root_removes_all() throws ContainerException {
+        container.mapType(D.class, E.class);
+        container.mapType(C.class, D.class);
+        container.mapType(B.class, C.class);
+        container.mapType(A.class, B.class);
+
+        Assert.assertTrue("has D", container.has(D.class));
+        Assert.assertTrue("has C", container.has(C.class));
+        Assert.assertTrue("has B", container.has(B.class));
+        Assert.assertTrue("has A", container.has(A.class));
+
+        container.remove(D.class);
+
+        Assert.assertFalse("not has D", container.has(D.class));
+        Assert.assertFalse("not has C", container.has(C.class));
+        Assert.assertFalse("not has B", container.has(B.class));
+        Assert.assertFalse("not has A", container.has(A.class));
     }
 
 }

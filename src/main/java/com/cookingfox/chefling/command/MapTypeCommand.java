@@ -35,8 +35,13 @@ public class MapTypeCommand extends AbstractCommand {
             throw new NotASubTypeException(type, subType);
         }
 
-        // check whether the sub type is instantiable
-        isInstantiable(subType);
+        // Scenario: there can be another mapping for `subtype`. If so, we will use `subType` to
+        // link it to that other mapping.
+        Object mappingForSubType = mappings.get(subType);
+
+        if (mappingForSubType == null || !type.isAssignableFrom((Class) mappingForSubType)) {
+            isInstantiable(subType);
+        }
 
         addMapping(type, subType);
     }

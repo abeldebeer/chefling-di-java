@@ -83,4 +83,28 @@ public class CreateTest extends AbstractTest {
         Assert.assertTrue(result instanceof NoMethodImplementation);
     }
 
+    @Test
+    public void create_doubly_mapped_type() throws ContainerException {
+        container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
+
+        NoMethodInterface result = container.create(NoMethodInterface.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result instanceof NoMethodImplementation);
+    }
+
+    @Test
+    public void create_quadruply_mapped_type() throws ContainerException {
+        container.mapType(D.class, E.class);
+        container.mapType(C.class, D.class);
+        container.mapType(B.class, C.class);
+        container.mapType(A.class, B.class);
+
+        Object result = container.create(A.class);
+
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result instanceof E);
+    }
+
 }
