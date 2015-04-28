@@ -7,7 +7,7 @@ import com.cookingfox.chefling.exception.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of {@link ContainerInterface#create(Class)}.
@@ -91,46 +91,134 @@ public class CreateCommand extends AbstractCommand {
     }
 
     /**
-     * Selects the most reasonable default constructor, based on its modifiers and parameters.
-     * Throws if the type is not instantiable.
+     * Get the default constructor for this type.
      *
-     * @param type Type to get the constructor of.
-     * @return First constructor.
+     * @param type The type to get the constructor for.
+     * @return Constructor, if a resolvable one can be found.
      * @throws TypeNotAllowedException
      */
     protected Constructor getDefaultConstructor(Class type) throws TypeNotAllowedException {
         isInstantiable(type);
 
         Constructor[] constructors = type.getDeclaredConstructors();
-        Constructor selectedConstructor = null;
-        boolean nonPublicConstructor = false;
+        ResolvabilityResult firstResult = getResolvabilityResult(constructors[0]);
 
-        for (Constructor current : constructors) {
-            // constructor not public? skip
-            if (!Modifier.isPublic(current.getModifiers())) {
-                nonPublicConstructor = true;
+        // if first constructor is resolvable, return it immediately
+        if (firstResult.isResolvable()) {
+            return firstResult.constructor;
+        }
+
+        // map of resolvable results, by number of parameters: we favor a constructor with a small
+        // number of parameters, because the chances are higher that it is resolvable.
+        TreeMap<Integer, List<ResolvabilityResult>> resultMap = new TreeMap<Integer, List<ResolvabilityResult>>();
+
+        // inspect constructor resolvability
+        for (Constructor constructor : constructors) {
+            // create a resolvability result for this constructor
+            ResolvabilityResult result = getResolvabilityResult(constructor);
+            List<ResolvabilityResult> resultList = resultMap.get(result.numParameters);
+
+            if (resultList == null) {
+                resultList = new LinkedList<ResolvabilityResult>();
+            }
+
+            resultList.add(result);
+            resultMap.put(result.numParameters, resultList);
+        }
+
+        // select resolvable constructor
+        for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
+            for (ResolvabilityResult result : entry.getValue()) {
+                if (result.isResolvable()) {
+                    // constructor is resolvable: return it
+                    return result.constructor;
+                }
+            }
+        }
+
+        // builder error message
+        StringBuilder errorBuilder = new StringBuilder();
+        errorBuilder.append("it does not have constructors that are resolvable by the Container:\n\n");
+
+        // create resolvability report for unresolvable type
+        for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
+            // add error report entry for every resolvability result
+            for (ResolvabilityResult result : entry.getValue()) {
+                addErrorReportEntry(errorBuilder, result, type);
+            }
+        }
+
+        throw new TypeNotInstantiableException(type, errorBuilder.toString());
+    }
+
+    /**
+     * Create a "resolvability" result: check all constructor parameters to see whether they are
+     * resolvable by the Container.
+     *
+     * @param constructor The constructor to check.
+     * @return The result.
+     */
+    protected ResolvabilityResult getResolvabilityResult(Constructor constructor) {
+        Class[] parameterTypes = constructor.getParameterTypes();
+        int numParameters = parameterTypes.length;
+        ResolvabilityResult result = new ResolvabilityResult(constructor, numParameters);
+
+        // check whether the constructor parameters are resolvable
+        for (int i = 0; i < numParameters; i++) {
+            Class parameterType = parameterTypes[i];
+
+            // container has a mapping for this parameter type: ok!
+            if (container.has(parameterType)) {
                 continue;
-            } else {
-                nonPublicConstructor = false;
             }
 
-            selectedConstructor = selectConstructorBasedOnParameters(current);
-
-            if (selectedConstructor != null) {
-                break;
-            }
-        }
-
-        if (selectedConstructor == null) {
-            if (nonPublicConstructor) {
-                throw new TypeNotInstantiableException(type, "it has no public constructor");
-            } else {
-                throw new TypeNotInstantiableException(type, "its constructors have parameters " +
-                        "that are not resolvable by the Container");
+            try {
+                // is this type instantiable?
+                isInstantiable(parameterType);
+            } catch (TypeNotAllowedException e) {
+                // not instantiable: store in result
+                result.unresolvable.add(new UnresolvableParameter(i, e));
             }
         }
 
-        return selectedConstructor;
+        return result;
+    }
+
+    /**
+     * Add an error report for an unresolvable constructor.
+     *
+     * @param errorBuilder The string builder for the error message.
+     * @param result       The resolvability result.
+     * @param type         The type we are attempting to instantiate.
+     */
+    protected void addErrorReportEntry(StringBuilder errorBuilder, ResolvabilityResult result, Class type) {
+        // add name of this constructor
+        String modifierName = Modifier.toString(result.getModifiers());
+        errorBuilder.append(String.format("[%s] %s ( ", modifierName, type.getSimpleName()));
+
+        Class[] parameterTypes = result.constructor.getParameterTypes();
+
+        // add parameter types to constructor signature
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class parameterType = parameterTypes[i];
+            errorBuilder.append(parameterType.getSimpleName());
+
+            if (i < parameterTypes.length - 1) {
+                errorBuilder.append(", ");
+            }
+        }
+
+        errorBuilder.append(" )\n");
+
+        if (!result.unresolvable.isEmpty()) {
+            // loop through unresolvable parameters and print their exception messages
+            for (UnresolvableParameter notResolvable : result.unresolvable) {
+                errorBuilder.append(String.format("Parameter #%d: %s\n",
+                        notResolvable.parameterIndex + 1, notResolvable.exception.getMessage()));
+            }
+
+            errorBuilder.append("\n");
+        }
     }
 
     /**
@@ -154,44 +242,51 @@ public class CreateCommand extends AbstractCommand {
         return instance;
     }
 
+    //----------------------------------------------------------------------------------------------
+    // INTERNAL CLASSES
+    //----------------------------------------------------------------------------------------------
+
     /**
-     * Check whether the constructor parameters are resolvable.
-     *
-     * @param constructor The constructor to check.
-     * @return The constructor if valid, else null.
+     * Represents information for an unresolvable constructor parameter.
      */
-    protected Constructor selectConstructorBasedOnParameters(Constructor constructor) {
-        Class[] parameterTypes = constructor.getParameterTypes();
+    protected static class UnresolvableParameter {
 
-        // no parameters? select this one
-        if (parameterTypes.length == 0) {
-            return constructor;
+        public int parameterIndex;
+        public Exception exception;
+
+        public UnresolvableParameter(int parameterIndex, Exception exception) {
+            this.parameterIndex = parameterIndex;
+            this.exception = exception;
         }
 
-        boolean allParametersResolvable = false;
+    }
 
-        // check if all parameters are resolvable by Container
-        for (Class parameterType : parameterTypes) {
-            // has type instance / mapping: ok!
-            if (container.has(parameterType)) {
-                allParametersResolvable = true;
-                continue;
-            }
+    /**
+     * Represents information for a constructor's resolvability.
+     */
+    protected static class ResolvabilityResult {
 
-            try {
-                // type is allowed?
-                isInstantiable(parameterType);
-                allParametersResolvable = true;
-                continue;
-            } catch (TypeNotAllowedException e) {
-                // type not allowed / instantiable
-            }
+        public Constructor constructor;
+        int numParameters;
+        public final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<UnresolvableParameter>();
 
-            allParametersResolvable = false;
-            break;
+        public ResolvabilityResult(Constructor constructor, int numParameters) {
+            this.constructor = constructor;
+            this.numParameters = numParameters;
         }
 
-        return allParametersResolvable ? constructor : null;
+        public int getModifiers() {
+            return constructor.getModifiers();
+        }
+
+        public boolean isPublic() {
+            return Modifier.isPublic(getModifiers());
+        }
+
+        public boolean isResolvable() {
+            return isPublic() && unresolvable.isEmpty();
+        }
+
     }
 
 }
