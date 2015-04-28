@@ -110,21 +110,7 @@ public class CreateCommand extends AbstractCommand {
 
         // map of resolvable results, by number of parameters: we favor a constructor with a small
         // number of parameters, because the chances are higher that it is resolvable.
-        TreeMap<Integer, List<ResolvabilityResult>> resultMap = new TreeMap<Integer, List<ResolvabilityResult>>();
-
-        // inspect constructor resolvability
-        for (Constructor constructor : constructors) {
-            // create a resolvability result for this constructor
-            ResolvabilityResult result = getResolvabilityResult(constructor);
-            List<ResolvabilityResult> resultList = resultMap.get(result.numParameters);
-
-            if (resultList == null) {
-                resultList = new LinkedList<ResolvabilityResult>();
-            }
-
-            resultList.add(result);
-            resultMap.put(result.numParameters, resultList);
-        }
+        Map<Integer, List<ResolvabilityResult>> resultMap = buildResultMap(constructors);
 
         // select resolvable constructor
         for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
@@ -136,25 +122,9 @@ public class CreateCommand extends AbstractCommand {
             }
         }
 
-        // builder error message
-        StringBuilder errorBuilder = new StringBuilder();
-        errorBuilder.append("it does not have constructors that are resolvable by the Container:\n\n");
+        throwNotInstantiable(type, resultMap);
 
-        // create resolvability report for unresolvable type
-        for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
-            List<ResolvabilityResult> resultList = entry.getValue();
-
-            // add error report entry for every resolvability result
-            for (int i = 0; i < resultList.size(); i++) {
-                addErrorReportEntry(errorBuilder, resultList.get(i), type);
-
-                if (i < resultList.size() - 1) {
-                    errorBuilder.append("\n");
-                }
-            }
-        }
-
-        throw new TypeNotInstantiableException(type, errorBuilder.toString());
+        return null;
     }
 
     /**
@@ -188,6 +158,72 @@ public class CreateCommand extends AbstractCommand {
         }
 
         return result;
+    }
+
+    /**
+     * Build a resolvability result map, sorted by number of parameters.
+     *
+     * @param constructors Declared constructors for the type that needs to be created.
+     * @return A map of resolvability results.
+     */
+    protected Map<Integer, List<ResolvabilityResult>> buildResultMap(Constructor[] constructors) {
+        Map<Integer, List<ResolvabilityResult>> resultMap = new TreeMap<Integer, List<ResolvabilityResult>>();
+
+        // inspect constructor resolvability
+        for (Constructor constructor : constructors) {
+            // create a resolvability result for this constructor
+            ResolvabilityResult result = getResolvabilityResult(constructor);
+            List<ResolvabilityResult> resultList = resultMap.get(result.numParameters);
+
+            if (resultList == null) {
+                resultList = new LinkedList<ResolvabilityResult>();
+            }
+
+            resultList.add(result);
+            resultMap.put(result.numParameters, resultList);
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * Throw an exception when the type can not be instantiated. Gives information about why the
+     * constructors are not resolvable by the Container.
+     *
+     * @param type      The type that needs to be created.
+     * @param resultMap All resolvability results.
+     * @throws TypeNotInstantiableException
+     */
+    protected void throwNotInstantiable(Class type, Map<Integer, List<ResolvabilityResult>> resultMap)
+            throws TypeNotInstantiableException {
+        // build error message
+        StringBuilder errorBuilder = new StringBuilder();
+        errorBuilder.append("it does not have constructors that are resolvable by the Container:\n\n");
+
+        Iterator iterator = resultMap.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            @SuppressWarnings("unchecked")
+            Map.Entry<Integer, List<ResolvabilityResult>> entry = (Map.Entry) iterator.next();
+            List<ResolvabilityResult> resultList = entry.getValue();
+
+            // add error report entry for every resolvability result
+            for (int i = 0; i < resultList.size(); i++) {
+                addErrorReportEntry(errorBuilder, resultList.get(i), type);
+
+                if (i < resultList.size() - 1) {
+                    errorBuilder.append("\n");
+                }
+            }
+
+            if (iterator.hasNext()) {
+                errorBuilder.append("\n");
+            }
+
+            iterator.remove();
+        }
+
+        throw new TypeNotInstantiableException(type, errorBuilder.toString());
     }
 
     /**
@@ -257,8 +293,8 @@ public class CreateCommand extends AbstractCommand {
      */
     protected static class UnresolvableParameter {
 
-        public int parameterIndex;
-        public Exception exception;
+        public final int parameterIndex;
+        public final Exception exception;
 
         public UnresolvableParameter(int parameterIndex, Exception exception) {
             this.parameterIndex = parameterIndex;
@@ -272,8 +308,8 @@ public class CreateCommand extends AbstractCommand {
      */
     protected static class ResolvabilityResult {
 
-        public Constructor constructor;
-        int numParameters;
+        public final Constructor constructor;
+        public final int numParameters;
         public final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<UnresolvableParameter>();
 
         public ResolvabilityResult(Constructor constructor, int numParameters) {
