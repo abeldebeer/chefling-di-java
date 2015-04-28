@@ -44,8 +44,17 @@ public class GetCommand extends AbstractCommand {
     public <T> T get(Class<T> type) throws ContainerException {
         T instance = (T) instances.get(type);
 
+        // an instance of this type was previously stored: return it
         if (instance != null) {
             return instance;
+        }
+
+        Object mapping = mappings.get(type);
+
+        // this type is mapped to another type (through `mapType()`), so use the mapped type to get
+        // the instance
+        if (mapping instanceof Class) {
+            return get((Class<T>) mapping);
         }
 
         synchronized (currentlyResolving) {

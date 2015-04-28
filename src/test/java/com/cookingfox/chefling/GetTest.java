@@ -70,6 +70,49 @@ public class GetTest extends AbstractTest {
     }
 
     @Test
+    public void get_doubly_mapped_type_returns_same_instance() throws ContainerException {
+        container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
+        container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
+
+        Object first = container.get(NoMethodAbstract.class);
+        Object second = container.get(NoMethodInterface.class);
+
+        Assert.assertSame(first, second);
+    }
+
+    @Test
+    public void get_quadruply_mapped_type_returns_same_instance() throws ContainerException {
+        container.mapType(D.class, E.class);
+        container.mapType(C.class, D.class);
+        container.mapType(B.class, C.class);
+        container.mapType(A.class, B.class);
+
+        Object d = container.get(D.class);
+        Object c = container.get(C.class);
+        Object b = container.get(B.class);
+        Object a = container.get(A.class);
+
+        Assert.assertSame(d,c);
+        Assert.assertSame(c,b);
+        Assert.assertSame(b,a);
+    }
+
+    @Test
+    public void get_multiple_mapped_interfaces_returns_same_instance() throws ContainerException {
+        container.mapType(InterfaceSegregation.Person.class, InterfaceSegregation.JohnDoe.class);
+        container.mapType(InterfaceSegregation.Talkable.class, InterfaceSegregation.Person.class);
+        container.mapType(InterfaceSegregation.Walkable.class, InterfaceSegregation.Person.class);
+
+        Object instanceFromMainInterface = container.get(InterfaceSegregation.Person.class);
+        Object instanceFromExtendedInterfaceFirst = container.get(InterfaceSegregation.Talkable.class);
+        Object instanceFromExtendedInterfaceSecond = container.get(InterfaceSegregation.Walkable.class);
+
+        Assert.assertTrue(instanceFromMainInterface instanceof InterfaceSegregation.JohnDoe);
+        Assert.assertSame(instanceFromMainInterface, instanceFromExtendedInterfaceFirst);
+        Assert.assertSame(instanceFromMainInterface, instanceFromExtendedInterfaceSecond);
+    }
+
+    @Test
     public void get_passes_concurrency_test() {
         Runnable test = new Runnable() {
             @Override

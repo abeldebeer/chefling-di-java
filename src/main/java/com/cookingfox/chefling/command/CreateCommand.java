@@ -37,15 +37,15 @@ public class CreateCommand extends AbstractCommand {
         Object mapping = mappings.get(type);
         T instance;
 
-        if (mapping instanceof Factory) {
-            // use factory to create instance
-            instance = resolveUsingFactory((Factory<T>) mapping, type);
+        if (mapping instanceof Class) {
+            // create instance using mapped type
+            instance = create((Class<T>) mapping);
         } else if (type.isInstance(mapping)) {
             // mapping is instance
             instance = (T) mapping;
-        } else if (mapping instanceof Class) {
-            // create instance using mapped type
-            instance = createInstance((Class<T>) mapping);
+        } else if (mapping instanceof Factory) {
+            // use factory to create instance
+            instance = resolveUsingFactory((Factory<T>) mapping, type);
         } else {
             // no mapping: create instance using provided type
             instance = createInstance(type);
@@ -73,15 +73,7 @@ public class CreateCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     protected <T> T createInstance(Class<T> type) throws ContainerException {
-        Class typeToCreate = type;
-
-        // if this type is mapped to another type (through `mapType()`), then use that type to
-        // create the instance
-        while (mappings.containsKey(typeToCreate)) {
-            typeToCreate = (Class) mappings.get(typeToCreate);
-        }
-
-        Constructor constructor = getDefaultConstructor(typeToCreate);
+        Constructor constructor = getDefaultConstructor(type);
         Class[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
 
@@ -94,7 +86,7 @@ public class CreateCommand extends AbstractCommand {
             // create a new instance, passing the constructor parameters
             return (T) constructor.newInstance(parameters);
         } catch (Exception e) {
-            throw new TypeInstantiationException(typeToCreate, e);
+            throw new TypeInstantiationException(type, e);
         }
     }
 
