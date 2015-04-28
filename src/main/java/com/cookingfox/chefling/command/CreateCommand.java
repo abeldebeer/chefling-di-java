@@ -142,9 +142,15 @@ public class CreateCommand extends AbstractCommand {
 
         // create resolvability report for unresolvable type
         for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
+            List<ResolvabilityResult> resultList = entry.getValue();
+
             // add error report entry for every resolvability result
-            for (ResolvabilityResult result : entry.getValue()) {
-                addErrorReportEntry(errorBuilder, result, type);
+            for (int i = 0; i < resultList.size(); i++) {
+                addErrorReportEntry(errorBuilder, resultList.get(i), type);
+
+                if (i < resultList.size() - 1) {
+                    errorBuilder.append("\n");
+                }
             }
         }
 
@@ -201,7 +207,7 @@ public class CreateCommand extends AbstractCommand {
         // add parameter types to constructor signature
         for (int i = 0; i < parameterTypes.length; i++) {
             Class parameterType = parameterTypes[i];
-            errorBuilder.append(parameterType.getSimpleName());
+            errorBuilder.append(parameterType.getName());
 
             if (i < parameterTypes.length - 1) {
                 errorBuilder.append(", ");
@@ -210,14 +216,14 @@ public class CreateCommand extends AbstractCommand {
 
         errorBuilder.append(" )\n");
 
-        if (!result.unresolvable.isEmpty()) {
+        if (!result.isPublic()) {
+            errorBuilder.append(String.format("The constructor is %s\n", modifierName));
+        } else if (!result.unresolvable.isEmpty()) {
             // loop through unresolvable parameters and print their exception messages
             for (UnresolvableParameter notResolvable : result.unresolvable) {
                 errorBuilder.append(String.format("Parameter #%d: %s\n",
                         notResolvable.parameterIndex + 1, notResolvable.exception.getMessage()));
             }
-
-            errorBuilder.append("\n");
         }
     }
 
