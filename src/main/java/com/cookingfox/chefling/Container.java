@@ -54,7 +54,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#create(Class)
-     * @see CreateCommand#create(Class)
      */
     @Override
     public <T> T create(Class<T> type) throws ContainerException {
@@ -63,7 +62,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#get(Class)
-     * @see GetCommand#get(Class)
      */
     @Override
     public <T> T get(Class<T> type) throws ContainerException {
@@ -80,7 +78,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#mapFactory(Class, Factory)
-     * @see MapFactoryCommand#mapFactory(Class, Factory)
      */
     @Override
     public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
@@ -89,7 +86,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#mapInstance(Class, Object)
-     * @see MapInstanceCommand#mapInstance(Class, Object)
      */
     @Override
     public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
@@ -98,7 +94,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#mapType(Class, Class)
-     * @see MapTypeCommand#mapType(Class, Class)
      */
     @Override
     public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
@@ -107,7 +102,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#remove(Class)
-     * @see RemoveCommand#remove(Class)
      */
     @Override
     public void remove(Class type) throws ContainerException {
@@ -116,7 +110,6 @@ public class Container implements ContainerInterface {
 
     /**
      * @see ContainerInterface#reset()
-     * @see ResetCommand#reset()
      */
     @Override
     public void reset() {

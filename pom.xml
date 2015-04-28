@@ -6,11 +6,11 @@
 
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
 
     <name>Chefling</name>
     <description>
-        Chefling is a very simple dependency injection container written in pure Java.
+        Chefling is a very minimal dependency injection container written in pure Java.
     </description>
     <url>http://github.com/cookingfox/chefling-di-java</url>
 
