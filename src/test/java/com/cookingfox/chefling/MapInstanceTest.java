@@ -44,6 +44,11 @@ public class MapInstanceTest extends AbstractTest {
         container.mapInstance(type, new Object());
     }
 
+    @Test(expected = NotAnInstanceOfTypeException.class)
+    public void mapInstance_throws_if_null() throws ContainerException {
+        container.mapInstance(NoConstructor.class, null);
+    }
+
     @Test
     public void mapInstance_stores_instance() throws ContainerException {
         NoConstructor instance = new NoConstructor();

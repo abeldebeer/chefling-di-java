@@ -87,11 +87,6 @@ public class RemoveTest extends AbstractTest {
         container.mapType(B.class, C.class);
         container.mapType(A.class, B.class);
 
-        Assert.assertTrue("has D", container.has(D.class));
-        Assert.assertTrue("has C", container.has(C.class));
-        Assert.assertTrue("has B", container.has(B.class));
-        Assert.assertTrue("has A", container.has(A.class));
-
         container.remove(A.class);
 
         Assert.assertTrue("has D", container.has(D.class));
@@ -106,11 +101,6 @@ public class RemoveTest extends AbstractTest {
         container.mapType(C.class, D.class);
         container.mapType(B.class, C.class);
         container.mapType(A.class, B.class);
-
-        Assert.assertTrue("has D", container.has(D.class));
-        Assert.assertTrue("has C", container.has(C.class));
-        Assert.assertTrue("has B", container.has(B.class));
-        Assert.assertTrue("has A", container.has(A.class));
 
         container.remove(D.class);
 

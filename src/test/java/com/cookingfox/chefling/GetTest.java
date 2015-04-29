@@ -92,9 +92,9 @@ public class GetTest extends AbstractTest {
         Object b = container.get(B.class);
         Object a = container.get(A.class);
 
-        Assert.assertSame(d,c);
-        Assert.assertSame(c,b);
-        Assert.assertSame(b,a);
+        Assert.assertSame(d, c);
+        Assert.assertSame(c, b);
+        Assert.assertSame(b, a);
     }
 
     @Test

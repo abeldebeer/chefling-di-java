@@ -45,7 +45,7 @@ public class ContainerTest extends AbstractTest {
     //----------------------------------------------------------------------------------------------
 
     @Test
-    public void get_default_concurrent_uses_same_instance() {
+    public void get_default_passes_concurrency_test() {
         final Container defaultContainer = Container.getDefault();
 
         Runnable test = new Runnable() {

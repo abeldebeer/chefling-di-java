@@ -54,7 +54,7 @@ public class CreateTest extends AbstractTest {
 
     @Test
     public void create_multiple_constructors_selects_empty_constructor() throws ContainerException {
-        MultipleConstructorsVaryingParameterNumbersTargetEmpty result = container.create(MultipleConstructorsVaryingParameterNumbersTargetEmpty.class);
+        MultipleConstructorsVaryingParametersTargetEmpty result = container.create(MultipleConstructorsVaryingParametersTargetEmpty.class);
 
         Assert.assertNotNull(result);
         Assert.assertNull(result.first);
@@ -65,7 +65,7 @@ public class CreateTest extends AbstractTest {
     public void create_multiple_constructors_selects_allowed_constructor() throws ContainerException {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
-        MultipleConstructorsVaryingParameterNumbersTargetAllowed result = container.create(MultipleConstructorsVaryingParameterNumbersTargetAllowed.class);
+        MultipleConstructorsVaryingParametersTargetAllowed result = container.create(MultipleConstructorsVaryingParametersTargetAllowed.class);
 
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.first);
@@ -75,8 +75,8 @@ public class CreateTest extends AbstractTest {
     }
 
     @Test
-    public void create_multiple_constructors_all_one_parameter() throws ContainerException {
-        Object result = container.create(MultipleConstructorsOneParameterTargetAllowed.class);
+    public void create_multiple_constructors_single_parameter_selects_allowed() throws ContainerException {
+        Object result = container.create(MultipleConstructorsSingleParameterOneResolvable.class);
 
         Assert.assertNotNull(result);
     }

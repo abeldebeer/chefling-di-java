@@ -10,6 +10,10 @@ import org.junit.Test;
  */
 public class LifeCycleTest extends AbstractTest {
 
+    //----------------------------------------------------------------------------------------------
+    // TEST CASES
+    //----------------------------------------------------------------------------------------------
+
     @Test
     public void create_type_calls_lifecycle_create() throws ContainerException {
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
