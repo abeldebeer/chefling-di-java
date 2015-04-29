@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [3.1.1](../../tree/v3.1.1) (2015-04-29)
+
+- Improves error message when a class has no resolvable constructors.
+
 ## [3.1.0](../../tree/v3.1.0) (2015-04-28)
 
 - Allows mapping to another mapping, using `mapType()`. Basically adds an alias for a mapping.
