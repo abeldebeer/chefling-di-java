@@ -18,6 +18,11 @@ public class RemoveTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void remove_throws_if_type_null() throws ContainerException {
+        container.remove(null);
+    }
+
     @Test
     public void remove_no_value_does_not_throw() throws ContainerException {
         container.remove(NoConstructor.class);

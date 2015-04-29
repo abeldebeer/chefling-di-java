@@ -20,19 +20,29 @@ public class MapTypeTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void mapType_throws_if_type_null() throws ContainerException {
+        container.mapType(null, NoConstructor.class);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void mapType_throws_if_subType_null() throws ContainerException {
+        container.mapType(getClass(), null);
+    }
+
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapType_throws_when_mapping_exists() throws ContainerException {
+    public void mapType_throws_if_mapping_exists() throws ContainerException {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
     }
 
     @Test(expected = NotASubTypeException.class)
-    public void mapType_throws_when_sub_type_same_as_type() throws ContainerException {
+    public void mapType_throws_if_sub_type_same_as_type() throws ContainerException {
         container.mapType(NoMethodImplementation.class, NoMethodImplementation.class);
     }
 
     @Test(expected = NotASubTypeException.class)
-    public void mapType_throws_when_sub_type_not_extends_type() throws ContainerException {
+    public void mapType_throws_if_sub_type_not_extends_type() throws ContainerException {
         Class type = NoConstructor.class;
         Class subType = Object.class;
 
@@ -40,7 +50,7 @@ public class MapTypeTest extends AbstractTest {
     }
 
     @Test
-    public void mapType_throws_when_base_type_not_allowed() throws ContainerException {
+    public void mapType_throws_if_base_type_not_allowed() throws ContainerException {
         for (Map.Entry<Class, Class> entry : getNotAllowedSubTypes().entrySet()) {
             try {
                 container.mapType(entry.getKey(), entry.getValue());
@@ -53,7 +63,7 @@ public class MapTypeTest extends AbstractTest {
     }
 
     @Test(expected = TypeNotInstantiableException.class)
-    public void mapType_throws_when_sub_type_not_instantiable() throws ContainerException {
+    public void mapType_throws_if_sub_type_not_instantiable() throws ContainerException {
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
     }
 

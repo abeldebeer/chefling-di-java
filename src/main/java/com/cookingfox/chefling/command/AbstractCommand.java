@@ -77,6 +77,19 @@ public abstract class AbstractCommand {
     }
 
     /**
+     * Checks whether `value` is null, if so: throw an exception.
+     *
+     * @param value The value to check.
+     * @param name  The name of the variable.
+     * @throws NullPointerException
+     */
+    protected void assertNonNull(Object value, String name) throws NullPointerException {
+        if (value == null) {
+            throw new NullPointerException("Value for '" + name + "' can not be null");
+        }
+    }
+
+    /**
      * Is this type allowed to be mapped in the Container?
      *
      * @param type The type to validate.

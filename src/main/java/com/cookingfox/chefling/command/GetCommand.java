@@ -42,6 +42,8 @@ public class GetCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> type) throws ContainerException {
+        assertNonNull(type, "type");
+
         T instance = (T) instances.get(type);
 
         // an instance of this type was previously stored: return it

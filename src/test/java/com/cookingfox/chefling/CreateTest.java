@@ -15,8 +15,13 @@ public class CreateTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void create_throws_if_type_null() throws ContainerException {
+        container.create(null);
+    }
+
     @Test
-    public void create_throws_when_type_not_instantiable() {
+    public void create_throws_if_type_not_instantiable() {
         for (Class type : notInstantiableTypes) {
             try {
                 container.create(type);

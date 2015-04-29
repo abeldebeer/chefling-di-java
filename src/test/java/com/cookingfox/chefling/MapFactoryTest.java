@@ -19,6 +19,23 @@ public class MapFactoryTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void mapFactory_throws_if_type_null() throws ContainerException {
+        Factory factory = new Factory() {
+            @Override
+            public Object create(ContainerInterface container) throws ContainerException {
+                return null;
+            }
+        };
+
+        container.mapFactory(null, factory);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void mapFactory_throws_if_factory_null() throws ContainerException {
+        container.mapFactory(getClass(), null);
+    }
+
     @Test
     public void mapFactory_throws_if_type_not_allowed() {
         Factory factory = new Factory() {

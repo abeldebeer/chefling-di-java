@@ -34,6 +34,8 @@ public class CreateCommand extends AbstractCommand {
      */
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type) throws ContainerException {
+        assertNonNull(type, "type");
+
         Object mapping = mappings.get(type);
         T instance;
 

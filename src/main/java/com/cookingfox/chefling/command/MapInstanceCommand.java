@@ -30,6 +30,9 @@ public class MapInstanceCommand extends AbstractCommand {
      * @see ContainerInterface#mapInstance(Class, Object)
      */
     public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
+        assertNonNull(type, "type");
+        assertNonNull(instance, "instance");
+
         // validate the instance is an instance of type
         if (!type.isInstance(instance)) {
             throw new NotAnInstanceOfTypeException(type, instance);

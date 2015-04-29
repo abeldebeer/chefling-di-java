@@ -15,6 +15,11 @@ public class GetTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void get_throws_if_type_null() throws ContainerException {
+        container.get(null);
+    }
+
     @Test
     public void get_creates_type_instance() throws ContainerException {
         NoConstructor result = container.get(NoConstructor.class);

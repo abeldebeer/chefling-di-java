@@ -23,8 +23,18 @@ public class MapInstanceTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
+    @Test(expected = NullPointerException.class)
+    public void mapInstance_throws_if_type_null() throws ContainerException {
+        container.mapInstance(null, new Object());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void mapInstance_throws_if_instance_null() throws ContainerException {
+        container.mapInstance(getClass(), null);
+    }
+
     @Test
-    public void mapInstance_throws_when_type_not_allowed() {
+    public void mapInstance_throws_if_type_not_allowed() {
         for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
             try {
                 container.mapInstance(entry.getKey(), entry.getValue());
@@ -42,11 +52,6 @@ public class MapInstanceTest extends AbstractTest {
         Class type = NoConstructor.class;
 
         container.mapInstance(type, new Object());
-    }
-
-    @Test(expected = NotAnInstanceOfTypeException.class)
-    public void mapInstance_throws_if_null() throws ContainerException {
-        container.mapInstance(NoConstructor.class, null);
     }
 
     @Test

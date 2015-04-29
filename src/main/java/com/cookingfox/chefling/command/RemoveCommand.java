@@ -32,6 +32,8 @@ public class RemoveCommand extends AbstractCommand {
      * @see ContainerInterface#remove(Class)
      */
     public void remove(Class type) throws ContainerException {
+        assertNonNull(type, "type");
+
         Class[] protectedFromRemoval = {Container.class, ContainerInterface.class};
 
         // the container class and interface should not be removed from the container
