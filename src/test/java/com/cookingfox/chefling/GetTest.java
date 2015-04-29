@@ -133,4 +133,16 @@ public class GetTest extends AbstractTest {
         runConcurrencyTest(test, 10);
     }
 
+    /**
+     * Note: this test is only here to inspect and improve the error output.
+     */
+    @Test
+    public void get_throws_if_deeply_nested_unresolvable_constructor() {
+        try {
+            container.get(DeeplyNestedUnresolvableConstructor.A.class);
+        } catch (ContainerException e) {
+            //e.printStackTrace();
+        }
+    }
+
 }

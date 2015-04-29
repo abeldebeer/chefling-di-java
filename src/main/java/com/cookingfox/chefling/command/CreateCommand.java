@@ -124,9 +124,7 @@ public class CreateCommand extends AbstractCommand {
             }
         }
 
-        throwNotInstantiable(type, resultMap);
-
-        return null;
+        throw new TypeNotInstantiableException(type, buildErrorMessage(type, resultMap));
     }
 
     /**
@@ -189,15 +187,14 @@ public class CreateCommand extends AbstractCommand {
     }
 
     /**
-     * Throw an exception when the type can not be instantiated. Gives information about why the
-     * constructors are not resolvable by the Container.
+     * Builds an error message that is thrown when the type is not instantiable. It uses the
+     * information from the class resolvability results.
      *
-     * @param type      The type that needs to be created.
-     * @param resultMap All resolvability results.
-     * @throws TypeNotInstantiableException
+     * @param type      The type to get the constructor for.
+     * @param resultMap The results from the resolvability checks.
+     * @return The error message.
      */
-    protected void throwNotInstantiable(Class type, Map<Integer, List<ResolvabilityResult>> resultMap)
-            throws TypeNotInstantiableException {
+    protected String buildErrorMessage(Class type, Map<Integer, List<ResolvabilityResult>> resultMap) {
         // build error message
         StringBuilder errorBuilder = new StringBuilder();
         errorBuilder.append("it does not have constructors that are resolvable by the Container:\n\n");
@@ -225,7 +222,7 @@ public class CreateCommand extends AbstractCommand {
             iterator.remove();
         }
 
-        throw new TypeNotInstantiableException(type, errorBuilder.toString());
+        return errorBuilder.toString();
     }
 
     /**
