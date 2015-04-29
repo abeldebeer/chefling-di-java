@@ -66,8 +66,8 @@ using `create()`, and store and return that.
 
 - `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full 
 dependency tree. The instance is not stored (that's what `get()` is for), so only use this method 
-directly when you need a ___new___ instance. It uses the type mappings (from the `map..` methods) to 
-create the instance. If no mapping is available, it attempts to resolve the dependencies by 
+directly when you need a ___new___ instance. It uses the type mappings (from the `map...` methods) 
+to create the instance. If no mapping is available, it attempts to resolve the dependencies by 
 inspecting the constructor parameters. If the created instance implements the `LifeCycle` interface 
 (see "Usage" -> "LifeCycle"), its `onCreate()` method will be called.
 
@@ -84,8 +84,8 @@ parameters) that are not resolvable by the Container (e.g. `int`, `boolean`).
 makes it possible to set a specific implementation of an interface or abstract class. When `type` is 
 requested an instance of `subType` will be created.
 
-- `boolean has(Class type)`: Returns whether a stored instance or mapping (from the `map..` methods) 
-exists for `type`.
+- `boolean has(Class type)`: Returns whether a stored instance or mapping (from the `map...` 
+methods) exists for `type`.
 
 - `void remove(Class type)`: Removes a stored instance and/or mapping for `type`. If an instance 
 exists and it implements `LifeCycle`, its `onDestroy()` method will be called.
@@ -169,7 +169,7 @@ The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/LifeCycle.java
 implementing classes to hook into the life cycle processes of the Container:
 
 - When `Container.create()` is called and an instance of the requested type is created, it will call 
-its `onCreate()` method. This will also happen for types that have been mapped using the `map..` 
+its `onCreate()` method. This will also happen for types that have been mapped using the `map...` 
 methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific instance of the 
 class, and it implements the `LifeCycle` interface, then its `onCreate()` method will be called.
 

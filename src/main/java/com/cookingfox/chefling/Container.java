@@ -21,14 +21,14 @@ public class Container implements ContainerInterface {
     protected final Map<Class, Object> commands = new HashMap<Class, Object>();
 
     /**
-     * Stores instances, either created by the Container or mapped using
-     * {@link #mapInstance(Class, Object)}, where the key is the type and the value is the instance.
+     * Stores created instances, where the key is the type and the value is the instance. This
+     * instance is returned the next time the type is requested.
      */
     protected final Map<Class, Object> instances = new HashMap<Class, Object>();
 
     /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the
-     * {@link #mapFactory(Class, Factory)} and {@link #mapType(Class, Class)} methods.
+     * `map...` methods.
      */
     protected final Map<Class, Object> mappings = new HashMap<Class, Object>();
 

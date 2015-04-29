@@ -11,7 +11,7 @@ public interface ContainerInterface {
     /**
      * Creates a new instance of `type`, attempting to resolve its full dependency tree. The
      * instance is not stored (that's what {@link #get(Class)} is for), so only use this method
-     * directly when you need a NEW instance. It uses the type mappings (from the `map..` methods)
+     * directly when you need a NEW instance. It uses the type mappings (from the `map...` methods)
      * to create the instance. If no mapping is available, it attempts to resolve the dependencies
      * by inspecting the constructor parameters. If the created instance implements
      * {@link LifeCycle}, its {@link LifeCycle#onCreate()} method will be called.
@@ -36,7 +36,7 @@ public interface ContainerInterface {
     <T> T get(Class<T> type) throws ContainerException;
 
     /**
-     * Returns whether a stored instance or mapping (from the `map..` methods) exists for `type`.
+     * Returns whether a stored instance or mapping (from the `map...` methods) exists for `type`.
      *
      * @param type The type (class, interface) to check.
      * @return 'true' if a stored instance or mapping exists, 'false' otherwise.
