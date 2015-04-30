@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [3.1.2](../../tree/v3.1.2) (2015-04-30)
+
+- Adds null checks for `ContainerInterface` methods: throws `NullValueNotAllowedException`.
+
 ## [3.1.1](../../tree/v3.1.1) (2015-04-29)
 
 - Improves error message when a class has no resolvable constructors.
