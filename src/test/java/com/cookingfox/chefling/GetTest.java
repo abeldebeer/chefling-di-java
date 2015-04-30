@@ -2,6 +2,7 @@ package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.fixtures.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +16,7 @@ public class GetTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NullValueNotAllowedException.class)
     public void get_throws_if_type_null() throws ContainerException {
         container.get(null);
     }

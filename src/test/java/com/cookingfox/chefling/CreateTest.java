@@ -1,6 +1,7 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.fixtures.*;
 import org.junit.Assert;
@@ -15,7 +16,7 @@ public class CreateTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NullValueNotAllowedException.class)
     public void create_throws_if_type_null() throws ContainerException {
         container.create(null);
     }

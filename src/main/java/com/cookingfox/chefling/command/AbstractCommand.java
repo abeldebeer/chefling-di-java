@@ -3,10 +3,7 @@ package com.cookingfox.chefling.command;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.LifeCycle;
-import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.TypeMappingAlreadyExistsException;
-import com.cookingfox.chefling.exception.TypeNotAllowedException;
-import com.cookingfox.chefling.exception.TypeNotInstantiableException;
+import com.cookingfox.chefling.exception.*;
 
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -81,11 +78,11 @@ public abstract class AbstractCommand {
      *
      * @param value The value to check.
      * @param name  The name of the variable.
-     * @throws NullPointerException
+     * @throws NullValueNotAllowedException
      */
-    protected void assertNonNull(Object value, String name) throws NullPointerException {
+    protected void assertNonNull(Object value, String name) throws NullValueNotAllowedException {
         if (value == null) {
-            throw new NullPointerException("Value for '" + name + "' can not be null");
+            throw new NullValueNotAllowedException(name);
         }
     }
 

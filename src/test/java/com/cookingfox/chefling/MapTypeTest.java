@@ -20,12 +20,12 @@ public class MapTypeTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NullValueNotAllowedException.class)
     public void mapType_throws_if_type_null() throws ContainerException {
         container.mapType(null, NoConstructor.class);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NullValueNotAllowedException.class)
     public void mapType_throws_if_subType_null() throws ContainerException {
         container.mapType(getClass(), null);
     }

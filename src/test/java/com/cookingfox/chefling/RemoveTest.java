@@ -1,8 +1,8 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.exception.RemoveTypeNotAllowedException;
-import com.cookingfox.chefling.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.fixtures.NoConstructor;
 import com.cookingfox.chefling.fixtures.NoMethodImplementation;
 import com.cookingfox.chefling.fixtures.NoMethodInterface;
@@ -18,7 +18,7 @@ public class RemoveTest extends AbstractTest {
     // TEST CASES
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NullValueNotAllowedException.class)
     public void remove_throws_if_type_null() throws ContainerException {
         container.remove(null);
     }
