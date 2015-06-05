@@ -30,6 +30,14 @@ public class RemoveTest extends AbstractTest {
 
     @Test
     public void remove_stored_instance_removes_instance() throws ContainerException {
+        container.get(NoConstructor.class);
+        container.remove(NoConstructor.class);
+
+        Assert.assertFalse(container.has(NoConstructor.class));
+    }
+
+    @Test
+    public void remove_mapped_instance_removes_mapping() throws ContainerException {
         NoConstructor instance = new NoConstructor();
 
         container.mapInstance(NoConstructor.class, instance);

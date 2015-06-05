@@ -117,16 +117,16 @@ public class MapFactoryTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapFactory_throws_if_type_already_set() throws ContainerException {
-        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+    public void mapFactory_throws_if_has_instance() throws ContainerException {
+        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
-            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+            public NoConstructor create(ContainerInterface container) throws ContainerException {
                 return null;
             }
         };
 
-        container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
-        container.mapFactory(NoMethodInterface.class, factory);
+        container.get(NoConstructor.class);
+        container.mapFactory(NoConstructor.class, factory);
     }
 
     @Test
