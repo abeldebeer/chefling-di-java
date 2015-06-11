@@ -3,7 +3,7 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.NullValueNotAllowedException;
-import com.cookingfox.chefling.fixtures.*;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -88,15 +88,15 @@ public class GetTest extends AbstractTest {
 
     @Test
     public void get_quadruply_mapped_type_returns_same_instance() throws ContainerException {
-        container.mapType(D.class, E.class);
-        container.mapType(C.class, D.class);
-        container.mapType(B.class, C.class);
-        container.mapType(A.class, B.class);
+        container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
+        container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
+        container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
+        container.mapType(QuadruplyTyped.A.class, QuadruplyTyped.B.class);
 
-        Object d = container.get(D.class);
-        Object c = container.get(C.class);
-        Object b = container.get(B.class);
-        Object a = container.get(A.class);
+        Object d = container.get(QuadruplyTyped.D.class);
+        Object c = container.get(QuadruplyTyped.C.class);
+        Object b = container.get(QuadruplyTyped.B.class);
+        Object a = container.get(QuadruplyTyped.A.class);
 
         Assert.assertSame(d, c);
         Assert.assertSame(c, b);

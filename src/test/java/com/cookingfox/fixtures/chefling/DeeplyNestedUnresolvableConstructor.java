@@ -1,4 +1,4 @@
-package com.cookingfox.chefling.fixtures;
+package com.cookingfox.fixtures.chefling;
 
 /**
  * Example structure where a deeply nested class has an unresolvable constructor.

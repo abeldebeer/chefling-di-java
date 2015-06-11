@@ -3,9 +3,10 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.exception.RemoveTypeNotAllowedException;
-import com.cookingfox.chefling.fixtures.NoConstructor;
-import com.cookingfox.chefling.fixtures.NoMethodImplementation;
-import com.cookingfox.chefling.fixtures.NoMethodInterface;
+import com.cookingfox.fixtures.chefling.NoConstructor;
+import com.cookingfox.fixtures.chefling.NoMethodImplementation;
+import com.cookingfox.fixtures.chefling.NoMethodInterface;
+import com.cookingfox.fixtures.chefling.QuadruplyTyped;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -95,32 +96,32 @@ public class RemoveTest extends AbstractTest {
 
     @Test
     public void remove_quadruply_mapped_types_top_removes_top() throws ContainerException {
-        container.mapType(D.class, E.class);
-        container.mapType(C.class, D.class);
-        container.mapType(B.class, C.class);
-        container.mapType(A.class, B.class);
+        container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
+        container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
+        container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
+        container.mapType(QuadruplyTyped.A.class, QuadruplyTyped.B.class);
 
-        container.remove(A.class);
+        container.remove(QuadruplyTyped.A.class);
 
-        Assert.assertTrue("has D", container.has(D.class));
-        Assert.assertTrue("has C", container.has(C.class));
-        Assert.assertTrue("has B", container.has(B.class));
-        Assert.assertFalse("not has A", container.has(A.class));
+        Assert.assertTrue("has D", container.has(QuadruplyTyped.D.class));
+        Assert.assertTrue("has C", container.has(QuadruplyTyped.C.class));
+        Assert.assertTrue("has B", container.has(QuadruplyTyped.B.class));
+        Assert.assertFalse("not has A", container.has(QuadruplyTyped.A.class));
     }
 
     @Test
     public void remove_quadruply_mapped_types_root_removes_all() throws ContainerException {
-        container.mapType(D.class, E.class);
-        container.mapType(C.class, D.class);
-        container.mapType(B.class, C.class);
-        container.mapType(A.class, B.class);
+        container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
+        container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
+        container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
+        container.mapType(QuadruplyTyped.A.class, QuadruplyTyped.B.class);
 
-        container.remove(D.class);
+        container.remove(QuadruplyTyped.D.class);
 
-        Assert.assertFalse("not has D", container.has(D.class));
-        Assert.assertFalse("not has C", container.has(C.class));
-        Assert.assertFalse("not has B", container.has(B.class));
-        Assert.assertFalse("not has A", container.has(A.class));
+        Assert.assertFalse("not has D", container.has(QuadruplyTyped.D.class));
+        Assert.assertFalse("not has C", container.has(QuadruplyTyped.C.class));
+        Assert.assertFalse("not has B", container.has(QuadruplyTyped.B.class));
+        Assert.assertFalse("not has A", container.has(QuadruplyTyped.A.class));
     }
 
 }

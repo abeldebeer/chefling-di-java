@@ -1,4 +1,4 @@
-package com.cookingfox.chefling.fixtures;
+package com.cookingfox.fixtures.chefling;
 
 /**
  * A circular dependency where the class expects a dependency of itself.

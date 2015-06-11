@@ -1,4 +1,4 @@
-package com.cookingfox.chefling.fixtures;
+package com.cookingfox.fixtures.chefling;
 
 /**
  * A class with a constructor that has one parameter.

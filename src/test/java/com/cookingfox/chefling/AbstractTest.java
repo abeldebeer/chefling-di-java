@@ -2,7 +2,7 @@ package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.TypeNotAllowedException;
-import com.cookingfox.chefling.fixtures.*;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -45,16 +45,19 @@ public abstract class AbstractTest {
             String.class,
             ExampleAnnotation.class,
             boolean.class,
-            PrivateClass.class,
-            ProtectedClass.class,
-            MemberClass.class,
+            NonPublicClasses.getPrivateClass(),
+            NonPublicClasses.getProtectedClass(),
+            HasMember.getMemberClass(),
             OneValueEnum.class,
+            Throwable.class,
             ContainerException.class,
             NoMethodInterface.class,
             NoMethodAbstract.class,
             PrivateConstructor.class,
             Container.class,
             Factory.class,
+            LifeCycle.class,
+            ContainerChildren.class,
     };
 
     /**
@@ -66,19 +69,17 @@ public abstract class AbstractTest {
         notAllowedInstances.put(Class.class, Object.class);
         notAllowedInstances.put(String.class, "");
         notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
-        notAllowedInstances.put(PrivateClass.class, new PrivateClass());
-        notAllowedInstances.put(ProtectedClass.class, new ProtectedClass());
-        notAllowedInstances.put(MemberClass.class, new MemberClass());
+        notAllowedInstances.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()));
+        notAllowedInstances.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()));
+        notAllowedInstances.put(HasMember.getMemberClass(), getMock(HasMember.getMemberClass()));
         notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
+        notAllowedInstances.put(Throwable.class, new Throwable());
         notAllowedInstances.put(ContainerException.class, new ContainerException(""));
         notAllowedInstances.put(Container.class, new Container());
         notAllowedInstances.put(ContainerInterface.class, new Container());
-        notAllowedInstances.put(Factory.class, new Factory() {
-            @Override
-            public Object create(ContainerInterface container) throws ContainerException {
-                return null;
-            }
-        });
+        notAllowedInstances.put(Factory.class, getMock(Factory.class));
+        notAllowedInstances.put(LifeCycle.class, getMock(LifeCycle.class));
+        notAllowedInstances.put(ContainerChildren.class, new ContainerChildren());
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
@@ -94,13 +95,16 @@ public abstract class AbstractTest {
         notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
         notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
         notAllowedSubTypes.put(Number.class, Integer.class);
-        notAllowedSubTypes.put(PrivateClass.class, getMock(PrivateClass.class).getClass());
-        notAllowedSubTypes.put(ProtectedClass.class, getMock(ProtectedClass.class).getClass());
-        notAllowedSubTypes.put(MemberClass.class, getMock(MemberClass.class).getClass());
+        notAllowedSubTypes.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()).getClass());
+        notAllowedSubTypes.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()).getClass());
+        notAllowedSubTypes.put(HasMember.getMemberClass(), getMock(HasMember.getMemberClass()).getClass());
+        notAllowedSubTypes.put(Throwable.class, Exception.class);
         notAllowedSubTypes.put(ContainerException.class, TypeNotAllowedException.class);
         notAllowedSubTypes.put(Container.class, getMock(Container.class).getClass());
         notAllowedSubTypes.put(ContainerInterface.class, getMock(ContainerInterface.class).getClass());
         notAllowedSubTypes.put(Factory.class, getMock(Factory.class).getClass());
+        notAllowedSubTypes.put(LifeCycle.class, getMock(LifeCycle.class).getClass());
+        notAllowedSubTypes.put(ContainerChildren.class, getMock(ContainerChildren.class).getClass());
 
         // Note: can not test the following types, because a mock can not be created
         // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());
@@ -108,34 +112,6 @@ public abstract class AbstractTest {
         // notAllowedSubTypes.put(OneValueEnum.class, getMock(OneValueEnum.class).getClass());
 
         return notAllowedSubTypes;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // HELPER INTERNAL CLASSES
-    //----------------------------------------------------------------------------------------------
-
-    public class MemberClass {
-    }
-
-    private static class PrivateClass {
-    }
-
-    protected static class ProtectedClass {
-    }
-
-    public static class A {
-    }
-
-    public static class B extends A {
-    }
-
-    public static class C extends B {
-    }
-
-    public static class D extends C {
-    }
-
-    public static class E extends D {
     }
 
     //----------------------------------------------------------------------------------------------

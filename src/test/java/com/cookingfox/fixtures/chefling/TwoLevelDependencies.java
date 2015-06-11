@@ -1,4 +1,4 @@
-package com.cookingfox.chefling.fixtures;
+package com.cookingfox.fixtures.chefling;
 
 /**
  * A class that has two dependencies, each of which has its own dependency.

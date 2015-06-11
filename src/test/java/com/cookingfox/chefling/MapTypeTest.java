@@ -1,10 +1,10 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.*;
-import com.cookingfox.chefling.fixtures.NoConstructor;
-import com.cookingfox.chefling.fixtures.NoMethodAbstract;
-import com.cookingfox.chefling.fixtures.NoMethodImplementation;
-import com.cookingfox.chefling.fixtures.NoMethodInterface;
+import com.cookingfox.fixtures.chefling.NoConstructor;
+import com.cookingfox.fixtures.chefling.NoMethodAbstract;
+import com.cookingfox.fixtures.chefling.NoMethodImplementation;
+import com.cookingfox.fixtures.chefling.NoMethodInterface;
 import org.junit.Assert;
 import org.junit.Test;
 

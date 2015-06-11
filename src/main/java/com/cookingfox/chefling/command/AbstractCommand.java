@@ -1,8 +1,6 @@
 package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.Container;
-import com.cookingfox.chefling.ContainerInterface;
-import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.LifeCycle;
 import com.cookingfox.chefling.exception.*;
 
@@ -97,14 +95,12 @@ public abstract class AbstractCommand {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (isLanguageConstruct(type)) {
+        if (isInPackage(type, "java.lang")) {
             errorReason = "a Java language construct";
         } else if (isPrimitiveOrWrapper(type)) {
             errorReason = "primitive";
-        } else if (ContainerInterface.class.isAssignableFrom(type)) {
-            errorReason = "the Container instance that should not be overridden";
-        } else if (Factory.class.isAssignableFrom(type)) {
-            errorReason = "an implementation of the Factory interface, which has a specific use in the Container";
+        } else if (isInPackage(type, "com.cookingfox.chefling")) {
+            errorReason = "part of the Chefling library";
         } else if (Throwable.class.isAssignableFrom(type)) {
             errorReason = "an exception (extends Throwable)";
         } else if (type.isEnum()) {
@@ -168,13 +164,14 @@ public abstract class AbstractCommand {
     }
 
     /**
-     * Is this type a language construct (in `java.lang` package)?
+     * Is this type in the provided package?
      *
-     * @param type The type to validate
-     * @return Whether this class is in the `java.lang` package
+     * @param type The type to check.
+     * @param pkg  The root package name.
+     * @return Whether this type is in the provided package.
      */
-    protected boolean isLanguageConstruct(Class type) {
-        return type.getName().startsWith("java.lang");
+    protected boolean isInPackage(Class type, String pkg) {
+        return type.getName().startsWith(pkg);
     }
 
     /**

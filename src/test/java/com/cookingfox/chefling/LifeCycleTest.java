@@ -1,7 +1,7 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.fixtures.LifeCycleWithCallLog;
+import com.cookingfox.fixtures.chefling.LifeCycleWithCallLog;
 import org.junit.Assert;
 import org.junit.Test;
 

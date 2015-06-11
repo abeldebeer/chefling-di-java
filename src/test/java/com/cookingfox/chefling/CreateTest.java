@@ -3,7 +3,7 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.exception.TypeNotAllowedException;
-import com.cookingfox.chefling.fixtures.*;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -109,15 +109,15 @@ public class CreateTest extends AbstractTest {
 
     @Test
     public void create_quadruply_mapped_type() throws ContainerException {
-        container.mapType(D.class, E.class);
-        container.mapType(C.class, D.class);
-        container.mapType(B.class, C.class);
-        container.mapType(A.class, B.class);
+        container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
+        container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
+        container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
+        container.mapType(QuadruplyTyped.A.class, QuadruplyTyped.B.class);
 
-        Object result = container.create(A.class);
+        Object result = container.create(QuadruplyTyped.A.class);
 
         Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof E);
+        Assert.assertTrue(result instanceof QuadruplyTyped.E);
     }
 
 }
