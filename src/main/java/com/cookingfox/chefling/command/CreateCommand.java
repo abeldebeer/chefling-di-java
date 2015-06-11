@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.command;
 
+import com.cookingfox.chefling.Container;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.LifeCycle;
@@ -19,9 +20,9 @@ public class CreateCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
      */
-    public CreateCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public CreateCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 
@@ -38,6 +39,12 @@ public class CreateCommand extends AbstractCommand {
 
         Object mapping = mappings.get(type);
         T instance;
+
+        // does a child Container have a mapping / instance for this type?
+        if (mapping == null && container.hasChildFor(type)) {
+            // create the instance using the child container
+            return container.getChildFor(type).create(type);
+        }
 
         if (mapping instanceof Class) {
             // create instance using mapped type

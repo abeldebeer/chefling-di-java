@@ -1,7 +1,10 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.command.*;
+import com.cookingfox.chefling.exception.ChildCannotBeDefaultException;
+import com.cookingfox.chefling.exception.ChildCannotBeSelfException;
 import com.cookingfox.chefling.exception.ContainerException;
+import com.cookingfox.chefling.exception.NullValueNotAllowedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +36,11 @@ public class Container implements ContainerInterface {
     protected final Map<Class, Object> mappings = new HashMap<Class, Object>();
 
     /**
+     * A collection of child Containers.
+     */
+    protected final ContainerChildren children = new ContainerChildren();
+
+    /**
      * Convenience singleton for apps using a process-wide Container instance.
      */
     protected static volatile Container defaultInstance;
@@ -49,7 +57,7 @@ public class Container implements ContainerInterface {
     }
 
     //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS
+    // PUBLIC METHODS, FROM INTERFACE
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -73,7 +81,13 @@ public class Container implements ContainerInterface {
      */
     @Override
     public boolean has(Class type) {
-        return instances.containsKey(type) || mappings.containsKey(type);
+        if (type == null) {
+            return false;
+        }
+
+        return instances.containsKey(type) ||
+                mappings.containsKey(type) ||
+                children.hasChildFor(type);
     }
 
     /**
@@ -105,6 +119,10 @@ public class Container implements ContainerInterface {
      */
     @Override
     public void remove(Class type) throws ContainerException {
+        // first remove from children containers
+        children.remove(type);
+
+        // remove from self
         getCommand(RemoveCommand.class).remove(type);
     }
 
@@ -113,11 +131,67 @@ public class Container implements ContainerInterface {
      */
     @Override
     public void reset() {
+        // reset children containers first
+        children.reset();
+
+        // reset self
         getCommand(ResetCommand.class).reset();
 
         // clear commands and reinitialize
         commands.clear();
         initialize();
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS, SPECIFIC TO THIS IMPLEMENTATION
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Adds a child Container, which contains its own unique configuration.
+     *
+     * @param child The child Container.
+     * @throws ContainerException
+     */
+    public void addChild(Container child) throws ContainerException {
+        if (child == null) {
+            throw new NullValueNotAllowedException("child");
+        } else if (child == this) {
+            throw new ChildCannotBeSelfException();
+        } else if (defaultInstance != null && child == defaultInstance) {
+            throw new ChildCannotBeDefaultException();
+        }
+
+        children.addChild(child);
+    }
+
+    /**
+     * Returns the child Container that has a mapping or instance for the provided type.
+     *
+     * @param type The type to get the Container for.
+     * @return The child Container
+     */
+    public Container getChildFor(Class type) {
+        return children.getChildFor(type);
+    }
+
+    /**
+     * Returns whether the provided Container has already been added to this Container's children.
+     *
+     * @param child The Container instance to check.
+     * @return 'true' if the Container collection contains this instance.
+     */
+    public boolean hasChild(Container child) {
+        return children.hasChild(child);
+    }
+
+    /**
+     * Returns whether a child Container has a mapping or instance for the provided type.
+     *
+     * @param type The type to check.
+     * @return 'true' if one of the child Containers has a configuration for this type.
+     */
+    public boolean hasChildFor(Class type) {
+        return children.hasChildFor(type);
     }
 
     /**

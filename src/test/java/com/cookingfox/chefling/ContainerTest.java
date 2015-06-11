@@ -16,6 +16,13 @@ public class ContainerTest extends AbstractTest {
     //----------------------------------------------------------------------------------------------
 
     @Test
+    public void has_returns_false_if_null() {
+        boolean result = container.has(null);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
     public void has_returns_false_if_no_instance_or_mapping() {
         boolean result = container.has(NoMethodInterface.class);
 

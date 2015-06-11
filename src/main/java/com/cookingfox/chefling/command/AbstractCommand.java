@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.command;
 
+import com.cookingfox.chefling.Container;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.LifeCycle;
@@ -20,7 +21,7 @@ public abstract class AbstractCommand {
     /**
      * A reference to the current Container instance.
      */
-    protected final ContainerInterface container;
+    protected final Container container;
 
     /**
      * A reference to the current Container stored instances.
@@ -43,7 +44,7 @@ public abstract class AbstractCommand {
      * @param instances A reference to the current Container stored instances.
      * @param mappings  A reference to the current Container mappings.
      */
-    public AbstractCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public AbstractCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         this.container = container;
         this.instances = instances;
         this.mappings = mappings;

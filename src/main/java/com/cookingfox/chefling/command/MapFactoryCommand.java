@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.command;
 
+import com.cookingfox.chefling.Container;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.Factory;
 import com.cookingfox.chefling.exception.ContainerException;
@@ -16,9 +17,9 @@ public class MapFactoryCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
      */
-    public MapFactoryCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public MapFactoryCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 

@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.command;
 
+import com.cookingfox.chefling.Container;
 import com.cookingfox.chefling.ContainerInterface;
 
 import java.util.Map;
@@ -14,9 +15,9 @@ public class ResetCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
      */
-    public ResetCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public ResetCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 

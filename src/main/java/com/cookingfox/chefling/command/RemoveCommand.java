@@ -18,9 +18,9 @@ public class RemoveCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(ContainerInterface, Map, Map)
+     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
      */
-    public RemoveCommand(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings) {
+    public RemoveCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
         super(container, instances, mappings);
     }
 
