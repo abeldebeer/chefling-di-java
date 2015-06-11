@@ -1,13 +1,12 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.command.*;
-import com.cookingfox.chefling.exception.ChildCannotBeDefaultException;
-import com.cookingfox.chefling.exception.ChildCannotBeSelfException;
-import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.NullValueNotAllowedException;
+import com.cookingfox.chefling.exception.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @see ContainerInterface
@@ -159,6 +158,20 @@ public class Container implements ContainerInterface {
             throw new ChildCannotBeSelfException();
         } else if (defaultInstance != null && child == defaultInstance) {
             throw new ChildCannotBeDefaultException();
+        }
+
+        // collect all types for the current instances and mappings
+        Set<Class> allTypes = new HashSet<Class>();
+        allTypes.addAll(instances.keySet());
+        allTypes.addAll(mappings.keySet());
+        allTypes.remove(Container.class);
+        allTypes.remove(ContainerInterface.class);
+
+        // check whether the child Container has these types in its configuration
+        for (Class type : allTypes) {
+            if (child.has(type)) {
+                throw new ChildConfigurationConflictException(type);
+            }
         }
 
         children.addChild(child);

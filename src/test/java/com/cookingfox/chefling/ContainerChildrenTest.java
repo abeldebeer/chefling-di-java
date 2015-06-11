@@ -16,8 +16,6 @@ public class ContainerChildrenTest extends AbstractTest {
     // TEST CASES: ADD CHILD
     //----------------------------------------------------------------------------------------------
 
-    // TODO: when adding a child, its configuration (mappings & instances) should be checked to prevent clashes with the current Container
-
     @Test(expected = NullValueNotAllowedException.class)
     public void addChild_throws_if_child_null() throws ContainerException {
         container.addChild(null);
@@ -49,6 +47,14 @@ public class ContainerChildrenTest extends AbstractTest {
         firstContainer.addChild(secondContainer);
         container.addChild(firstContainer);
         container.addChild(secondContainer);
+    }
+
+    @Test(expected = ChildConfigurationConflictException.class)
+    public void addChild_throws_if_child_configuration_clashes() throws ContainerException {
+        Container childContainer = new Container();
+        childContainer.get(NoConstructor.class);
+        container.get(NoConstructor.class);
+        container.addChild(childContainer);
     }
 
     //----------------------------------------------------------------------------------------------
