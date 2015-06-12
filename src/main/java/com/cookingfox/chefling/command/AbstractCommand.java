@@ -1,7 +1,6 @@
 package com.cookingfox.chefling.command;
 
-import com.cookingfox.chefling.Container;
-import com.cookingfox.chefling.LifeCycle;
+import com.cookingfox.chefling.*;
 import com.cookingfox.chefling.exception.*;
 
 import java.lang.reflect.Modifier;
@@ -10,7 +9,7 @@ import java.util.Map;
 /**
  * Base command class for Container operations.
  */
-public abstract class AbstractCommand {
+abstract class AbstractCommand {
 
     //----------------------------------------------------------------------------------------------
     // PROTECTED PROPERTIES
@@ -19,7 +18,7 @@ public abstract class AbstractCommand {
     /**
      * A reference to the current Container instance.
      */
-    protected final Container container;
+    protected final ContainerInterface container;
 
     /**
      * A reference to the current Container stored instances.
@@ -31,21 +30,20 @@ public abstract class AbstractCommand {
      */
     protected final Map<Class, Object> mappings;
 
+    /**
+     * A reference to the current Container children.
+     */
+    protected final ContainerChildren children;
+
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
-    /**
-     * Create a new Command.
-     *
-     * @param container A reference to the current Container instance.
-     * @param instances A reference to the current Container stored instances.
-     * @param mappings  A reference to the current Container mappings.
-     */
-    public AbstractCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
-        this.container = container;
-        this.instances = instances;
-        this.mappings = mappings;
+    public AbstractCommand(ContainerHelper containerHelper) {
+        container = containerHelper.container;
+        instances = containerHelper.instances;
+        mappings = containerHelper.mappings;
+        children = containerHelper.children;
     }
 
     //----------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ import org.junit.Test;
 /**
  * Test cases for Container children support.
  */
-public class ContainerChildrenTest extends AbstractTest {
+public class ChildContainerTest extends AbstractTest {
 
     //----------------------------------------------------------------------------------------------
     // TEST CASES: ADD CHILD
@@ -55,34 +55,6 @@ public class ContainerChildrenTest extends AbstractTest {
         childContainer.get(NoConstructor.class);
         container.get(NoConstructor.class);
         container.addChild(childContainer);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // TEST CASES: HAS CHILD
-    //----------------------------------------------------------------------------------------------
-
-    @Test
-    public void hasChild_returns_false_if_null() {
-        boolean result = container.hasChild(null);
-
-        Assert.assertFalse(result);
-    }
-
-    @Test
-    public void hasChild_returns_false_if_no_child() {
-        boolean result = container.hasChild(new Container());
-
-        Assert.assertFalse(result);
-    }
-
-    @Test
-    public void hasChild_returns_true_if_has_child() throws ContainerException {
-        Container childContainer = new Container();
-        container.addChild(childContainer);
-
-        boolean result = container.hasChild(childContainer);
-
-        Assert.assertTrue(result);
     }
 
     //----------------------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ public class ContainerChildren {
     public Container getChildFor(Class type) {
         for (Container container : children) {
             if (container.has(type)) {
-                Container nested = container.getChildFor(type);
+                Container nested = container.children.getChildFor(type);
 
                 return nested == null ? container : nested;
             }
@@ -60,7 +60,7 @@ public class ContainerChildren {
         }
 
         for (Container container : children) {
-            if (container.hasChild(child)) {
+            if (container.children.hasChild(child)) {
                 return true;
             }
         }

@@ -1,12 +1,11 @@
 package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.command.*;
-import com.cookingfox.chefling.exception.*;
+import com.cookingfox.chefling.exception.ChildCannotBeDefaultException;
+import com.cookingfox.chefling.exception.ContainerException;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @see ContainerInterface
@@ -56,7 +55,7 @@ public class Container implements ContainerInterface {
     }
 
     //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS, FROM INTERFACE
+    // PUBLIC METHODS
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -141,70 +140,19 @@ public class Container implements ContainerInterface {
         initialize();
     }
 
-    //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS, SPECIFIC TO THIS IMPLEMENTATION
-    //----------------------------------------------------------------------------------------------
-
     /**
      * Adds a child Container, which contains its own unique configuration.
      *
      * @param child The child Container.
      * @throws ContainerException
      */
+    @Override
     public void addChild(Container child) throws ContainerException {
-        if (child == null) {
-            throw new NullValueNotAllowedException("child");
-        } else if (child == this) {
-            throw new ChildCannotBeSelfException();
-        } else if (defaultInstance != null && child == defaultInstance) {
+        if (defaultInstance != null && child == defaultInstance) {
             throw new ChildCannotBeDefaultException();
         }
 
-        // collect all types for the current instances and mappings
-        Set<Class> allTypes = new HashSet<Class>();
-        allTypes.addAll(instances.keySet());
-        allTypes.addAll(mappings.keySet());
-        allTypes.remove(Container.class);
-        allTypes.remove(ContainerInterface.class);
-
-        // check whether the child Container has these types in its configuration
-        for (Class type : allTypes) {
-            if (child.has(type)) {
-                throw new ChildConfigurationConflictException(type);
-            }
-        }
-
-        children.addChild(child);
-    }
-
-    /**
-     * Returns the child Container that has a mapping or instance for the provided type.
-     *
-     * @param type The type to get the Container for.
-     * @return The child Container
-     */
-    public Container getChildFor(Class type) {
-        return children.getChildFor(type);
-    }
-
-    /**
-     * Returns whether the provided Container has already been added to this Container's children.
-     *
-     * @param child The Container instance to check.
-     * @return 'true' if the Container collection contains this instance.
-     */
-    public boolean hasChild(Container child) {
-        return children.hasChild(child);
-    }
-
-    /**
-     * Returns whether a child Container has a mapping or instance for the provided type.
-     *
-     * @param type The type to check.
-     * @return 'true' if one of the child Containers has a configuration for this type.
-     */
-    public boolean hasChildFor(Class type) {
-        return children.hasChildFor(type);
+        getCommand(AddChildCommand.class).addChild(child);
     }
 
     /**
@@ -244,14 +192,17 @@ public class Container implements ContainerInterface {
      * Initializes the container.
      */
     protected void initialize() {
+        ContainerHelper containerHelper = new ContainerHelper(this, instances, mappings, children);
+
         // create operation commands
-        commands.put(CreateCommand.class, new CreateCommand(this, instances, mappings));
-        commands.put(GetCommand.class, new GetCommand(this, instances, mappings));
-        commands.put(MapFactoryCommand.class, new MapFactoryCommand(this, instances, mappings));
-        commands.put(MapInstanceCommand.class, new MapInstanceCommand(this, instances, mappings));
-        commands.put(MapTypeCommand.class, new MapTypeCommand(this, instances, mappings));
-        commands.put(RemoveCommand.class, new RemoveCommand(this, instances, mappings));
-        commands.put(ResetCommand.class, new ResetCommand(this, instances, mappings));
+        commands.put(AddChildCommand.class, new AddChildCommand(containerHelper));
+        commands.put(CreateCommand.class, new CreateCommand(containerHelper));
+        commands.put(GetCommand.class, new GetCommand(containerHelper));
+        commands.put(MapFactoryCommand.class, new MapFactoryCommand(containerHelper));
+        commands.put(MapInstanceCommand.class, new MapInstanceCommand(containerHelper));
+        commands.put(MapTypeCommand.class, new MapTypeCommand(containerHelper));
+        commands.put(RemoveCommand.class, new RemoveCommand(containerHelper));
+        commands.put(ResetCommand.class, new ResetCommand(containerHelper));
 
         // map this instance to its class and interface
         instances.put(Container.class, this);

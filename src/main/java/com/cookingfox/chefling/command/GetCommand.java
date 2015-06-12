@@ -1,12 +1,11 @@
 package com.cookingfox.chefling.command;
 
-import com.cookingfox.chefling.Container;
+import com.cookingfox.chefling.ContainerHelper;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.exception.ContainerException;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Implementation of {@link ContainerInterface#get(Class)}.
@@ -28,10 +27,10 @@ public class GetCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
+     * @see AbstractCommand#AbstractCommand(ContainerHelper)
      */
-    public GetCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
-        super(container, instances, mappings);
+    public GetCommand(ContainerHelper containerHelper) {
+        super(containerHelper);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -50,9 +49,9 @@ public class GetCommand extends AbstractCommand {
         if (instance != null) {
             // an instance of this type was previously stored: return it
             return instance;
-        } else if (container.hasChildFor(type)) {
+        } else if (children.hasChildFor(type)) {
             // a child Container has a mapping / instance for this type: use it
-            return container.getChildFor(type).get(type);
+            return children.getChildFor(type).get(type);
         }
 
         Object mapping = mappings.get(type);

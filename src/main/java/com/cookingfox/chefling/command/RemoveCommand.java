@@ -1,6 +1,7 @@
 package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.Container;
+import com.cookingfox.chefling.ContainerHelper;
 import com.cookingfox.chefling.ContainerInterface;
 import com.cookingfox.chefling.exception.ContainerException;
 import com.cookingfox.chefling.exception.RemoveTypeNotAllowedException;
@@ -18,10 +19,10 @@ public class RemoveCommand extends AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * @see AbstractCommand#AbstractCommand(Container, Map, Map)
+     * @see AbstractCommand#AbstractCommand(ContainerHelper)
      */
-    public RemoveCommand(Container container, Map<Class, Object> instances, Map<Class, Object> mappings) {
-        super(container, instances, mappings);
+    public RemoveCommand(ContainerHelper containerHelper) {
+        super(containerHelper);
     }
 
     //----------------------------------------------------------------------------------------------
