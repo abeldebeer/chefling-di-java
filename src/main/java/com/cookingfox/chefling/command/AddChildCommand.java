@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Implementation of {@link ContainerInterface#addChild(Container)}.
+ * Implementation of {@link Container#addChild(Container)}.
  */
 public class AddChildCommand extends AbstractCommand {
 

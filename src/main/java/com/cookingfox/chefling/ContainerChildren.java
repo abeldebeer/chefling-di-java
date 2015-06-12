@@ -3,8 +3,8 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.exception.ChildAlreadyAddedException;
 import com.cookingfox.chefling.exception.ContainerException;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A collection of Container instances.
@@ -14,7 +14,7 @@ public class ContainerChildren {
     /**
      * Stores the child Container instances.
      */
-    protected final List<Container> children = new LinkedList<Container>();
+    protected final Set<Container> children = new HashSet<Container>();
 
     /**
      * Add a child Container instance. Throws if it is already added.
@@ -22,7 +22,7 @@ public class ContainerChildren {
      * @param child The child Container instance to add.
      * @throws ContainerException
      */
-    public void addChild(Container child) throws ContainerException {
+    public synchronized void addChild(Container child) throws ContainerException {
         if (hasChild(child)) {
             throw new ChildAlreadyAddedException();
         }

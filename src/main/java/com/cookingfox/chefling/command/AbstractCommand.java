@@ -1,6 +1,9 @@
 package com.cookingfox.chefling.command;
 
-import com.cookingfox.chefling.*;
+import com.cookingfox.chefling.Container;
+import com.cookingfox.chefling.ContainerChildren;
+import com.cookingfox.chefling.ContainerHelper;
+import com.cookingfox.chefling.LifeCycle;
 import com.cookingfox.chefling.exception.*;
 
 import java.lang.reflect.Modifier;
@@ -18,7 +21,7 @@ abstract class AbstractCommand {
     /**
      * A reference to the current Container instance.
      */
-    protected final ContainerInterface container;
+    protected final Container container;
 
     /**
      * A reference to the current Container stored instances.

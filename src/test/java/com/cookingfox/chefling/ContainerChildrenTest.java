@@ -7,9 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 11/06/15.
+ * Tests for the ContainerChildren class.
+ * <p/>
+ * TODO: expand tests for all methods
+ * TODO: rename to something without "child" in the name... ContainerSet?
  */
-public class ChildrenTest {
+public class ContainerChildrenTest {
 
     protected ContainerChildren children;
 

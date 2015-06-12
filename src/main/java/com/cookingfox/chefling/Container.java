@@ -55,7 +55,7 @@ public class Container implements ContainerInterface {
     }
 
     //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS
+    // PUBLIC METHODS, FROM INTERFACE
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -140,13 +140,16 @@ public class Container implements ContainerInterface {
         initialize();
     }
 
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS, IMPLEMENTATION SPECIFIC
+    //----------------------------------------------------------------------------------------------
+
     /**
      * Adds a child Container, which contains its own unique configuration.
      *
      * @param child The child Container.
      * @throws ContainerException
      */
-    @Override
     public void addChild(Container child) throws ContainerException {
         if (defaultInstance != null && child == defaultInstance) {
             throw new ChildCannotBeDefaultException();

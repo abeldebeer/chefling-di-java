@@ -3,14 +3,14 @@ package com.cookingfox.chefling;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 11/06/15.
+ * A helper class that contains references to core Container elements.
  */
 public class ContainerHelper {
 
     /**
      * A reference to the current Container instance.
      */
-    public final ContainerInterface container;
+    public final Container container;
 
     /**
      * A reference to the current Container stored instances.
@@ -27,7 +27,10 @@ public class ContainerHelper {
      */
     public final ContainerChildren children;
 
-    public ContainerHelper(ContainerInterface container, Map<Class, Object> instances, Map<Class, Object> mappings, ContainerChildren children) {
+    public ContainerHelper(Container container,
+                           Map<Class, Object> instances,
+                           Map<Class, Object> mappings,
+                           ContainerChildren children) {
         this.container = container;
         this.instances = instances;
         this.mappings = mappings;
