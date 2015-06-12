@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [3.2.0](../../tree/v3.2.0) (2015-06-12)
+
+- First implementation of child container support.
+
 ## [3.1.2](../../tree/v3.1.2) (2015-04-30)
 
 - Adds null checks for `ContainerInterface` methods: throws `NullValueNotAllowedException`.
