@@ -57,7 +57,7 @@ public abstract class AbstractTest {
             Container.class,
             Factory.class,
             LifeCycle.class,
-            ContainerChildren.class,
+            ContainerSet.class,
     };
 
     /**
@@ -79,7 +79,7 @@ public abstract class AbstractTest {
         notAllowedInstances.put(ContainerInterface.class, new Container());
         notAllowedInstances.put(Factory.class, getMock(Factory.class));
         notAllowedInstances.put(LifeCycle.class, getMock(LifeCycle.class));
-        notAllowedInstances.put(ContainerChildren.class, new ContainerChildren());
+        notAllowedInstances.put(ContainerSet.class, new ContainerSet());
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
@@ -104,7 +104,7 @@ public abstract class AbstractTest {
         notAllowedSubTypes.put(ContainerInterface.class, getMock(ContainerInterface.class).getClass());
         notAllowedSubTypes.put(Factory.class, getMock(Factory.class).getClass());
         notAllowedSubTypes.put(LifeCycle.class, getMock(LifeCycle.class).getClass());
-        notAllowedSubTypes.put(ContainerChildren.class, getMock(ContainerChildren.class).getClass());
+        notAllowedSubTypes.put(ContainerSet.class, getMock(ContainerSet.class).getClass());
 
         // Note: can not test the following types, because a mock can not be created
         // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());

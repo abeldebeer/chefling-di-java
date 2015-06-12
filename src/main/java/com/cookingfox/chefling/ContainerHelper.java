@@ -25,12 +25,12 @@ public class ContainerHelper {
     /**
      * A reference to the current Container children.
      */
-    public final ContainerChildren children;
+    public final ContainerSet children;
 
     public ContainerHelper(Container container,
                            Map<Class, Object> instances,
                            Map<Class, Object> mappings,
-                           ContainerChildren children) {
+                           ContainerSet children) {
         this.container = container;
         this.instances = instances;
         this.mappings = mappings;

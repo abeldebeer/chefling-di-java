@@ -41,9 +41,9 @@ public class CreateCommand extends AbstractCommand {
         T instance;
 
         // does a child Container have a mapping / instance for this type?
-        if (mapping == null && children.hasChildFor(type)) {
+        if (mapping == null && children.hasForType(type)) {
             // create the instance using the child container
-            return children.getChildFor(type).create(type);
+            return children.getForType(type).create(type);
         }
 
         if (mapping instanceof Class) {

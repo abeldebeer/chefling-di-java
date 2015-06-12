@@ -49,9 +49,9 @@ public class GetCommand extends AbstractCommand {
         if (instance != null) {
             // an instance of this type was previously stored: return it
             return instance;
-        } else if (children.hasChildFor(type)) {
+        } else if (children.hasForType(type)) {
             // a child Container has a mapping / instance for this type: use it
-            return children.getChildFor(type).get(type);
+            return children.getForType(type).get(type);
         }
 
         Object mapping = mappings.get(type);

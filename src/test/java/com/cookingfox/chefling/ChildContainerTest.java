@@ -7,8 +7,6 @@ import com.cookingfox.fixtures.chefling.NoMethodInterface;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.LinkedList;
-
 /**
  * Test cases for Container children support.
  */
@@ -35,14 +33,14 @@ public class ChildContainerTest extends AbstractTest {
         childContainer.addChild(defaultContainer);
     }
 
-    @Test(expected = ChildAlreadyAddedException.class)
+    @Test(expected = ContainerAlreadyAddedToSetException.class)
     public void addChild_throws_if_child_already_added() throws ContainerException {
         Container childContainer = new Container();
         container.addChild(childContainer);
         container.addChild(childContainer);
     }
 
-    @Test(expected = ChildAlreadyAddedException.class)
+    @Test(expected = ContainerAlreadyAddedToSetException.class)
     public void addChild_throws_if_child_already_added_nested() throws ContainerException {
         Container firstContainer = new Container();
         Container secondContainer = new Container();
@@ -57,31 +55,6 @@ public class ChildContainerTest extends AbstractTest {
         childContainer.get(NoConstructor.class);
         container.get(NoConstructor.class);
         container.addChild(childContainer);
-    }
-
-    /**
-     * TODO: move to ContainerChildrenTest
-     */
-    @Test
-    public void addChild_passes_concurrency_test() throws ContainerException {
-        int numTests = 50;
-        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
-        final Container childContainer = new Container();
-
-        Runnable test = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    container.addChild(childContainer);
-                } catch (ContainerException e) {
-                    exceptions.add(e);
-                }
-            }
-        };
-
-        runConcurrencyTest(test, numTests);
-
-        Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
     }
 
     //----------------------------------------------------------------------------------------------

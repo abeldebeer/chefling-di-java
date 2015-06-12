@@ -36,7 +36,7 @@ public class Container implements ContainerInterface {
     /**
      * A collection of child Containers.
      */
-    protected final ContainerChildren children = new ContainerChildren();
+    protected final ContainerSet children = new ContainerSet();
 
     /**
      * Convenience singleton for apps using a process-wide Container instance.
@@ -55,7 +55,7 @@ public class Container implements ContainerInterface {
     }
 
     //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS, FROM INTERFACE
+    // INTERFACE IMPLEMENTATION
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -79,13 +79,11 @@ public class Container implements ContainerInterface {
      */
     @Override
     public boolean has(Class type) {
-        if (type == null) {
-            return false;
-        }
+        return type != null &&
+                (instances.containsKey(type) ||
+                        mappings.containsKey(type) ||
+                        children.hasForType(type));
 
-        return instances.containsKey(type) ||
-                mappings.containsKey(type) ||
-                children.hasChildFor(type);
     }
 
     /**
@@ -141,7 +139,7 @@ public class Container implements ContainerInterface {
     }
 
     //----------------------------------------------------------------------------------------------
-    // PUBLIC METHODS, IMPLEMENTATION SPECIFIC
+    // CHILD CONTAINER IMPLEMENTATION
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -157,6 +155,20 @@ public class Container implements ContainerInterface {
 
         getCommand(AddChildCommand.class).addChild(child);
     }
+
+    /**
+     * Returns whether this Container instance is present in the Container children.
+     *
+     * @param child The child Container.
+     * @return 'true' when this Container instance is already present.
+     */
+    public boolean hasChild(Container child) {
+        return children.has(child);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC STATIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     /**
      * Convenience singleton for apps using a process-wide Container instance.

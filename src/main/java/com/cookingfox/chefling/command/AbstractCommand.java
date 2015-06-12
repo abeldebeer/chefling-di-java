@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.command;
 
 import com.cookingfox.chefling.Container;
-import com.cookingfox.chefling.ContainerChildren;
+import com.cookingfox.chefling.ContainerSet;
 import com.cookingfox.chefling.ContainerHelper;
 import com.cookingfox.chefling.LifeCycle;
 import com.cookingfox.chefling.exception.*;
@@ -36,7 +36,7 @@ abstract class AbstractCommand {
     /**
      * A reference to the current Container children.
      */
-    protected final ContainerChildren children;
+    protected final ContainerSet children;
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR

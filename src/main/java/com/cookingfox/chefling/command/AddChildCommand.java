@@ -27,6 +27,10 @@ public class AddChildCommand extends AbstractCommand {
         super(containerHelper);
     }
 
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
+
     /**
      * Adds a child Container, which contains its own unique configuration.
      *
@@ -54,7 +58,7 @@ public class AddChildCommand extends AbstractCommand {
             }
         }
 
-        children.addChild(child);
+        children.add(child);
     }
 
 }
