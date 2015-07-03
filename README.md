@@ -9,7 +9,8 @@ Chefling requires at minimum Java 6 or Android 2.3.
 
 ## Download
 
-[![Download](https://api.bintray.com/packages/cookingfox/maven/chefling-di-java/images/download.svg) ](https://bintray.com/cookingfox/maven/chefling-di-java/_latestVersion)
+[![Download](https://api.bintray.com/packages/cookingfox/maven/chefling-di-java/images/download.svg)](https://bintray.com/cookingfox/maven/chefling-di-java/_latestVersion)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.cookingfox/chefling-di-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.cookingfox/chefling-di-java)
 
 The distribution is hosted on [Bintray](https://bintray.com/cookingfox/maven/chefling-di-java/view).
 To include the package in your projects, you can add the jCenter repository.

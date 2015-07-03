@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.mockito.Mockito;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -128,7 +127,6 @@ public abstract class AbstractTest {
         final CountDownLatch latch = new CountDownLatch(1);
 
         Runnable testWrapper = new Runnable() {
-            @Override
             public void run() {
                 try {
                     latch.await();
@@ -139,18 +137,16 @@ public abstract class AbstractTest {
             }
         };
 
-        LinkedList<Thread> threads = new LinkedList<Thread>();
+        Thread[] threads = new Thread[numThreads];
 
-        // create threads
+        // create and start threads
         for (int i = 0; i < numThreads; i++) {
-            threads.add(new Thread(testWrapper));
-        }
-
-        // start threads
-        for (Thread thread : threads) {
+            Thread thread = new Thread(testWrapper);
             thread.start();
+            threads[i] = thread;
         }
 
+        // run all tests concurrently
         latch.countDown();
 
         // wait for threads to end
