@@ -98,8 +98,6 @@ abstract class AbstractCommand {
 
         if (isInPackage(type, "java.lang")) {
             errorReason = "a Java language construct";
-        } else if (isPrimitiveOrWrapper(type)) {
-            errorReason = "primitive";
         } else if (isInPackage(type, "com.cookingfox.chefling")) {
             errorReason = "part of the Chefling library";
         } else if (Throwable.class.isAssignableFrom(type)) {
@@ -139,29 +137,6 @@ abstract class AbstractCommand {
         if (errorReason != null) {
             throw new TypeNotInstantiableException(type, "it is ".concat(errorReason));
         }
-    }
-
-    /**
-     * Is the type a primitive (e.g. int) or primitive wrapper class (e.g. java.lang.Integer)?
-     *
-     * @param type The type to validate.
-     * @return Whether the type is primitive.
-     */
-    protected boolean isPrimitiveOrWrapper(Class type) {
-        if (type.isPrimitive()) {
-            return true;
-        }
-
-        Class[] wrapperClasses = {Boolean.class, Byte.class, Character.class, Double.class,
-                Float.class, Integer.class, Long.class, Short.class, Void.class};
-
-        for (Class wrapperClass : wrapperClasses) {
-            if (type.equals(wrapperClass)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
