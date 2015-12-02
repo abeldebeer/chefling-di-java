@@ -49,17 +49,17 @@ public class GetCommand extends AbstractCommand {
         if (instance != null) {
             // an instance of this type was previously stored: return it
             return instance;
-        } else if (children.hasForType(type)) {
-            // a child Container has a mapping / instance for this type: use it
-            return children.getForType(type).get(type);
         }
 
         Object mapping = mappings.get(type);
 
-        // this type is mapped to another type (through `mapType()`), so use the mapped type to get
-        // the instance
         if (mapping instanceof Class) {
+            // this type is mapped to another type (through `mapType()`), so use the mapped type to
+            // get the instance
             return get((Class<T>) mapping);
+        } else if (mapping == null && children.hasForType(type)) {
+            // a child Container has a mapping / instance for this type: use it
+            return children.getForType(type).get(type);
         }
 
         synchronized (currentlyResolving) {

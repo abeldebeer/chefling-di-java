@@ -98,6 +98,26 @@ public class ChildContainerTest extends AbstractTest {
         Assert.assertTrue(result instanceof NoMethodImplementation);
     }
 
+    @Test
+    public void get_checks_current_mappings_before_checking_children() throws Exception {
+        final Container mainContainer = new Container();
+
+        mainContainer.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
+
+        Container childContainer = new Container();
+
+        mainContainer.addChild(childContainer);
+
+        childContainer.mapFactory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(ContainerInterface container) throws ContainerException {
+                return mainContainer.get(NoMethodInterface.class);
+            }
+        });
+
+        NoMethodInterface result = childContainer.get(NoMethodInterface.class);
+    }
+
     //----------------------------------------------------------------------------------------------
     // TEST CASES: HAS
     //----------------------------------------------------------------------------------------------
