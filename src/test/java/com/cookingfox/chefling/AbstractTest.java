@@ -1,9 +1,12 @@
 package com.cookingfox.chefling;
 
-import com.cookingfox.chefling.exception.ContainerException;
-import com.cookingfox.chefling.exception.TypeNotAllowedException;
+import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.LifeCycle;
+import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.exception.TypeNotAllowedException;
+import com.cookingfox.chefling.impl.command.CommandContainer;
 import com.cookingfox.fixtures.chefling.*;
-import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mockito;
 
@@ -11,29 +14,16 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Base test class for {@link Container} tests.
+ * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
  */
 public abstract class AbstractTest {
 
-    protected Container container;
-
-    //----------------------------------------------------------------------------------------------
-    // TEST LIFECYCLE
-    //----------------------------------------------------------------------------------------------
+    protected CommandContainer container;
 
     @Before
     public void setUp() throws Exception {
-        container = new Container();
+        container = new CommandContainer();
     }
-
-    @After
-    public void tearDown() throws Exception {
-        container = null;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // HELPER VALUES
-    //----------------------------------------------------------------------------------------------
 
     /**
      * Examples of types that are not instantiable.
@@ -56,7 +46,6 @@ public abstract class AbstractTest {
             Container.class,
             Factory.class,
             LifeCycle.class,
-            ContainerSet.class,
     };
 
     /**
@@ -74,11 +63,9 @@ public abstract class AbstractTest {
         notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
         notAllowedInstances.put(Throwable.class, new Throwable());
         notAllowedInstances.put(ContainerException.class, new ContainerException(""));
-        notAllowedInstances.put(Container.class, new Container());
-        notAllowedInstances.put(ContainerInterface.class, new Container());
+        notAllowedInstances.put(Container.class, new CommandContainer());
         notAllowedInstances.put(Factory.class, getMock(Factory.class));
         notAllowedInstances.put(LifeCycle.class, getMock(LifeCycle.class));
-        notAllowedInstances.put(ContainerSet.class, new ContainerSet());
 
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
@@ -100,10 +87,8 @@ public abstract class AbstractTest {
         notAllowedSubTypes.put(Throwable.class, Exception.class);
         notAllowedSubTypes.put(ContainerException.class, TypeNotAllowedException.class);
         notAllowedSubTypes.put(Container.class, getMock(Container.class).getClass());
-        notAllowedSubTypes.put(ContainerInterface.class, getMock(ContainerInterface.class).getClass());
         notAllowedSubTypes.put(Factory.class, getMock(Factory.class).getClass());
         notAllowedSubTypes.put(LifeCycle.class, getMock(LifeCycle.class).getClass());
-        notAllowedSubTypes.put(ContainerSet.class, getMock(ContainerSet.class).getClass());
 
         // Note: can not test the following types, because a mock can not be created
         // notAllowedSubTypes.put(Class.class, getMock(Class.class).getClass());
@@ -116,6 +101,10 @@ public abstract class AbstractTest {
     //----------------------------------------------------------------------------------------------
     // HELPER METHODS
     //----------------------------------------------------------------------------------------------
+
+    protected Object getMock(Class aClass) {
+        return Mockito.mock(aClass);
+    }
 
     /**
      * Run a concurrency test on a specified number of threads.
@@ -157,10 +146,6 @@ public abstract class AbstractTest {
                 e.printStackTrace();
             }
         }
-    }
-
-    protected Object getMock(Class aClass) {
-        return Mockito.mock(aClass);
     }
 
 }

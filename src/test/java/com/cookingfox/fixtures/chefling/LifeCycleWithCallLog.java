@@ -1,6 +1,6 @@
 package com.cookingfox.fixtures.chefling;
 
-import com.cookingfox.chefling.LifeCycle;
+import com.cookingfox.chefling.api.LifeCycle;
 
 import java.util.LinkedList;
 

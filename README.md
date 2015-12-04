@@ -3,7 +3,7 @@
 Chefling is a very minimal dependency injection container written in pure Java. It does not rely on
 annotations, only does constructor injection and has limited (but powerful) configuration options.
 
-Chefling requires at minimum Java 6 or Android 2.3.
+Chefling requires at minimum Java 7.
 
 [![Build Status](https://travis-ci.org/cookingfox/chefling-di-java.svg?branch=master)](https://travis-ci.org/cookingfox/chefling-di-java)
 
