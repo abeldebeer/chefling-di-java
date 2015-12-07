@@ -1,6 +1,7 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
+import com.cookingfox.chefling.impl.helper.Applier;
 import com.cookingfox.chefling.impl.helper.Matcher;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodAbstract;
@@ -9,16 +10,53 @@ import com.cookingfox.fixtures.chefling.NoMethodInterface;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
  */
 public class AbstractCommandTest extends AbstractTest {
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: APPLY ALL
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void applyAll_should_call_apply_for_all_parents_and_children() throws Exception {
+        CommandContainer parentA = new CommandContainer();
+        CommandContainer parentB = new CommandContainer();
+        CommandContainer childA = new CommandContainer();
+        CommandContainer childB = new CommandContainer();
+
+        parentA.setParent(parentB);
+        container.setParent(parentA);
+        container.addChild(childA);
+        childA.addChild(childB);
+
+        final Set<CommandContainer> called = new LinkedHashSet<>();
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        AbstractCommand.applyAll(container, new Applier() {
+            @Override
+            public void apply(CommandContainer container) {
+                called.add(container);
+                counter.incrementAndGet();
+            }
+        });
+
+        assertTrue(called.contains(parentB));
+        assertTrue(called.contains(parentA));
+        assertTrue(called.contains(container));
+        assertTrue(called.contains(childA));
+        assertTrue(called.contains(childB));
+
+        assertEquals(5, counter.get());
+    }
 
     //----------------------------------------------------------------------------------------------
     // TESTS: COMPILE TYPES
@@ -69,6 +107,31 @@ public class AbstractCommandTest extends AbstractTest {
     }
 
     //----------------------------------------------------------------------------------------------
+    // TESTS: FIND
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void find_should_return_first_match_not_second() throws Exception {
+        CommandContainer childA = new CommandContainer();
+        childA.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+
+        CommandContainer childB = new CommandContainer();
+        childB.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
+
+        container.addChild(childA);
+        container.addChild(childB);
+
+        CommandContainer result = AbstractCommand.find(container, new Matcher() {
+            @Override
+            public boolean matches(CommandContainer container) {
+                return container.mappings.containsValue(NoMethodImplementation.class);
+            }
+        });
+
+        assertSame(childA, result);
+    }
+
+    //----------------------------------------------------------------------------------------------
     // TESTS: FIND ALL
     //----------------------------------------------------------------------------------------------
 
@@ -92,6 +155,61 @@ public class AbstractCommandTest extends AbstractTest {
 
         assertTrue(matches.contains(parent));
         assertTrue(matches.contains(child));
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: FIND MAPPING
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void findMapping_should_return_instance() throws Exception {
+        CommandContainer parentContainer = new CommandContainer();
+        NoConstructor instance = parentContainer.get(NoConstructor.class);
+        parentContainer.setParent(new CommandContainer());
+        container.setParent(parentContainer);
+
+        Object result = AbstractCommand.findMapping(container, NoConstructor.class);
+
+        assertSame(instance, result);
+    }
+
+    @Test
+    public void findMapping_should_return_mapping() throws Exception {
+        CommandContainer parentContainer = new CommandContainer();
+        parentContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        parentContainer.setParent(new CommandContainer());
+        container.setParent(parentContainer);
+
+        Object result = AbstractCommand.findMapping(container, NoMethodInterface.class);
+
+        assertSame(NoMethodImplementation.class, result);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: GET ROOT
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void getRoot_should_return_self_if_no_parent() throws Exception {
+        assertSame(container, AbstractCommand.getRoot(container));
+    }
+
+    @Test
+    public void getRoot_should_return_root() throws Exception {
+        CommandContainer root = new CommandContainer();
+
+        CommandContainer parentA = new CommandContainer();
+        parentA.setParent(root);
+
+        container.setParent(parentA);
+
+        CommandContainer childA = new CommandContainer();
+        container.addChild(childA);
+
+        CommandContainer childB = new CommandContainer();
+        container.addChild(childB);
+
+        assertSame(root, AbstractCommand.getRoot(childB));
     }
 
 }

@@ -80,8 +80,6 @@ abstract class AbstractCommand {
             errorReason = "a Java language construct";
         } else if (isInPackage(type, "com.cookingfox.chefling")) {
             errorReason = "part of the Chefling library";
-        } else if (Throwable.class.isAssignableFrom(type)) {
-            errorReason = "an exception (extends Throwable)";
         } else if (type.isEnum()) {
             errorReason = "an enum";
         } else if (type.isAnnotation()) {
@@ -151,12 +149,10 @@ abstract class AbstractCommand {
         applyRecursive(root, applier);
     }
 
-    private static void applyRecursive(CommandContainer container, Applier applier) {
-        applier.apply(container);
+    private static void applyRecursive(CommandContainer current, Applier applier) {
+        applier.apply(current);
 
-        for (CommandContainer child : container.children) {
-            applier.apply(child);
-
+        for (CommandContainer child : current.children) {
             applyRecursive(child, applier);
         }
     }
@@ -178,6 +174,12 @@ abstract class AbstractCommand {
         return types;
     }
 
+    protected static CommandContainer find(CommandContainer target, Matcher matcher) {
+        CommandContainer root = getRoot(target);
+
+        return findRecursive(root, matcher);
+    }
+
     protected static Object findMapping(CommandContainer container, final Class type) {
         CommandContainer match = find(container, HasMappingMatcher.get(type));
 
@@ -190,27 +192,12 @@ abstract class AbstractCommand {
         return instance != null ? instance : match.mappings.get(type);
     }
 
-    protected static CommandContainer find(final CommandContainer target) {
-        return find(target, new Matcher() {
-            @Override
-            public boolean matches(CommandContainer container) {
-                return container.equals(target);
-            }
-        });
-    }
-
-    protected static CommandContainer find(CommandContainer target, Matcher matcher) {
-        CommandContainer root = getRoot(target);
-
-        return findRecursive(root, matcher);
-    }
-
-    private static CommandContainer findRecursive(CommandContainer container, Matcher matcher) {
-        if (matcher.matches(container)) {
-            return container;
+    private static CommandContainer findRecursive(CommandContainer current, Matcher matcher) {
+        if (matcher.matches(current)) {
+            return current;
         }
 
-        for (CommandContainer child : container.children) {
+        for (CommandContainer child : current.children) {
             CommandContainer match = findRecursive(child, matcher);
 
             if (match != null) {

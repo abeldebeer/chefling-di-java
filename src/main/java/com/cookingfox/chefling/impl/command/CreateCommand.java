@@ -22,7 +22,7 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
         assertNonNull(type, "type");
         isAllowed(type);
 
-        Object mapping = findMapping(_container,type);
+        Object mapping = findMapping(_container, type);
         T instance;
 
         if (mapping instanceof Class) {
