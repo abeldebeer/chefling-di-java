@@ -3,40 +3,60 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.RemoveTypeNotAllowedException;
+import com.cookingfox.chefling.impl.helper.Matcher;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
  */
 class RemoveCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.RemoveCommand {
+
+    private static final Set<Class> DO_NOT_REMOVE = new HashSet<>();
+
+    static {
+        DO_NOT_REMOVE.add(Container.class);
+        DO_NOT_REMOVE.add(CommandContainer.class);
+    }
+
     public RemoveCommand(CommandContainer container) {
         super(container);
     }
 
     @Override
-    public void remove(Class type) throws ContainerException {
+    public void remove(final Class type) throws ContainerException {
         assertNonNull(type, "type");
 
-        Class[] protectedFromRemoval = {Container.class, CommandContainer.class};
+        if (DO_NOT_REMOVE.contains(type)) {
+            throw new RemoveTypeNotAllowedException(type);
+        }
 
-        // the container class and interface should not be removed from the container
-        for (Class doNotRemove : protectedFromRemoval) {
-            if (type.equals(doNotRemove)) {
-                throw new RemoveTypeNotAllowedException(type);
-            }
+        CommandContainer hasType = find(_container, HasMappingMatcher.get(type));
+
+        if (hasType == null) {
+            return;
         }
 
         // call destroy method for life cycle objects
-        lifeCycleDestroy(_container.instances.get(type));
+        lifeCycleDestroy(hasType.instances.get(type));
 
         synchronized (_container) {
             // remove type from maps
-            _container.instances.remove(type);
-            _container.mappings.remove(type);
+            hasType.instances.remove(type);
+            hasType.mappings.remove(type);
 
-            if (!_container.mappings.containsValue(type)) {
+            // find the containers that have a mapping TO this type
+            final Set<CommandContainer> hasSubTypeContainers = findAll(_container, new Matcher() {
+                @Override
+                public boolean matches(CommandContainer container) {
+                    return container.mappings.containsValue(type);
+                }
+            });
+
+            if (hasSubTypeContainers.size() == 0) {
                 return;
             }
 
@@ -46,9 +66,11 @@ class RemoveCommand extends AbstractCommand implements com.cookingfox.chefling.a
             LinkedList<Class> toRemoveTypes = new LinkedList<Class>();
 
             // find all mappings that refer to this mapping
-            for (Map.Entry<Class, Object> mapping : _container.mappings.entrySet()) {
-                if (mapping.getValue().equals(type)) {
-                    toRemoveTypes.add(mapping.getKey());
+            for (CommandContainer container : hasSubTypeContainers) {
+                for (Map.Entry<Class, Object> mapping : container.mappings.entrySet()) {
+                    if (mapping.getValue().equals(type)) {
+                        toRemoveTypes.add(mapping.getKey());
+                    }
                 }
             }
 

@@ -12,24 +12,9 @@ class HasCommand extends AbstractCommand implements com.cookingfox.chefling.api.
 
     @Override
     public boolean has(final Class type) {
-        Matcher matcher = HasMatcher.INSTANCE.setType(type);
+        Matcher matcher = HasMappingMatcher.get(type);
 
         return matcher.matches(_container) || find(_container, matcher) != null;
     }
 
-    enum HasMatcher implements Matcher {
-        INSTANCE;
-
-        Class type;
-
-        public HasMatcher setType(Class type) {
-            this.type = type;
-            return this;
-        }
-
-        @Override
-        public boolean matches(CommandContainer container) {
-            return container.mappings.containsKey(type) || container.instances.containsKey(type);
-        }
-    }
 }

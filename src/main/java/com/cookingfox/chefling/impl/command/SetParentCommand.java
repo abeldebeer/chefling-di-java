@@ -7,7 +7,7 @@ import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 /**
  * Created by Abel de Beer <abel@cookingfox.nl> on 07/12/15.
  */
-public class SetParentCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.SetParentCommand {
+class SetParentCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.SetParentCommand {
     public SetParentCommand(CommandContainer container) {
         super(container);
     }

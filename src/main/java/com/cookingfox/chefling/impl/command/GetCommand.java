@@ -16,29 +16,22 @@ class GetCommand extends AbstractCommand implements com.cookingfox.chefling.api.
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T get(Class<T> type) throws ContainerException {
         assertNonNull(type, "type");
 
-        T instance = (T) _container.instances.get(type);
-
-        if (instance != null) {
-            // an instance of this type was previously stored: return it
-            return instance;
+        if (_container.has(type)) {
+            return getExisting(type);
         }
 
-        Object mapping = _container.mappings.get(type);
+        return createNew(type);
+    }
 
-        if (mapping instanceof Class) {
-            // this type is mapped to another type (through `mapType()`), so use the mapped type to
-            // get the instance
-            return get((Class<T>) mapping);
-        }
-        // FIXME: ContainerSet is deprecated
-//        else if (mapping == null && children.hasForType(type)) {
-//            // a child Container has a mapping / instance for this type: use it
-//            return children.getForType(type).get(type);
-//        }
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED METHODS
+    //----------------------------------------------------------------------------------------------
+
+    protected <T> T createNew(Class<T> type) throws ContainerException {
+        T instance;
 
         synchronized (currentlyResolving) {
             // if the requested type is already being processed, it indicates a circular dependency
@@ -61,10 +54,6 @@ class GetCommand extends AbstractCommand implements com.cookingfox.chefling.api.
 
         return instance;
     }
-
-    //----------------------------------------------------------------------------------------------
-    // PROTECTED METHODS
-    //----------------------------------------------------------------------------------------------
 
     /**
      * Returns a trace of the dependencies.
@@ -107,4 +96,18 @@ class GetCommand extends AbstractCommand implements com.cookingfox.chefling.api.
 
         return builder;
     }
+
+    @SuppressWarnings("unchecked")
+    protected <T> T getExisting(final Class<T> type) throws ContainerException {
+        Object existing = findMapping(_container, type);
+
+        if (existing instanceof Class) {
+            return get((Class<T>) existing);
+        } else if (type.isInstance(existing)) {
+            return (T) existing;
+        }
+
+        return createNew(type);
+    }
+
 }

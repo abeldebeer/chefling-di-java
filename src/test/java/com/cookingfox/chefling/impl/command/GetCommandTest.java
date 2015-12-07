@@ -2,6 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
@@ -115,6 +116,54 @@ public class GetCommandTest extends AbstractTest {
         assertTrue(instanceFromMainInterface instanceof InterfaceSegregation.JohnDoe);
         assertSame(instanceFromMainInterface, instanceFromExtendedInterfaceFirst);
         assertSame(instanceFromMainInterface, instanceFromExtendedInterfaceSecond);
+    }
+
+    @Test
+    public void get_should_return_instance_of_parent() throws Exception {
+        Container parentContainer = new CommandContainer();
+        parentContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        NoMethodInterface instance = parentContainer.get(NoMethodImplementation.class);
+        container.setParent(parentContainer);
+        NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        assertSame(instance, result);
+    }
+
+    @Test
+    public void get_should_return_mapped_instance_of_parent_from_factory() throws Exception {
+        Container parentContainer = new CommandContainer();
+        final NoMethodInterface instance = new NoMethodImplementation();
+        parentContainer.mapFactory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
+            @Override
+            public NoMethodInterface create(Container container) throws ContainerException {
+                return instance;
+            }
+        });
+        container.setParent(parentContainer);
+        NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        assertSame(instance, result);
+    }
+
+    @Test
+    public void get_should_return_mapped_instance_of_parent() throws Exception {
+        Container parentContainer = new CommandContainer();
+        NoMethodInterface instance = new NoMethodImplementation();
+        parentContainer.mapInstance(NoMethodInterface.class, instance);
+        container.setParent(parentContainer);
+        NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        assertSame(instance, result);
+    }
+
+    @Test
+    public void get_should_return_mapped_type_of_parent() throws Exception {
+        Container parentContainer = new CommandContainer();
+        parentContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
+        container.setParent(parentContainer);
+        NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        assertTrue(result instanceof NoMethodImplementation);
     }
 
     @Test

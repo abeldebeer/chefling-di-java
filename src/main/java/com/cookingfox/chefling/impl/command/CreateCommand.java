@@ -20,16 +20,10 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> type) throws ContainerException {
         assertNonNull(type, "type");
+        isAllowed(type);
 
-        Object mapping = _container.mappings.get(type);
+        Object mapping = findMapping(_container,type);
         T instance;
-
-        // FIXME: ContainerSet is deprecated
-//        // does a child Container have a mapping / instance for this type?
-//        if (mapping == null && _container.children.hasForType(type)) {
-//            // create the instance using the child container
-//            return _container.children.getForType(type).create(type);
-//        }
 
         if (mapping instanceof Class) {
             // create instance using mapped type

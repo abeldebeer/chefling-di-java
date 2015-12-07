@@ -145,13 +145,13 @@ abstract class AbstractCommand {
     // STATIC METHODS
     //----------------------------------------------------------------------------------------------
 
-    static void applyAll(CommandContainer container, Applier applier) {
+    protected static void applyAll(CommandContainer container, Applier applier) {
         CommandContainer root = getRoot(container);
 
         applyRecursive(root, applier);
     }
 
-    static void applyRecursive(CommandContainer container, Applier applier) {
+    private static void applyRecursive(CommandContainer container, Applier applier) {
         applier.apply(container);
 
         for (CommandContainer child : container.children) {
@@ -161,7 +161,7 @@ abstract class AbstractCommand {
         }
     }
 
-    static Set<Class> compileTypes(CommandContainer container) {
+    protected static Set<Class> compileTypes(CommandContainer container) {
         final Set<Class> types = new LinkedHashSet<>();
 
         applyAll(container, new Applier() {
@@ -178,7 +178,19 @@ abstract class AbstractCommand {
         return types;
     }
 
-    static CommandContainer find(final CommandContainer target) {
+    protected static Object findMapping(CommandContainer container, final Class type) {
+        CommandContainer match = find(container, HasMappingMatcher.get(type));
+
+        if (match == null) {
+            return null;
+        }
+
+        Object instance = match.instances.get(type);
+
+        return instance != null ? instance : match.mappings.get(type);
+    }
+
+    protected static CommandContainer find(final CommandContainer target) {
         return find(target, new Matcher() {
             @Override
             public boolean matches(CommandContainer container) {
@@ -187,22 +199,18 @@ abstract class AbstractCommand {
         });
     }
 
-    static CommandContainer find(CommandContainer target, Matcher matcher) {
+    protected static CommandContainer find(CommandContainer target, Matcher matcher) {
         CommandContainer root = getRoot(target);
 
         return findRecursive(root, matcher);
     }
 
-    static CommandContainer findRecursive(CommandContainer container, Matcher matcher) {
+    private static CommandContainer findRecursive(CommandContainer container, Matcher matcher) {
         if (matcher.matches(container)) {
             return container;
         }
 
         for (CommandContainer child : container.children) {
-            if (matcher.matches(child)) {
-                return child;
-            }
-
             CommandContainer match = findRecursive(child, matcher);
 
             if (match != null) {
@@ -213,11 +221,55 @@ abstract class AbstractCommand {
         return null;
     }
 
-    static CommandContainer getRoot(CommandContainer container) {
+    protected static CommandContainer getRoot(CommandContainer container) {
         if (container.parent == null) {
             return container;
         }
 
         return getRoot(container.parent);
     }
+
+    protected static Set<CommandContainer> findAll(CommandContainer start, Matcher matcher) {
+        final Set<CommandContainer> result = new LinkedHashSet<>();
+        final CommandContainer root = getRoot(start);
+
+        findAllRecursive(result, root, matcher);
+
+        return result;
+    }
+
+    private static void findAllRecursive(final Set<CommandContainer> result, CommandContainer current, Matcher matcher) {
+        if (matcher.matches(current)) {
+            result.add(current);
+        }
+
+        for (CommandContainer child : current.children) {
+            findAllRecursive(result, child, matcher);
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // INNER CLASSES
+    //----------------------------------------------------------------------------------------------
+
+    static class HasMappingMatcher implements Matcher {
+        private static HasMappingMatcher instance = new HasMappingMatcher();
+
+        Class type;
+
+        private HasMappingMatcher() {
+        }
+
+        @Override
+        public boolean matches(CommandContainer container) {
+            return container.instances.containsKey(type) || container.mappings.containsKey(type);
+        }
+
+        public static HasMappingMatcher get(Class type) {
+            instance.type = type;
+
+            return instance;
+        }
+    }
+
 }
