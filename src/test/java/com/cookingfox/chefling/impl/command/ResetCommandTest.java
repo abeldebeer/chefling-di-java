@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link ResetCommand}.
  */
 public class ResetCommandTest extends AbstractTest {
 

@@ -15,7 +15,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link RemoveCommand}.
  */
 public class RemoveCommandTest extends AbstractTest {
 

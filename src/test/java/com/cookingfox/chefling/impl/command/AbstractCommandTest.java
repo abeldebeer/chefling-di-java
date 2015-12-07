@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link AbstractCommand}.
  */
 public class AbstractCommandTest extends AbstractTest {
 

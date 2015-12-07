@@ -5,9 +5,10 @@ import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 07/12/15.
+ * Implementation of {@link Container} interface without any functionality.
  */
 public class NoopContainer implements Container {
+
     @Override
     public void addChild(Container container) throws ContainerException {
 
@@ -57,4 +58,5 @@ public class NoopContainer implements Container {
     public void setParent(Container container) throws ContainerException {
 
     }
+
 }

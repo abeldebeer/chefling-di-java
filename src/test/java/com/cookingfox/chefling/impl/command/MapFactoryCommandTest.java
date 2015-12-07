@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link MapFactoryCommand}.
  */
 public class MapFactoryCommandTest extends AbstractTest {
 
@@ -154,5 +154,5 @@ public class MapFactoryCommandTest extends AbstractTest {
 
         Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
     }
-    
+
 }

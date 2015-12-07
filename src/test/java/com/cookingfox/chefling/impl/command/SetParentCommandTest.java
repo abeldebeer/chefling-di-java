@@ -11,7 +11,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 07/12/15.
+ * Unit tests for {@link SetParentCommand}.
  */
 public class SetParentCommandTest extends AbstractTest {
 

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Base class for unit tests.
  */
 public abstract class AbstractTest {
 

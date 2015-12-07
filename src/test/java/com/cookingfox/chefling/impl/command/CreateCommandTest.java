@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link CreateCommand}.
  */
 public class CreateCommandTest extends AbstractTest {
 

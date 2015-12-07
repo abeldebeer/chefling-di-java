@@ -11,9 +11,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Base class for container commands used by the {@link CommandContainer}.
  */
 abstract class AbstractCommand {
+
+    private static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
+    private static final String PACKAGE_JAVA_LANG = "java.lang";
+
     final CommandContainer _container;
 
     public AbstractCommand(CommandContainer container) {
@@ -57,6 +61,13 @@ abstract class AbstractCommand {
         }
     }
 
+    /**
+     * Checks for mapping conflicts between the current container and the provided container
+     * instance. Throws when there is a duplicate mapping or instance.
+     *
+     * @param container The new container.
+     * @throws ContainerException
+     */
     protected void checkMappingConflicts(CommandContainer container) throws ContainerException {
         for (Class type : compileTypes(container)) {
             if (_container.has(type)) {
@@ -76,9 +87,9 @@ abstract class AbstractCommand {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (isInPackage(type, "java.lang")) {
+        if (isInPackage(type, PACKAGE_JAVA_LANG)) {
             errorReason = "a Java language construct";
-        } else if (isInPackage(type, "com.cookingfox.chefling")) {
+        } else if (isInPackage(type, PACKAGE_CHEFLING)) {
             errorReason = "part of the Chefling library";
         } else if (type.isEnum()) {
             errorReason = "an enum";
@@ -239,7 +250,7 @@ abstract class AbstractCommand {
     // INNER CLASSES
     //----------------------------------------------------------------------------------------------
 
-    static class HasMappingMatcher implements Matcher {
+    protected static class HasMappingMatcher implements Matcher {
         private static HasMappingMatcher instance = new HasMappingMatcher();
 
         Class type;

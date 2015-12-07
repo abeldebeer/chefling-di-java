@@ -2,6 +2,7 @@ package com.cookingfox.chefling;
 
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.LifeCycle;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.fixtures.chefling.LifeCycleWithCallLog;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * Unit tests for {@link LifeCycle} callbacks.
  */
 public class LifeCycleTest extends AbstractTest {
 

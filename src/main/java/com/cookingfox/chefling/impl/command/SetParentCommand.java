@@ -17,7 +17,8 @@ class SetParentCommand extends AbstractCommand implements com.cookingfox.cheflin
         if (container == null) {
             throw new NullValueNotAllowedException("Parent container can not be null");
         } else if (container.equals(_container)) {
-            throw new ContainerException("Parent container can not be the same as the container it is being added to");
+            throw new ContainerException("Parent container can not be the same instance as the " +
+                    "container it is being added to");
         } else if (_container.parent != null) {
             throw new ContainerException("Parent container is already set");
         } else if (!(container instanceof CommandContainer)) {

@@ -4,9 +4,10 @@ import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.AddChildCommand
  */
 class AddChildCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.AddChildCommand {
+
     public AddChildCommand(CommandContainer container) {
         super(container);
     }
@@ -16,7 +17,8 @@ class AddChildCommand extends AbstractCommand implements com.cookingfox.chefling
         if (container == null) {
             throw new ContainerException("Child container cannot be null");
         } else if (container.equals(_container)) {
-            throw new ContainerException("Child container cannot be the Container you are adding it to");
+            throw new ContainerException("Child container can not be the same instance as the " +
+                    "container it is being added to");
         } else if (!(container instanceof CommandContainer)) {
             throw new ContainerException("Child container must be an instance of CommandContainer");
         }
@@ -33,4 +35,5 @@ class AddChildCommand extends AbstractCommand implements com.cookingfox.chefling
 
         _container.children.add(child);
     }
+
 }
