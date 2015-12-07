@@ -28,6 +28,7 @@ public class CommandContainer implements Container {
     final MapTypeCommand mapTypeCommand;
     final RemoveCommand removeCommand;
     final ResetCommand resetCommand;
+    final SetParentCommand setParentCommand;
 
     public CommandContainer() {
         addChildCommand = new AddChildCommand(this);
@@ -39,6 +40,7 @@ public class CommandContainer implements Container {
         mapTypeCommand = new MapTypeCommand(this);
         removeCommand = new RemoveCommand(this);
         resetCommand = new ResetCommand(this);
+        setParentCommand = new SetParentCommand(this);
 
         reset();
     }
@@ -87,4 +89,10 @@ public class CommandContainer implements Container {
     public void reset() {
         resetCommand.reset();
     }
+
+    @Override
+    public void setParent(Container container) throws ContainerException {
+        setParentCommand.setParent(container);
+    }
+
 }

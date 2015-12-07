@@ -2,9 +2,9 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.fixtures.chefling.NoConstructor;
+import com.cookingfox.fixtures.chefling.NoopContainer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertSame;
@@ -60,57 +60,6 @@ public class AddChildCommandTest extends AbstractTest {
         CommandContainer child = new CommandContainer();
         child.mapInstance(NoConstructor.class, new NoConstructor());
         container.addChild(child);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // HELPERS
-    //----------------------------------------------------------------------------------------------
-
-    class NoopContainer implements Container {
-        @Override
-        public void addChild(Container container) throws ContainerException {
-
-        }
-
-        @Override
-        public <T> T create(Class<T> type) throws ContainerException {
-            return null;
-        }
-
-        @Override
-        public <T> T get(Class<T> type) throws ContainerException {
-            return null;
-        }
-
-        @Override
-        public boolean has(Class type) {
-            return false;
-        }
-
-        @Override
-        public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
-
-        }
-
-        @Override
-        public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
-
-        }
-
-        @Override
-        public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
-
-        }
-
-        @Override
-        public void remove(Class type) throws ContainerException {
-
-        }
-
-        @Override
-        public void reset() {
-
-        }
     }
 
 }
