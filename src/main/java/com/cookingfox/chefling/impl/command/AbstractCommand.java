@@ -324,7 +324,7 @@ abstract class AbstractCommand {
         /**
          * The type to match.
          */
-        Class type;
+        protected Class type;
 
         /**
          * Constructor is disabled: use {@link #get(Class)}.
