@@ -65,7 +65,7 @@ public class RemoveCommandTest extends AbstractTest {
     public void remove_should_remove_factory_mapping() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
-            public NoConstructor create(Container container) throws ContainerException {
+            public NoConstructor createInstance(Container container) throws ContainerException {
                 return new NoConstructor();
             }
         };

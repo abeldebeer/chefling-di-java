@@ -21,6 +21,6 @@ public interface Factory<T> {
      * @return An instance of type {@link <T>}.
      * @throws ContainerException
      */
-    T create(Container container) throws ContainerException;
+    T createInstance(Container container) throws ContainerException;
 
 }

@@ -268,7 +268,7 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
      * @throws ContainerException
      */
     protected <T> T resolveUsingFactory(Factory<T> factory, Class<T> type) throws ContainerException {
-        T instance = factory.create(_container);
+        T instance = factory.createInstance(_container);
 
         if (instance == null) {
             throw new FactoryReturnedNullException(type);

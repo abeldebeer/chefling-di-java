@@ -135,7 +135,7 @@ public class GetCommandTest extends AbstractTest {
         final NoMethodInterface instance = new NoMethodImplementation();
         parentContainer.mapFactory(NoMethodInterface.class, new Factory<NoMethodInterface>() {
             @Override
-            public NoMethodInterface create(Container container) throws ContainerException {
+            public NoMethodInterface createInstance(Container container) throws ContainerException {
                 return instance;
             }
         });

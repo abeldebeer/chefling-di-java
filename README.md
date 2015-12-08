@@ -60,8 +60,8 @@ and add the project declaration to your `pom.xml`:
 
 ## Features
 
-The Chefling [Container interface](src/main/java/com/cookingfox/chefling/ContainerInterface.java) 
-defines the following methods:
+The Chefling [Container interface](src/main/java/com/cookingfox/chefling/api/Container.java) defines 
+the following methods:
 
 - `Object get(Class type)`: Returns an instance of `type`. If a previously stored instance exists, 
 it will always return that same instance. If there is no stored instance, it will create a new one 
@@ -168,7 +168,7 @@ use it everywhere, otherwise you will get different instances of the container a
 
 ### LifeCycle
 
-The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/LifeCycle.java) allows 
+The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/api/LifeCycle.java) allows 
 implementing classes to hook into the life cycle processes of the Container:
 
 - When `Container.create()` is called and an instance of the requested type is created, it will call 
@@ -181,10 +181,10 @@ the `LifeCycle` interface.
 
 ### Factory
 
-The [`Factory` interface](src/main/java/com/cookingfox/chefling/Factory.java) defines one method 
-(`create()`) that is used to create an instance of the provided type. A Factory is generally used 
-when the type can not be resolved by the Container, for example when its constructor parameters are 
-of a primitive type (boolean, int). Using a Factory is more efficient than mapping an instance 
+The [`Factory` interface](src/main/java/com/cookingfox/chefling/api/Factory.java) defines one method 
+(`createInstance()`) that is used to create an instance of the provided type. A Factory is generally 
+used when the type can not be resolved by the Container, for example when its constructor parameters 
+are of a primitive type (boolean, int). Using a Factory is more efficient than mapping an instance 
 directly, because it will only be called once it is requested (lazy loaded).
 
 Example:
@@ -206,9 +206,9 @@ Container container = new Container();
 
 // map type `Foo` to factory
 container.mapFactory(Foo.class, new Factory<Foo>() {
-    // the create method receives a Container instance, 
+    // the `createInstance` method receives a Container instance, 
     // which can be used to get dependencies
-    public Foo create(ContainerInterface container) throws ContainerException {
+    public Foo createInstance(Container container) throws ContainerException {
         return new Foo(container.get(Bar.class), "some arbitrary value");
     }
 });

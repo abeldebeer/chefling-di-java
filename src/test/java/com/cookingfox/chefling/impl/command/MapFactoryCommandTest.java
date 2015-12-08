@@ -22,7 +22,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_type_null() throws Exception {
         Factory factory = new Factory() {
             @Override
-            public Object create(Container container) throws ContainerException {
+            public Object createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
@@ -39,7 +39,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_type_not_allowed() {
         Factory factory = new Factory() {
             @Override
-            public Object create(Container container) throws ContainerException {
+            public Object createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
@@ -61,7 +61,7 @@ public class MapFactoryCommandTest extends AbstractTest {
 
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
-            public NoConstructor create(Container container) throws ContainerException {
+            public NoConstructor createInstance(Container container) throws ContainerException {
                 callHashCodes.add(hashCode());
                 return new NoConstructor();
             }
@@ -79,7 +79,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_returns_null() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
-            public NoConstructor create(Container container) throws ContainerException {
+            public NoConstructor createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
@@ -93,7 +93,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_returns_invalid() throws Exception {
         Factory factory = new Factory() {
             @Override
-            public Object create(Container container) throws ContainerException {
+            public Object createInstance(Container container) throws ContainerException {
                 return "some unexpected value";
             }
         };
@@ -106,7 +106,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_type_already_mapped() throws Exception {
         Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
-            public NoMethodInterface create(Container container) throws ContainerException {
+            public NoMethodInterface createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
@@ -119,7 +119,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     public void mapFactory_should_throw_if_has_instance() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
-            public NoConstructor create(Container container) throws ContainerException {
+            public NoConstructor createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
@@ -134,7 +134,7 @@ public class MapFactoryCommandTest extends AbstractTest {
         final LinkedList<Exception> exceptions = new LinkedList<>();
         final Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
-            public NoMethodInterface create(Container container) throws ContainerException {
+            public NoMethodInterface createInstance(Container container) throws ContainerException {
                 return null;
             }
         };
