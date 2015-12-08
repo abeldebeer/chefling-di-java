@@ -9,8 +9,8 @@ import java.util.LinkedList;
  */
 public class LifeCycleWithCallLog implements LifeCycle {
 
-    public final LinkedList<Long> onCreateCalls = new LinkedList<Long>();
-    public final LinkedList<Long> onDestroyCalls = new LinkedList<Long>();
+    public final LinkedList<Long> onCreateCalls = new LinkedList<>();
+    public final LinkedList<Long> onDestroyCalls = new LinkedList<>();
 
     @Override
     public void onCreate() {

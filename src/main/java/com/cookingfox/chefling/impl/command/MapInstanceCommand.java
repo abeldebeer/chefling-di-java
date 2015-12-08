@@ -4,12 +4,21 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NotAnInstanceOfTypeException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.MapInstanceCommand
  */
 class MapInstanceCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.MapInstanceCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public MapInstanceCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
@@ -23,4 +32,5 @@ class MapInstanceCommand extends AbstractCommand implements com.cookingfox.chefl
 
         addMapping(type, instance);
     }
+
 }

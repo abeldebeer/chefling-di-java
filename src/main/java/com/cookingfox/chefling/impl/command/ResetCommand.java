@@ -1,23 +1,32 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.impl.helper.Applier;
+import com.cookingfox.chefling.impl.helper.Visitor;
 
 import java.util.Map;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.ResetCommand
  */
 class ResetCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.ResetCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public ResetCommand(CommandContainer container) {
         super(container);
     }
 
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
+
     @Override
     public void reset() {
-        applyAll(_container, new Applier() {
+        visitAll(_container, new Visitor() {
             @Override
-            public void apply(CommandContainer container) {
+            public void visit(CommandContainer container) {
                 // call destroy method for life cycle objects
                 for (Map.Entry<Class, Object> entry : container.instances.entrySet()) {
                     lifeCycleDestroy(entry.getValue());
@@ -31,4 +40,5 @@ class ResetCommand extends AbstractCommand implements com.cookingfox.chefling.ap
         _container.instances.put(Container.class, _container);
         _container.instances.put(CommandContainer.class, _container);
     }
+
 }

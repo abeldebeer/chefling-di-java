@@ -57,7 +57,7 @@ public class MapFactoryCommandTest extends AbstractTest {
 
     @Test
     public void mapFactory_simple_resolves_expected() throws Exception {
-        final LinkedList<Integer> callHashCodes = new LinkedList<Integer>();
+        final LinkedList<Integer> callHashCodes = new LinkedList<>();
 
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
@@ -131,7 +131,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     @Test
     public void mapFactory_passes_concurrency_test() throws Exception {
         int numTests = 10;
-        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
+        final LinkedList<Exception> exceptions = new LinkedList<>();
         final Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
             public NoMethodInterface create(Container container) throws ContainerException {

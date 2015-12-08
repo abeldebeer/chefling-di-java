@@ -52,7 +52,7 @@ public abstract class AbstractTest {
      * Returns a map of classes that are not allowed and their instances.
      */
     protected HashMap<Class, Object> getNotAllowedInstances() {
-        HashMap<Class, Object> notAllowedInstances = new HashMap<Class, Object>();
+        HashMap<Class, Object> notAllowedInstances = new HashMap<>();
         notAllowedInstances.put(Object.class, new Object());
         notAllowedInstances.put(Class.class, Object.class);
         notAllowedInstances.put(String.class, "");
@@ -77,7 +77,7 @@ public abstract class AbstractTest {
      * Returns a map of classes that are not allowed and their sub classes.
      */
     protected HashMap<Class, Class> getNotAllowedSubTypes() {
-        HashMap<Class, Class> notAllowedSubTypes = new HashMap<Class, Class>();
+        HashMap<Class, Class> notAllowedSubTypes = new HashMap<>();
         notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
         notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
         notAllowedSubTypes.put(Number.class, Integer.class);

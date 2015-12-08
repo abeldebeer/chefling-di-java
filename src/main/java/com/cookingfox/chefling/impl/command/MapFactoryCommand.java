@@ -4,12 +4,21 @@ import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.MapFactoryCommand
  */
 class MapFactoryCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.MapFactoryCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public MapFactoryCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
@@ -22,4 +31,5 @@ class MapFactoryCommand extends AbstractCommand implements com.cookingfox.chefli
 
         addMapping(type, factory);
     }
+
 }

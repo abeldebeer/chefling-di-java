@@ -4,12 +4,21 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NotASubTypeException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.MapTypeCommand
  */
 class MapTypeCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.MapTypeCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public MapTypeCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
@@ -31,4 +40,5 @@ class MapTypeCommand extends AbstractCommand implements com.cookingfox.chefling.
 
         addMapping(type, subType);
     }
+
 }

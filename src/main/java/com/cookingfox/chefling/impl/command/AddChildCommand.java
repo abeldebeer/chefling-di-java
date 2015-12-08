@@ -8,9 +8,17 @@ import com.cookingfox.chefling.api.exception.ContainerException;
  */
 class AddChildCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.AddChildCommand {
 
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public AddChildCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public void addChild(Container container) throws ContainerException {

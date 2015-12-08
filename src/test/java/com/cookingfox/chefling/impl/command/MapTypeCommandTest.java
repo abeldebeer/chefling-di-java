@@ -80,7 +80,7 @@ public class MapTypeCommandTest extends AbstractTest {
     @Test
     public void mapType_passes_concurrency_test() {
         int numTests = 10;
-        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
+        final LinkedList<Exception> exceptions = new LinkedList<>();
 
         Runnable test = new Runnable() {
             @Override

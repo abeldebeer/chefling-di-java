@@ -3,12 +3,21 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.impl.helper.Matcher;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.HasCommand
  */
 class HasCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.HasCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public HasCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public boolean has(final Class type) {

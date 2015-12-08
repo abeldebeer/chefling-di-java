@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
-import com.cookingfox.chefling.impl.helper.Applier;
+import com.cookingfox.chefling.impl.helper.Visitor;
 import com.cookingfox.chefling.impl.helper.Matcher;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodAbstract;
@@ -55,9 +55,9 @@ public class AbstractCommandTest extends AbstractTest {
         final Set<CommandContainer> called = new LinkedHashSet<>();
         final AtomicInteger counter = new AtomicInteger(0);
 
-        command.applyAll(container, new Applier() {
+        command.visitAll(container, new Visitor() {
             @Override
-            public void apply(CommandContainer container) {
+            public void visit(CommandContainer container) {
                 called.add(container);
                 counter.incrementAndGet();
             }

@@ -10,40 +10,62 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * {@link Container} implementation that uses command classes for each container operation.
  */
 public class CommandContainer implements Container {
 
-    final Set<CommandContainer> children = new LinkedHashSet<>();
-    final Map<Class, Object> instances = new LinkedHashMap<>();
-    final Map<Class, Object> mappings = new LinkedHashMap<>();
-    CommandContainer parent;
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED PROPERTIES
+    //----------------------------------------------------------------------------------------------
 
-    final AddChildCommand addChildCommand;
-    final CreateCommand createCommand;
-    final GetCommand getCommand;
-    final HasCommand hasCommand;
-    final MapFactoryCommand mapFactoryCommand;
-    final MapInstanceCommand mapInstanceCommand;
-    final MapTypeCommand mapTypeCommand;
-    final RemoveCommand removeCommand;
-    final ResetCommand resetCommand;
-    final SetParentCommand setParentCommand;
+    /**
+     * A collection of child container configurations.
+     */
+    protected final Set<CommandContainer> children = new LinkedHashSet<>();
+
+    /**
+     * Stores created instances, where the key is the type and the value is the instance. This
+     * instance is returned the next time the type is requested.
+     */
+    protected final Map<Class, Object> instances = new LinkedHashMap<>();
+
+    /**
+     * Stores type mappings, where the key is the type and the value is the mapping provided by the
+     * `map...` methods.
+     */
+    protected final Map<Class, Object> mappings = new LinkedHashMap<>();
+
+    /**
+     * The parent container configuration.
+     */
+    protected CommandContainer parent;
+
+    //----------------------------------------------------------------------------------------------
+    // COMMAND INSTANCES
+    //----------------------------------------------------------------------------------------------
+
+    protected final AddChildCommand addChildCommand = new AddChildCommand(this);
+    protected final CreateCommand createCommand = new CreateCommand(this);
+    protected final GetCommand getCommand = new GetCommand(this);
+    protected final HasCommand hasCommand = new HasCommand(this);
+    protected final MapFactoryCommand mapFactoryCommand = new MapFactoryCommand(this);
+    protected final MapInstanceCommand mapInstanceCommand = new MapInstanceCommand(this);
+    protected final MapTypeCommand mapTypeCommand = new MapTypeCommand(this);
+    protected final RemoveCommand removeCommand = new RemoveCommand(this);
+    protected final ResetCommand resetCommand = new ResetCommand(this);
+    protected final SetParentCommand setParentCommand = new SetParentCommand(this);
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
 
     public CommandContainer() {
-        addChildCommand = new AddChildCommand(this);
-        createCommand = new CreateCommand(this);
-        getCommand = new GetCommand(this);
-        hasCommand = new HasCommand(this);
-        mapFactoryCommand = new MapFactoryCommand(this);
-        mapInstanceCommand = new MapInstanceCommand(this);
-        mapTypeCommand = new MapTypeCommand(this);
-        removeCommand = new RemoveCommand(this);
-        resetCommand = new ResetCommand(this);
-        setParentCommand = new SetParentCommand(this);
-
         reset();
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public void addChild(Container container) throws ContainerException {

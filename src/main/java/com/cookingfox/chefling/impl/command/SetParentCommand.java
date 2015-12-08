@@ -5,12 +5,21 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 07/12/15.
+ * @see com.cookingfox.chefling.api.command.SetParentCommand
  */
 class SetParentCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.SetParentCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public SetParentCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public void setParent(Container container) throws ContainerException {
@@ -33,4 +42,5 @@ class SetParentCommand extends AbstractCommand implements com.cookingfox.cheflin
 
         _container.parent = parent;
     }
+
 }

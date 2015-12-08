@@ -83,7 +83,7 @@ public class MapInstanceCommandTest extends AbstractTest {
     @Test
     public void mapInstance_passes_concurrency_test() throws Exception {
         int numTests = 10;
-        final LinkedList<Exception> exceptions = new LinkedList<Exception>();
+        final LinkedList<Exception> exceptions = new LinkedList<>();
 
         Runnable test = new Runnable() {
             @Override

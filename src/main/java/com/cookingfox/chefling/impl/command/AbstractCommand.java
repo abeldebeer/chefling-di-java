@@ -3,8 +3,8 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.LifeCycle;
 import com.cookingfox.chefling.api.exception.*;
-import com.cookingfox.chefling.impl.helper.Applier;
 import com.cookingfox.chefling.impl.helper.Matcher;
+import com.cookingfox.chefling.impl.helper.Visitor;
 
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashSet;
@@ -64,30 +64,6 @@ abstract class AbstractCommand {
     }
 
     /**
-     * Apply an operation to the full tree of container children.
-     *
-     * @param container The container instance to use to get the root container.
-     * @param applier   The operation to apply to all container children.
-     */
-    protected void applyAll(CommandContainer container, Applier applier) {
-        applyRecursive(getRoot(container), applier);
-    }
-
-    /**
-     * Apply an operation recursively to all children of the provided container instance.
-     *
-     * @param current The container to traverse the children of.
-     * @param applier The operation to apply to all container children.
-     */
-    protected void applyRecursive(CommandContainer current, Applier applier) {
-        applier.apply(current);
-
-        for (CommandContainer child : current.children) {
-            applyRecursive(child, applier);
-        }
-    }
-
-    /**
      * Checks whether `value` is null, if so: throw an exception.
      *
      * @param value The value to check.
@@ -124,9 +100,9 @@ abstract class AbstractCommand {
     protected Set<Class> compileTypes(CommandContainer container) {
         final Set<Class> types = new LinkedHashSet<>();
 
-        applyAll(container, new Applier() {
+        visitAll(container, new Visitor() {
             @Override
-            public void apply(CommandContainer container) {
+            public void visit(CommandContainer container) {
                 types.addAll(container.instances.keySet());
                 types.addAll(container.mappings.keySet());
             }
@@ -199,6 +175,10 @@ abstract class AbstractCommand {
      * @return The matching container or null.
      */
     protected CommandContainer findOne(CommandContainer target, Matcher matcher) {
+        if (matcher.matches(target)) {
+            return target;
+        }
+
         return findOneRecursive(getRoot(target), matcher);
     }
 
@@ -298,6 +278,30 @@ abstract class AbstractCommand {
     protected void lifeCycleDestroy(Object instance) {
         if (instance instanceof LifeCycle) {
             ((LifeCycle) instance).onDestroy();
+        }
+    }
+
+    /**
+     * Apply an operation to the full tree of container children.
+     *
+     * @param container The container instance to use to get the root container.
+     * @param visitor   The operation to apply to all container children.
+     */
+    protected void visitAll(CommandContainer container, Visitor visitor) {
+        visitRecursive(getRoot(container), visitor);
+    }
+
+    /**
+     * Apply an operation recursively to all children of the provided container instance.
+     *
+     * @param current The container to traverse the children of.
+     * @param visitor The operation to apply to all container children.
+     */
+    protected void visitRecursive(CommandContainer current, Visitor visitor) {
+        visitor.visit(current);
+
+        for (CommandContainer child : current.children) {
+            visitRecursive(child, visitor);
         }
     }
 

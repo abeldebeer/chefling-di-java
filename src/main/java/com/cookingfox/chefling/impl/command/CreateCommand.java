@@ -9,12 +9,21 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * @see com.cookingfox.chefling.api.command.CreateCommand
  */
 class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.CreateCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
+
     public CreateCommand(CommandContainer container) {
         super(container);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    //----------------------------------------------------------------------------------------------
 
     @Override
     @SuppressWarnings("unchecked")
@@ -153,7 +162,7 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
      * @return A map of resolvability results.
      */
     protected Map<Integer, List<ResolvabilityResult>> buildResultMap(Constructor[] constructors) {
-        Map<Integer, List<ResolvabilityResult>> resultMap = new TreeMap<Integer, List<ResolvabilityResult>>();
+        Map<Integer, List<ResolvabilityResult>> resultMap = new TreeMap<>();
 
         // inspect constructor resolvability
         for (Constructor constructor : constructors) {
@@ -162,7 +171,7 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
             List<ResolvabilityResult> resultList = resultMap.get(result.numParameters);
 
             if (resultList == null) {
-                resultList = new LinkedList<ResolvabilityResult>();
+                resultList = new LinkedList<>();
             }
 
             resultList.add(result);
@@ -270,7 +279,7 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
     }
 
     //----------------------------------------------------------------------------------------------
-    // INTERNAL CLASSES
+    // INNER CLASSES
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -295,7 +304,7 @@ class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.a
 
         public final Constructor constructor;
         public final int numParameters;
-        public final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<UnresolvableParameter>();
+        public final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<>();
 
         public ResolvabilityResult(Constructor constructor, int numParameters) {
             this.constructor = constructor;
