@@ -12,7 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link GetCommand}.
+ * Unit tests for {@link GetCommandImpl}.
  */
 public class GetCommandTest extends AbstractTest {
 

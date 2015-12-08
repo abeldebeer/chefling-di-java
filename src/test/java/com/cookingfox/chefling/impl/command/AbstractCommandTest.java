@@ -33,7 +33,7 @@ public class AbstractCommandTest extends AbstractTest {
     public void setUp() throws Exception {
         super.setUp();
         
-        command = new AddChildCommand(container);
+        command = new AddChildCommandImpl(container);
     }
 
     //----------------------------------------------------------------------------------------------

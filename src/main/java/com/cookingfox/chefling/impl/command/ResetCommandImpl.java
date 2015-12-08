@@ -1,20 +1,21 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.command.ResetCommand;
 import com.cookingfox.chefling.impl.helper.Visitor;
 
 import java.util.Map;
 
 /**
- * @see com.cookingfox.chefling.api.command.ResetCommand
+ * @see ResetCommand
  */
-class ResetCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.ResetCommand {
+class ResetCommandImpl extends AbstractCommand implements ResetCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public ResetCommand(CommandContainer container) {
+    public ResetCommandImpl(CommandContainer container) {
         super(container);
     }
 

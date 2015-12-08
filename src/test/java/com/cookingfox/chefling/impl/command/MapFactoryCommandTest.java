@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * Unit tests for {@link MapFactoryCommand}.
+ * Unit tests for {@link MapFactoryCommandImpl}.
  */
 public class MapFactoryCommandTest extends AbstractTest {
 

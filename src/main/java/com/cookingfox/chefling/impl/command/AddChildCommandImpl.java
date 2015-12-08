@@ -1,18 +1,19 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.command.AddChildCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
- * @see com.cookingfox.chefling.api.command.AddChildCommand
+ * @see AddChildCommand
  */
-class AddChildCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.AddChildCommand {
+class AddChildCommandImpl extends AbstractCommand implements AddChildCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public AddChildCommand(CommandContainer container) {
+    public AddChildCommandImpl(CommandContainer container) {
         super(container);
     }
 

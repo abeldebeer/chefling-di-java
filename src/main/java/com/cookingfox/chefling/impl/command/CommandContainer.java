@@ -2,6 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.command.*;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 import java.util.LinkedHashMap;
@@ -21,19 +22,19 @@ public class CommandContainer implements Container {
     /**
      * A collection of child container configurations.
      */
-    protected final Set<CommandContainer> children = new LinkedHashSet<>();
+    final Set<CommandContainer> children = new LinkedHashSet<>();
 
     /**
      * Stores created instances, where the key is the type and the value is the instance. This
      * instance is returned the next time the type is requested.
      */
-    protected final Map<Class, Object> instances = new LinkedHashMap<>();
+    final Map<Class, Object> instances = new LinkedHashMap<>();
 
     /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the
      * `map...` methods.
      */
-    protected final Map<Class, Object> mappings = new LinkedHashMap<>();
+    final Map<Class, Object> mappings = new LinkedHashMap<>();
 
     /**
      * The parent container configuration.
@@ -44,16 +45,16 @@ public class CommandContainer implements Container {
     // COMMAND INSTANCES
     //----------------------------------------------------------------------------------------------
 
-    protected final AddChildCommand addChildCommand = new AddChildCommand(this);
-    protected final CreateCommand createCommand = new CreateCommand(this);
-    protected final GetCommand getCommand = new GetCommand(this);
-    protected final HasCommand hasCommand = new HasCommand(this);
-    protected final MapFactoryCommand mapFactoryCommand = new MapFactoryCommand(this);
-    protected final MapInstanceCommand mapInstanceCommand = new MapInstanceCommand(this);
-    protected final MapTypeCommand mapTypeCommand = new MapTypeCommand(this);
-    protected final RemoveCommand removeCommand = new RemoveCommand(this);
-    protected final ResetCommand resetCommand = new ResetCommand(this);
-    protected final SetParentCommand setParentCommand = new SetParentCommand(this);
+    final AddChildCommand addChildCommand = new AddChildCommandImpl(this);
+    final CreateCommand createCommand = new CreateCommandImpl(this);
+    final GetCommand getCommand = new GetCommandImpl(this);
+    final HasCommand hasCommand = new HasCommandImpl(this);
+    final MapFactoryCommand mapFactoryCommand = new MapFactoryCommandImpl(this);
+    final MapInstanceCommand mapInstanceCommand = new MapInstanceCommandImpl(this);
+    final MapTypeCommand mapTypeCommand = new MapTypeCommandImpl(this);
+    final RemoveCommand removeCommand = new RemoveCommandImpl(this);
+    final ResetCommand resetCommand = new ResetCommandImpl(this);
+    final SetParentCommand setParentCommand = new SetParentCommandImpl(this);
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

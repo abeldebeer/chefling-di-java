@@ -1,19 +1,20 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.command.SetParentCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 
 /**
- * @see com.cookingfox.chefling.api.command.SetParentCommand
+ * @see SetParentCommand
  */
-class SetParentCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.SetParentCommand {
+class SetParentCommandImpl extends AbstractCommand implements SetParentCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public SetParentCommand(CommandContainer container) {
+    public SetParentCommandImpl(CommandContainer container) {
         super(container);
     }
 

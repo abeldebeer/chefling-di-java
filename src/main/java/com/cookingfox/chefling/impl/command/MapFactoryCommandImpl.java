@@ -1,18 +1,19 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.command.MapFactoryCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
- * @see com.cookingfox.chefling.api.command.MapFactoryCommand
+ * @see MapFactoryCommand
  */
-class MapFactoryCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.MapFactoryCommand {
+class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public MapFactoryCommand(CommandContainer container) {
+    public MapFactoryCommandImpl(CommandContainer container) {
         super(container);
     }
 

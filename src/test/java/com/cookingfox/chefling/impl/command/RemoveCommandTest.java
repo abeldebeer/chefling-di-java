@@ -15,7 +15,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link RemoveCommand}.
+ * Unit tests for {@link RemoveCommandImpl}.
  */
 public class RemoveCommandTest extends AbstractTest {
 

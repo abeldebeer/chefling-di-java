@@ -2,6 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.LifeCycle;
+import com.cookingfox.chefling.api.command.CreateCommand;
 import com.cookingfox.chefling.api.exception.*;
 
 import java.lang.reflect.Constructor;
@@ -9,15 +10,15 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
- * @see com.cookingfox.chefling.api.command.CreateCommand
+ * @see CreateCommand
  */
-class CreateCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.CreateCommand {
+class CreateCommandImpl extends AbstractCommand implements CreateCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public CreateCommand(CommandContainer container) {
+    public CreateCommandImpl(CommandContainer container) {
         super(container);
     }
 

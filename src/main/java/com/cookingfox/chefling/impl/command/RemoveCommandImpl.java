@@ -1,6 +1,7 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.command.RemoveCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.RemoveTypeNotAllowedException;
 import com.cookingfox.chefling.impl.helper.Visitor;
@@ -11,9 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @see com.cookingfox.chefling.api.command.RemoveCommand
+ * @see RemoveCommand
  */
-class RemoveCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.RemoveCommand {
+class RemoveCommandImpl extends AbstractCommand implements RemoveCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTANTS
@@ -36,7 +37,7 @@ class RemoveCommand extends AbstractCommand implements com.cookingfox.chefling.a
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public RemoveCommand(CommandContainer container) {
+    public RemoveCommandImpl(CommandContainer container) {
         super(container);
     }
 

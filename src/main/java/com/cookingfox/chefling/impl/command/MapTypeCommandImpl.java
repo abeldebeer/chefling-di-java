@@ -1,18 +1,19 @@
 package com.cookingfox.chefling.impl.command;
 
+import com.cookingfox.chefling.api.command.MapTypeCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NotASubTypeException;
 
 /**
- * @see com.cookingfox.chefling.api.command.MapTypeCommand
+ * @see MapTypeCommand
  */
-class MapTypeCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.MapTypeCommand {
+class MapTypeCommandImpl extends AbstractCommand implements MapTypeCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public MapTypeCommand(CommandContainer container) {
+    public MapTypeCommandImpl(CommandContainer container) {
         super(container);
     }
 

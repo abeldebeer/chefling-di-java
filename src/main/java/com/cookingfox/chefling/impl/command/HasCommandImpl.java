@@ -1,17 +1,18 @@
 package com.cookingfox.chefling.impl.command;
 
+import com.cookingfox.chefling.api.command.HasCommand;
 import com.cookingfox.chefling.impl.helper.Matcher;
 
 /**
- * @see com.cookingfox.chefling.api.command.HasCommand
+ * @see HasCommand
  */
-class HasCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.HasCommand {
+class HasCommandImpl extends AbstractCommand implements HasCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public HasCommand(CommandContainer container) {
+    public HasCommandImpl(CommandContainer container) {
         super(container);
     }
 

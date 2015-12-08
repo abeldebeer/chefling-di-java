@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link CreateCommand}.
+ * Unit tests for {@link CreateCommandImpl}.
  */
 public class CreateCommandTest extends AbstractTest {
 

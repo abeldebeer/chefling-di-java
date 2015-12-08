@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit tests for {@link HasCommand}.
+ * Unit tests for {@link HasCommandImpl}.
  */
 public class HasCommandTest extends AbstractTest {
 

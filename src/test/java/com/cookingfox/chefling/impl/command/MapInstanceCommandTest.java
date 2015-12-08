@@ -14,7 +14,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link MapInstanceCommand}.
+ * Unit tests for {@link MapInstanceCommandImpl}.
  */
 public class MapInstanceCommandTest extends AbstractTest {
 

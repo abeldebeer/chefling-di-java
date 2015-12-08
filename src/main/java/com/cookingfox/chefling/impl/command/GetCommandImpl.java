@@ -1,14 +1,15 @@
 package com.cookingfox.chefling.impl.command;
 
+import com.cookingfox.chefling.api.command.GetCommand;
 import com.cookingfox.chefling.api.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
 import java.util.LinkedList;
 
 /**
- * @see com.cookingfox.chefling.api.command.GetCommand
+ * @see GetCommand
  */
-class GetCommand extends AbstractCommand implements com.cookingfox.chefling.api.command.GetCommand {
+class GetCommandImpl extends AbstractCommand implements GetCommand {
 
     //----------------------------------------------------------------------------------------------
     // PROTECTED PROPERTIES
@@ -24,7 +25,7 @@ class GetCommand extends AbstractCommand implements com.cookingfox.chefling.api.
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
-    public GetCommand(CommandContainer container) {
+    public GetCommandImpl(CommandContainer container) {
         super(container);
     }
 
