@@ -110,8 +110,7 @@ abstract class AbstractCommand {
     protected void checkMappingConflicts(CommandContainer container) throws ContainerException {
         for (Class type : compileTypes(container)) {
             if (_container.has(type)) {
-                throw new ContainerException("Mapping conflict: new container already contains " +
-                        "a configuration for type: " + type);
+                throw new ConfigurationConflictException(type);
             }
         }
     }

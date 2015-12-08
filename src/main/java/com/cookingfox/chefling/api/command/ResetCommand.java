@@ -1,8 +1,14 @@
 package com.cookingfox.chefling.api.command;
 
-/**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
- */
+import com.cookingfox.chefling.api.LifeCycle;
+
 public interface ResetCommand {
+
+    /**
+     * Removes all stored instances and mappings. Use this method to clean up the Container in your
+     * application's destroy procedure. For every instance that implements {@link LifeCycle}, its
+     * {@link LifeCycle#onDestroy()} method will be called.
+     */
     void reset();
+
 }

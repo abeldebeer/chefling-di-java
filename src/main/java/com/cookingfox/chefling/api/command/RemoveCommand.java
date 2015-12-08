@@ -1,10 +1,18 @@
 package com.cookingfox.chefling.api.command;
 
+import com.cookingfox.chefling.api.LifeCycle;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
-/**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
- */
 public interface RemoveCommand {
+
+    /**
+     * Removes a stored instance and/or mapping for `type`. If an instance exists and it implements
+     * {@link LifeCycle}, its {@link LifeCycle#onDestroy()} method will be called.
+     *
+     * @param type The type to remove the instance / mapping for.
+     * @throws ContainerException when the type is not allowed to be removed.
+     * @see LifeCycle#onDestroy()
+     */
     void remove(Class type) throws ContainerException;
+
 }

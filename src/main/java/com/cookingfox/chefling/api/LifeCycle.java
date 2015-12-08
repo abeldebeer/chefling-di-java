@@ -1,10 +1,19 @@
 package com.cookingfox.chefling.api;
 
 /**
- * Created by Abel de Beer <abel@cookingfox.nl> on 04/12/15.
+ * By implementing this interface, the Container will call its methods when an instance of the type
+ * is created and destroyed.
  */
 public interface LifeCycle {
+
+    /**
+     * Initialize the object.
+     */
     void onCreate();
 
+    /**
+     * Clean up the object.
+     */
     void onDestroy();
+
 }
