@@ -4,41 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Package info -->
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>3.2.0</version>
-
-    <name>Chefling</name>
+    <version>4.0.0-SNAPSHOT</version>
+    <name>Chefling DI for Java</name>
     <description>
         Chefling is a very minimal dependency injection container written in pure Java.
     </description>
     <url>http://github.com/cookingfox/chefling-di-java</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
-        <java.version>1.7</java.version>
-        <junit.version>4.12</junit.version>
-        <mockito.version>2.0.2-beta</mockito.version>
-    </properties>
-
-    <issueManagement>
-        <system>GitHub Issues</system>
-        <url>https://github.com/cookingfox/chefling-di-java/issues</url>
-    </issueManagement>
-
-    <licenses>
-        <license>
-            <name>Apache 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
+    <!-- Organization -->
     <organization>
         <name>Cooking Fox</name>
         <url>http://www.cookingfox.com</url>
     </organization>
 
+    <!-- Developers -->
     <developers>
         <developer>
             <id>abelcookingfox</id>
@@ -54,6 +36,21 @@
         </developer>
     </developers>
 
+    <!-- Issue management -->
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/cookingfox/chefling-di-java/issues</url>
+    </issueManagement>
+
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- Source Control Management -->
     <scm>
         <url>http://github.com/cookingfox/chefling-di-java</url>
         <connection>scm:git:git://github.com/cookingfox/chefling-di-java.git</connection>
@@ -63,6 +60,93 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!-- Distribution -->
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <name>cookingfox/chefling-di-java</name>
+            <url>https://api.bintray.com/maven/cookingfox/maven/chefling-di-java</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- Properties -->
+    <properties>
+        <!-- Project settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+        <java.version>1.7</java.version>
+
+        <!-- Plugin versions -->
+        <maven-release-plugin.version>2.5.1</maven-release-plugin.version>
+        <maven-javadoc-plugin.version>2.10.2</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+
+        <!-- Dependency versions -->
+        <junit.version>4.12</junit.version>
+        <mockito.version>2.0.31-beta</mockito.version>
+    </properties>
+
+    <!-- Build -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Profiles -->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <!-- Dependencies -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -73,42 +157,9 @@
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.2</version>
-                <executions>
-                    <execution>
-                        <id>javadoc-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
