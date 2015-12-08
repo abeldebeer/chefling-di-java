@@ -12,7 +12,7 @@ public interface CreateCommand {
      * method directly when you need a NEW instance. It uses the type mappings (from the `map...`
      * methods) to create the instance. If no mapping is available, it attempts to resolve the
      * dependencies by inspecting the constructor parameters. If the created instance implements
-     * {@link LifeCycle}, its {@link LifeCycle#onCreate()} method will be called.
+     * {@link LifeCycle}, its {@link LifeCycle#initialize()} method will be called.
      *
      * @param type The type (class, interface) to instantiate.
      * @param <T>  Ensures the returned object is cast to the expected type.

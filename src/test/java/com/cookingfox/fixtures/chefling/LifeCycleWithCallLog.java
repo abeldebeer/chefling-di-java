@@ -9,17 +9,17 @@ import java.util.LinkedList;
  */
 public class LifeCycleWithCallLog implements LifeCycle {
 
-    public final LinkedList<Long> onCreateCalls = new LinkedList<>();
-    public final LinkedList<Long> onDestroyCalls = new LinkedList<>();
+    public final LinkedList<Long> initializeCalls = new LinkedList<>();
+    public final LinkedList<Long> disposeCalls = new LinkedList<>();
 
     @Override
-    public void onCreate() {
-        onCreateCalls.push(System.nanoTime());
+    public void initialize() {
+        initializeCalls.push(System.nanoTime());
     }
 
     @Override
-    public void onDestroy() {
-        onDestroyCalls.push(System.nanoTime());
+    public void dispose() {
+        disposeCalls.push(System.nanoTime());
     }
 
 }

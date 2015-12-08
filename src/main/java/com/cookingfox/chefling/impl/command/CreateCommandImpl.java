@@ -49,9 +49,9 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
             instance = createInstance(type);
         }
 
-        // call life cycle onCreate
+        // call life cycle initialize
         if (instance instanceof LifeCycle) {
-            ((LifeCycle) instance).onCreate();
+            ((LifeCycle) instance).initialize();
         }
 
         return instance;

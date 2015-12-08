@@ -271,13 +271,13 @@ abstract class AbstractCommand {
     }
 
     /**
-     * Call the {@link LifeCycle#onDestroy()} method if the object is a {@link LifeCycle} instance.
+     * Call the {@link LifeCycle#dispose()} method if the object is a {@link LifeCycle} instance.
      *
      * @param instance An object.
      */
-    protected void lifeCycleDestroy(Object instance) {
+    protected void lifeCycleDispose(Object instance) {
         if (instance instanceof LifeCycle) {
-            ((LifeCycle) instance).onDestroy();
+            ((LifeCycle) instance).dispose();
         }
     }
 

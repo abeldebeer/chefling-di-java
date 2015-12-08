@@ -72,7 +72,7 @@ class RemoveCommandImpl extends AbstractCommand implements RemoveCommand {
         CommandContainer typeOwner = findOne(_container, HasMappingMatcher.get(type));
 
         // call destroy method for life cycle objects
-        lifeCycleDestroy(typeOwner.instances.get(type));
+        lifeCycleDispose(typeOwner.instances.get(type));
 
         synchronized (_container) {
             // remove type from maps

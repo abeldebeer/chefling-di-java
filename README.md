@@ -1,5 +1,7 @@
 # Chefling DI for Java
 
+### _WARNING: THIS DOCUMENTATION IS OUTDATED!_
+
 Chefling is a very minimal dependency injection container written in pure Java. It does not rely on
 annotations, only does constructor injection and has limited (but powerful) configuration options.
 
@@ -70,7 +72,7 @@ dependency tree. The instance is not stored (that's what `get()` is for), so onl
 directly when you need a ___new___ instance. It uses the type mappings (from the `map...` methods) 
 to create the instance. If no mapping is available, it attempts to resolve the dependencies by 
 inspecting the constructor parameters. If the created instance implements the `LifeCycle` interface 
-(see "Usage" -> "LifeCycle"), its `onCreate()` method will be called.
+(see "Usage" -> "LifeCycle"), its `initialize()` method will be called.
 
 - `void mapFactory(Class type, Factory factory)`: Map `type` to a `Factory` instance (see "Usage" -> 
 "Factory"), which will create an instance of `type` when it is requested (by `create()`). Which 
@@ -89,11 +91,11 @@ requested an instance of `subType` will be created.
 methods) exists for `type`.
 
 - `void remove(Class type)`: Removes a stored instance and/or mapping for `type`. If an instance 
-exists and it implements `LifeCycle`, its `onDestroy()` method will be called.
+exists and it implements `LifeCycle`, its `dispose()` method will be called.
 
 - `void reset()`: Removes all stored instances and mappings. Use this method to clean up the 
 Container in your application's destroy procedure. For every instance that implements `LifeCycle`, 
-its `onDestroy()` method will be called.
+its `dispose()` method will be called.
 
 To understand the Container internals,
 [take a look at the source code](src/main/java/com/cookingfox/chefling), or
@@ -170,11 +172,11 @@ The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/LifeCycle.java
 implementing classes to hook into the life cycle processes of the Container:
 
 - When `Container.create()` is called and an instance of the requested type is created, it will call 
-its `onCreate()` method. This will also happen for types that have been mapped using the `map...` 
+its `initialize()` method. This will also happen for types that have been mapped using the `map...` 
 methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific instance of the 
-class, and it implements the `LifeCycle` interface, then its `onCreate()` method will be called.
+class, and it implements the `LifeCycle` interface, then its `initialize()` method will be called.
 
-- The `remove()` and `reset()` methods will call the `onDestroy` method of instances that implement
+- The `remove()` and `reset()` methods will call the `dispose` method of instances that implement
 the `LifeCycle` interface.
 
 ### Factory

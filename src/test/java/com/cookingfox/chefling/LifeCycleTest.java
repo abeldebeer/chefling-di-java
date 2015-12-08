@@ -18,8 +18,8 @@ public class LifeCycleTest extends AbstractTest {
     public void create_type_should_call_lifecycle_create() throws Exception {
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
 
-        assertEquals(1, instance.onCreateCalls.size());
-        assertEquals(0, instance.onDestroyCalls.size());
+        assertEquals(1, instance.initializeCalls.size());
+        assertEquals(0, instance.disposeCalls.size());
     }
 
     @Test
@@ -35,8 +35,8 @@ public class LifeCycleTest extends AbstractTest {
 
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
 
-        assertEquals(1, instance.onCreateCalls.size());
-        assertEquals(0, instance.onDestroyCalls.size());
+        assertEquals(1, instance.initializeCalls.size());
+        assertEquals(0, instance.disposeCalls.size());
     }
 
     @Test
@@ -46,8 +46,8 @@ public class LifeCycleTest extends AbstractTest {
         container.mapInstance(LifeCycleWithCallLog.class, instance);
         container.create(LifeCycleWithCallLog.class);
 
-        assertEquals(1, instance.onCreateCalls.size());
-        assertEquals(0, instance.onDestroyCalls.size());
+        assertEquals(1, instance.initializeCalls.size());
+        assertEquals(0, instance.disposeCalls.size());
     }
 
     @Test
@@ -56,8 +56,8 @@ public class LifeCycleTest extends AbstractTest {
 
         container.reset();
 
-        assertEquals(1, instance.onCreateCalls.size());
-        assertEquals(1, instance.onDestroyCalls.size());
+        assertEquals(1, instance.initializeCalls.size());
+        assertEquals(1, instance.disposeCalls.size());
     }
 
     @Test
@@ -66,8 +66,8 @@ public class LifeCycleTest extends AbstractTest {
 
         container.remove(LifeCycleWithCallLog.class);
 
-        assertEquals(1, instance.onCreateCalls.size());
-        assertEquals(1, instance.onDestroyCalls.size());
+        assertEquals(1, instance.initializeCalls.size());
+        assertEquals(1, instance.disposeCalls.size());
     }
 
 }
