@@ -15,12 +15,12 @@ import static org.junit.Assert.*;
 public class CreateCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void create_throws_if_type_null() throws Exception {
+    public void create_should_throw_if_type_null() throws Exception {
         container.create(null);
     }
 
     @Test
-    public void create_throws_if_type_not_instantiable() {
+    public void create_should_throw_if_type_not_instantiable() {
         for (Class type : notInstantiableTypes) {
             try {
                 container.create(type);
@@ -33,14 +33,14 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_resolves_no_constructor_class() throws Exception {
+    public void create_should_resolve_no_constructor_class() throws Exception {
         NoConstructor result = container.create(NoConstructor.class);
 
         assertNotNull(result);
     }
 
     @Test
-    public void create_resolves_one_param_constructor_class() throws Exception {
+    public void create_should_resolve_one_param_constructor_class() throws Exception {
         OneParamConstructor result = container.create(OneParamConstructor.class);
 
         assertNotNull(result);
@@ -48,7 +48,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_resolves_two_level_dependencies() throws Exception {
+    public void create_should_resolve_two_level_dependencies() throws Exception {
         TwoLevelDependencies result = container.create(TwoLevelDependencies.class);
 
         assertNotNull(result);
@@ -57,7 +57,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_multiple_constructors_selects_empty_constructor() throws Exception {
+    public void create_multiple_constructors_should_select_empty_constructor() throws Exception {
         MultipleConstructorsVaryingParametersTargetEmpty result = container.create(MultipleConstructorsVaryingParametersTargetEmpty.class);
 
         assertNotNull(result);
@@ -66,7 +66,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_multiple_constructors_selects_allowed_constructor() throws Exception {
+    public void create_multiple_constructors_should_select_allowed_constructor() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         MultipleConstructorsVaryingParametersTargetAllowed result = container.create(MultipleConstructorsVaryingParametersTargetAllowed.class);
@@ -79,7 +79,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_multiple_constructors_single_parameter_selects_allowed() throws Exception {
+    public void create_multiple_constructors_single_parameter_should_select_allowed() throws Exception {
         Object result = container.create(MultipleConstructorsSingleParameterOneResolvable.class);
 
         assertNotNull(result);
@@ -95,7 +95,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_doubly_mapped_type() throws Exception {
+    public void create_should_resolve_doubly_mapped_type() throws Exception {
         container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
 
@@ -106,7 +106,7 @@ public class CreateCommandTest extends AbstractTest {
     }
 
     @Test
-    public void create_quadruply_mapped_type() throws Exception {
+    public void create_should_resolve_quadruply_mapped_type() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);

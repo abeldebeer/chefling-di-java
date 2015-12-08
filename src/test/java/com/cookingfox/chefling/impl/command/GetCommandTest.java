@@ -17,19 +17,19 @@ import static org.junit.Assert.*;
 public class GetCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void get_throws_if_type_null() throws Exception {
+    public void get_should_throw_if_type_null() throws Exception {
         container.get(null);
     }
 
     @Test
-    public void get_creates_type_instance() throws Exception {
+    public void get_should_create_type_instance() throws Exception {
         NoConstructor result = container.get(NoConstructor.class);
 
         assertNotNull(result);
     }
 
     @Test
-    public void get_returns_same_instance() throws Exception {
+    public void get_should_return_same_instance() throws Exception {
         NoConstructor firstResult = container.get(NoConstructor.class);
         NoConstructor secondResult = container.get(NoConstructor.class);
         NoConstructor thirdResult = container.get(NoConstructor.class);
@@ -41,7 +41,7 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void get_container_returns_self() throws Exception {
+    public void get_container_should_return_self() throws Exception {
         Container byInterface = container.get(Container.class);
         CommandContainer byClass = container.get(CommandContainer.class);
 
@@ -50,7 +50,7 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void get_mapped_type_creates_mapped() throws Exception {
+    public void get_mapped_type_should_create_mapped() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         NoMethodInterface result = container.get(NoMethodInterface.class);
@@ -60,23 +60,23 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test(expected = CircularDependencyDetectedException.class)
-    public void get_detect_circular_self() throws Exception {
+    public void get_should_detect_circular_dependency_self() throws Exception {
         container.get(CircularSelf.class);
     }
 
     @Test(expected = CircularDependencyDetectedException.class)
-    public void get_detect_circular_simple() throws Exception {
+    public void get_should_detect_circular_dependency_simple() throws Exception {
         container.get(CircularSimple.A.class);
     }
 
     @Test(expected = CircularDependencyDetectedException.class)
-    public void get_detect_circular_complex() throws Exception {
+    public void get_should_detect_circular_dependency_complex() throws Exception {
         container.mapType(CircularComplex.CInterface.class, CircularComplex.C.class);
         container.get(CircularComplex.A.class);
     }
 
     @Test
-    public void get_doubly_mapped_type_returns_same_instance() throws Exception {
+    public void get_doubly_mapped_type_should_return_same_instance() throws Exception {
         container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
 
@@ -87,7 +87,7 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void get_quadruply_mapped_type_returns_same_instance() throws Exception {
+    public void get_quadruply_mapped_type_should_return_same_instance() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
@@ -104,7 +104,7 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void get_multiple_mapped_interfaces_returns_same_instance() throws Exception {
+    public void get_multiple_mapped_interfaces_should_return_same_instance() throws Exception {
         container.mapType(InterfaceSegregation.Person.class, InterfaceSegregation.JohnDoe.class);
         container.mapType(InterfaceSegregation.Talkable.class, InterfaceSegregation.Person.class);
         container.mapType(InterfaceSegregation.Walkable.class, InterfaceSegregation.Person.class);
@@ -167,7 +167,7 @@ public class GetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void get_passes_concurrency_test() {
+    public void get_should_pass_concurrency_test() {
         Runnable test = new Runnable() {
             @Override
             public void run() {
@@ -186,7 +186,7 @@ public class GetCommandTest extends AbstractTest {
      * Note: this test is only here to inspect and improve the error output.
      */
     @Test
-    public void get_throws_if_deeply_nested_unresolvable_constructor() {
+    public void get_should_throw_if_deeply_nested_unresolvable_constructor() {
         try {
             container.get(DeeplyNestedUnresolvableConstructor.A.class);
         } catch (ContainerException e) {

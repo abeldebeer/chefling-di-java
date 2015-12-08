@@ -20,17 +20,17 @@ import static org.junit.Assert.*;
 public class RemoveCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void remove_throws_if_type_null() throws Exception {
+    public void remove_should_throw_if_type_null() throws Exception {
         container.remove(null);
     }
 
     @Test
-    public void remove_no_value_does_not_throw() throws Exception {
+    public void remove_should_not_throw_for_no_mapping() throws Exception {
         container.remove(NoConstructor.class);
     }
 
     @Test
-    public void remove_stored_instance_removes_instance() throws Exception {
+    public void remove_should_remove_stored_instance() throws Exception {
         container.get(NoConstructor.class);
         container.remove(NoConstructor.class);
 
@@ -38,7 +38,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_mapped_instance_removes_mapping() throws Exception {
+    public void remove_should_remove_mapped_instance() throws Exception {
         NoConstructor instance = new NoConstructor();
 
         container.mapInstance(NoConstructor.class, instance);
@@ -51,7 +51,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_subtype_mapping_removes_mapping() throws Exception {
+    public void remove_should_remove_subtype_mapping() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         assertTrue(container.has(NoMethodInterface.class));
@@ -62,7 +62,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_factory_mapping_removes_mapping() throws Exception {
+    public void remove_should_remove_factory_mapping() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
             public NoConstructor create(Container container) throws ContainerException {
@@ -80,7 +80,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_container_should_throw() {
+    public void remove_should_throw_for_container_types() {
         Class[] containerTypes = {Container.class, CommandContainer.class};
 
         for (Class type : containerTypes) {
@@ -95,7 +95,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_quadruply_mapped_types_top_removes_top() throws Exception {
+    public void remove_quadruply_mapped_types_top_should_remove_top() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
@@ -110,7 +110,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_quadruply_mapped_types_root_removes_all() throws Exception {
+    public void remove_quadruply_mapped_types_root_should_remove_all() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
@@ -125,7 +125,7 @@ public class RemoveCommandTest extends AbstractTest {
     }
 
     @Test
-    public void remove_quadruply_mapped_types_root_removes_all_from_children() throws Exception {
+    public void remove_quadruply_mapped_types_root_should_remove_all_from_children() throws Exception {
         Container childA = new CommandContainer();
         childA.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.addChild(childA);

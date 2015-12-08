@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class ResetCommandTest extends AbstractTest {
 
     @Test
-    public void reset_removes_mappings_and_instances() throws Exception {
+    public void reset_should_remove_mappings_and_instances() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.get(NoMethodInterface.class);
 
@@ -25,7 +25,7 @@ public class ResetCommandTest extends AbstractTest {
     }
 
     @Test
-    public void reset_reinitializes_container() throws Exception {
+    public void reset_should_reinitialize_container() throws Exception {
         assertTrue(container.has(Container.class));
 
         container.reset();

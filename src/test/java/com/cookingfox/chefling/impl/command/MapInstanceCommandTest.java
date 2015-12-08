@@ -19,17 +19,17 @@ import static org.junit.Assert.*;
 public class MapInstanceCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapInstance_throws_if_type_null() throws Exception {
+    public void mapInstance_should_throw_if_type_null() throws Exception {
         container.mapInstance(null, new Object());
     }
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapInstance_throws_if_instance_null() throws Exception {
+    public void mapInstance_should_throw_if_instance_null() throws Exception {
         container.mapInstance(getClass(), null);
     }
 
     @Test
-    public void mapInstance_throws_if_type_not_allowed() {
+    public void mapInstance_should_throw_if_type_not_allowed() {
         for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
             try {
                 container.mapInstance(entry.getKey(), entry.getValue());
@@ -42,7 +42,7 @@ public class MapInstanceCommandTest extends AbstractTest {
     }
 
     @Test(expected = NotAnInstanceOfTypeException.class)
-    public void mapInstance_throws_if_instance_not_instanceof_type() throws Exception {
+    public void mapInstance_should_throw_if_instance_not_instanceof_type() throws Exception {
         // use variable to prevent generic warning
         Class type = NoConstructor.class;
 
@@ -50,7 +50,7 @@ public class MapInstanceCommandTest extends AbstractTest {
     }
 
     @Test
-    public void mapInstance_stores_instance() throws Exception {
+    public void mapInstance_should_store_instance() throws Exception {
         NoConstructor instance = new NoConstructor();
 
         container.mapInstance(NoConstructor.class, instance);
@@ -61,13 +61,13 @@ public class MapInstanceCommandTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapInstance_throws_if_stored_instance_default() throws Exception {
+    public void mapInstance_should_throw_if_stored_instance_default() throws Exception {
         container.mapInstance(NoConstructor.class, new NoConstructor());
         container.mapInstance(NoConstructor.class, new NoConstructor());
     }
 
     @Test
-    public void mapInstance_accepts_implementation() throws Exception {
+    public void mapInstance_should_accept_implementation() throws Exception {
         NoMethodImplementation instance = new NoMethodImplementation();
 
         container.mapInstance(NoMethodInterface.class, instance);
@@ -75,13 +75,13 @@ public class MapInstanceCommandTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapInstance_first_mapType_then_mapInstance_throws() throws Exception {
+    public void mapInstance_should_throw_when_first_mapType_then_mapInstance() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
     }
 
     @Test
-    public void mapInstance_passes_concurrency_test() throws Exception {
+    public void mapInstance_should_pass_concurrency_test() throws Exception {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<>();
 

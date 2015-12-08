@@ -18,12 +18,20 @@ import java.util.concurrent.CountDownLatch;
  */
 public abstract class AbstractTest {
 
+    //----------------------------------------------------------------------------------------------
+    // TESTS SETUP
+    //----------------------------------------------------------------------------------------------
+
     protected CommandContainer container;
 
     @Before
     public void setUp() throws Exception {
         container = new CommandContainer();
     }
+
+    //----------------------------------------------------------------------------------------------
+    // HELPERS
+    //----------------------------------------------------------------------------------------------
 
     /**
      * Examples of types that are not instantiable.
@@ -97,10 +105,6 @@ public abstract class AbstractTest {
 
         return notAllowedSubTypes;
     }
-
-    //----------------------------------------------------------------------------------------------
-    // HELPER METHODS
-    //----------------------------------------------------------------------------------------------
 
     protected Object getMock(Class aClass) {
         return Mockito.mock(aClass);

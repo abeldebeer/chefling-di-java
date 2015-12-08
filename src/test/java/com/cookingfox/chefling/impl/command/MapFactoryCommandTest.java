@@ -19,7 +19,7 @@ import java.util.Map;
 public class MapFactoryCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapFactory_throws_if_type_null() throws Exception {
+    public void mapFactory_should_throw_if_type_null() throws Exception {
         Factory factory = new Factory() {
             @Override
             public Object create(Container container) throws ContainerException {
@@ -31,12 +31,12 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapFactory_throws_if_factory_null() throws Exception {
+    public void mapFactory_should_throw_if_factory_null() throws Exception {
         container.mapFactory(getClass(), null);
     }
 
     @Test
-    public void mapFactory_throws_if_type_not_allowed() {
+    public void mapFactory_should_throw_if_type_not_allowed() {
         Factory factory = new Factory() {
             @Override
             public Object create(Container container) throws ContainerException {
@@ -56,7 +56,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test
-    public void mapFactory_simple_resolves_expected() throws Exception {
+    public void mapFactory_simple_should_resolve_expected() throws Exception {
         final LinkedList<Integer> callHashCodes = new LinkedList<>();
 
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
@@ -76,7 +76,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test(expected = FactoryReturnedNullException.class)
-    public void mapFactory_throws_if_returns_null() throws Exception {
+    public void mapFactory_should_throw_if_returns_null() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
             public NoConstructor create(Container container) throws ContainerException {
@@ -90,7 +90,7 @@ public class MapFactoryCommandTest extends AbstractTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected = FactoryReturnedUnexpectedValueException.class)
-    public void mapFactory_throws_if_returns_invalid() throws Exception {
+    public void mapFactory_should_throw_if_returns_invalid() throws Exception {
         Factory factory = new Factory() {
             @Override
             public Object create(Container container) throws ContainerException {
@@ -103,7 +103,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapFactory_throws_if_type_already_mapped() throws Exception {
+    public void mapFactory_should_throw_if_type_already_mapped() throws Exception {
         Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
             @Override
             public NoMethodInterface create(Container container) throws ContainerException {
@@ -116,7 +116,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapFactory_throws_if_has_instance() throws Exception {
+    public void mapFactory_should_throw_if_has_instance() throws Exception {
         Factory<NoConstructor> factory = new Factory<NoConstructor>() {
             @Override
             public NoConstructor create(Container container) throws ContainerException {
@@ -129,7 +129,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test
-    public void mapFactory_passes_concurrency_test() throws Exception {
+    public void mapFactory_should_pass_concurrency_test() throws Exception {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<>();
         final Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {

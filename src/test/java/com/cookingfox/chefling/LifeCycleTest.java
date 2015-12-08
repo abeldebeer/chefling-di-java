@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class LifeCycleTest extends AbstractTest {
 
     @Test
-    public void create_type_calls_lifecycle_create() throws Exception {
+    public void create_type_should_call_lifecycle_create() throws Exception {
         LifeCycleWithCallLog instance = container.create(LifeCycleWithCallLog.class);
 
         assertEquals(1, instance.onCreateCalls.size());
@@ -23,7 +23,7 @@ public class LifeCycleTest extends AbstractTest {
     }
 
     @Test
-    public void create_factory_calls_lifecycle_create() throws Exception {
+    public void create_factory_should_call_lifecycle_create() throws Exception {
         Factory<LifeCycleWithCallLog> factory = new Factory<LifeCycleWithCallLog>() {
             @Override
             public LifeCycleWithCallLog create(Container container) throws ContainerException {
@@ -40,7 +40,7 @@ public class LifeCycleTest extends AbstractTest {
     }
 
     @Test
-    public void create_instance_calls_lifecycle_create() throws Exception {
+    public void create_instance_should_call_lifecycle_create() throws Exception {
         LifeCycleWithCallLog instance = new LifeCycleWithCallLog();
 
         container.mapInstance(LifeCycleWithCallLog.class, instance);
@@ -51,7 +51,7 @@ public class LifeCycleTest extends AbstractTest {
     }
 
     @Test
-    public void reset_calls_lifecycle_destroy() throws Exception {
+    public void reset_should_call_lifecycle_destroy() throws Exception {
         LifeCycleWithCallLog instance = container.get(LifeCycleWithCallLog.class);
 
         container.reset();
@@ -61,7 +61,7 @@ public class LifeCycleTest extends AbstractTest {
     }
 
     @Test
-    public void remove_calls_lifecycle_destroy() throws Exception {
+    public void remove_should_call_lifecycle_destroy() throws Exception {
         LifeCycleWithCallLog instance = container.get(LifeCycleWithCallLog.class);
 
         container.remove(LifeCycleWithCallLog.class);
