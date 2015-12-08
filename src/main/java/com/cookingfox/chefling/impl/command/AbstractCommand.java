@@ -15,10 +15,25 @@ import java.util.Set;
  */
 abstract class AbstractCommand {
 
-    private static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
-    private static final String PACKAGE_JAVA_LANG = "java.lang";
+    //----------------------------------------------------------------------------------------------
+    // CONSTANTS
+    //----------------------------------------------------------------------------------------------
 
-    final CommandContainer _container;
+    protected static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
+    protected static final String PACKAGE_JAVA_LANG = "java.lang";
+
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED PROPERTIES
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * A reference to the container instance that this command is being applied to.
+     */
+    protected final CommandContainer _container;
+
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
 
     public AbstractCommand(CommandContainer container) {
         _container = container;
@@ -49,6 +64,30 @@ abstract class AbstractCommand {
     }
 
     /**
+     * Apply an operation to the full tree of container children.
+     *
+     * @param container The container instance to use to get the root container.
+     * @param applier   The operation to apply to all container children.
+     */
+    protected void applyAll(CommandContainer container, Applier applier) {
+        applyRecursive(getRoot(container), applier);
+    }
+
+    /**
+     * Apply an operation recursively to all children of the provided container instance.
+     *
+     * @param current The container to traverse the children of.
+     * @param applier The operation to apply to all container children.
+     */
+    protected void applyRecursive(CommandContainer current, Applier applier) {
+        applier.apply(current);
+
+        for (CommandContainer child : current.children) {
+            applyRecursive(child, applier);
+        }
+    }
+
+    /**
      * Checks whether `value` is null, if so: throw an exception.
      *
      * @param value The value to check.
@@ -75,6 +114,119 @@ abstract class AbstractCommand {
                         "a configuration for type: " + type);
             }
         }
+    }
+
+    /**
+     * Generate a set of types for all instances and types of the full tree of container children.
+     *
+     * @param container The source container.
+     * @return Set of all types within the container.
+     */
+    protected Set<Class> compileTypes(CommandContainer container) {
+        final Set<Class> types = new LinkedHashSet<>();
+
+        applyAll(container, new Applier() {
+            @Override
+            public void apply(CommandContainer container) {
+                types.addAll(container.instances.keySet());
+                types.addAll(container.mappings.keySet());
+            }
+        });
+
+        // remove the default mappings
+        types.remove(Container.class);
+        types.remove(CommandContainer.class);
+
+        return types;
+    }
+
+    /**
+     * Traverse through the full tree of container children and return all containers that match.
+     *
+     * @param start   A reference container to use to get the root.
+     * @param matcher The matcher to check for a certain condition.
+     * @return A set of containers that match.
+     */
+    protected Set<CommandContainer> findAll(CommandContainer start, Matcher matcher) {
+        final Set<CommandContainer> result = new LinkedHashSet<>();
+
+        findAllRecursive(result, getRoot(start), matcher);
+
+        return result;
+    }
+
+    /**
+     * Recursively traverse the current container's children and add matches to the result set.
+     *
+     * @param result  The result set to add matching containers to.
+     * @param current The current container instance to traverse the children of.
+     * @param matcher The matcher to check for a certain condition.
+     */
+    protected void findAllRecursive(final Set<CommandContainer> result, CommandContainer current, Matcher matcher) {
+        if (matcher.matches(current)) {
+            result.add(current);
+        }
+
+        for (CommandContainer child : current.children) {
+            findAllRecursive(result, child, matcher);
+        }
+    }
+
+    /**
+     * Find an instance or type mapping for the provided type in the tree of container children.
+     *
+     * @param container The container to use to get the root.
+     * @param type      The type to check for.
+     * @return The instance or type mapping from one of the container children, or null if not found.
+     */
+    protected Object findMapping(CommandContainer container, Class type) {
+        CommandContainer match = findOne(container, HasMappingMatcher.get(type));
+
+        if (match == null) {
+            return null;
+        }
+
+        Object instance = match.instances.get(type);
+
+        return instance != null ? instance : match.mappings.get(type);
+    }
+
+    /**
+     * Find one container in the full tree of children by performing a matching operation on each
+     * child.
+     *
+     * @param target  The target container to use to get the root.
+     * @param matcher The matcher operation to use for each container child.
+     * @return The matching container or null.
+     */
+    protected CommandContainer findOne(CommandContainer target, Matcher matcher) {
+        return findOneRecursive(getRoot(target), matcher);
+    }
+
+    protected CommandContainer findOneRecursive(CommandContainer current, Matcher matcher) {
+        if (matcher.matches(current)) {
+            return current;
+        }
+
+        for (CommandContainer child : current.children) {
+            CommandContainer match = findOneRecursive(child, matcher);
+
+            if (match != null) {
+                return match;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Recursively find the root container, which is the container instance that has no parent set.
+     *
+     * @param current The current container instance in the recursive operation.
+     * @return The root container.
+     */
+    protected CommandContainer getRoot(CommandContainer current) {
+        return current.parent == null ? current : getRoot(current.parent);
     }
 
     /**
@@ -151,110 +303,29 @@ abstract class AbstractCommand {
     }
 
     //----------------------------------------------------------------------------------------------
-    // STATIC METHODS
-    //----------------------------------------------------------------------------------------------
-
-    protected static void applyAll(CommandContainer container, Applier applier) {
-        CommandContainer root = getRoot(container);
-
-        applyRecursive(root, applier);
-    }
-
-    private static void applyRecursive(CommandContainer current, Applier applier) {
-        applier.apply(current);
-
-        for (CommandContainer child : current.children) {
-            applyRecursive(child, applier);
-        }
-    }
-
-    protected static Set<Class> compileTypes(CommandContainer container) {
-        final Set<Class> types = new LinkedHashSet<>();
-
-        applyAll(container, new Applier() {
-            @Override
-            public void apply(CommandContainer container) {
-                types.addAll(container.instances.keySet());
-                types.addAll(container.mappings.keySet());
-            }
-        });
-
-        types.remove(Container.class);
-        types.remove(CommandContainer.class);
-
-        return types;
-    }
-
-    protected static CommandContainer find(CommandContainer target, Matcher matcher) {
-        CommandContainer root = getRoot(target);
-
-        return findRecursive(root, matcher);
-    }
-
-    protected static Object findMapping(CommandContainer container, final Class type) {
-        CommandContainer match = find(container, HasMappingMatcher.get(type));
-
-        if (match == null) {
-            return null;
-        }
-
-        Object instance = match.instances.get(type);
-
-        return instance != null ? instance : match.mappings.get(type);
-    }
-
-    private static CommandContainer findRecursive(CommandContainer current, Matcher matcher) {
-        if (matcher.matches(current)) {
-            return current;
-        }
-
-        for (CommandContainer child : current.children) {
-            CommandContainer match = findRecursive(child, matcher);
-
-            if (match != null) {
-                return match;
-            }
-        }
-
-        return null;
-    }
-
-    protected static CommandContainer getRoot(CommandContainer container) {
-        if (container.parent == null) {
-            return container;
-        }
-
-        return getRoot(container.parent);
-    }
-
-    protected static Set<CommandContainer> findAll(CommandContainer start, Matcher matcher) {
-        final Set<CommandContainer> result = new LinkedHashSet<>();
-        final CommandContainer root = getRoot(start);
-
-        findAllRecursive(result, root, matcher);
-
-        return result;
-    }
-
-    private static void findAllRecursive(final Set<CommandContainer> result, CommandContainer current, Matcher matcher) {
-        if (matcher.matches(current)) {
-            result.add(current);
-        }
-
-        for (CommandContainer child : current.children) {
-            findAllRecursive(result, child, matcher);
-        }
-    }
-
-    //----------------------------------------------------------------------------------------------
     // INNER CLASSES
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * A {@link Matcher} implementation that returns true if the provided container has an instance
+     * mapping for the provided type. This is an optimization: by using
+     * {@link HasMappingMatcher#get(Class)} we can re-use the matcher instance.
+     */
     protected static class HasMappingMatcher implements Matcher {
-        private static HasMappingMatcher instance = new HasMappingMatcher();
 
+        /**
+         * The matcher instance to re-use.
+         */
+        protected static HasMappingMatcher instance = new HasMappingMatcher();
+
+        /**
+         * The type to match.
+         */
         Class type;
 
+        /**
+         * Constructor is disabled: use {@link #get(Class)}.
+         */
         private HasMappingMatcher() {
         }
 
@@ -263,11 +334,18 @@ abstract class AbstractCommand {
             return container.instances.containsKey(type) || container.mappings.containsKey(type);
         }
 
+        /**
+         * Get the matcher instance for the provided type.
+         *
+         * @param type The type to match.
+         * @return The matcher instance.
+         */
         public static HasMappingMatcher get(Class type) {
             instance.type = type;
 
             return instance;
         }
+
     }
 
 }

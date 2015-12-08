@@ -7,6 +7,7 @@ import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodAbstract;
 import com.cookingfox.fixtures.chefling.NoMethodImplementation;
 import com.cookingfox.fixtures.chefling.NoMethodInterface;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -21,6 +22,19 @@ import static org.junit.Assert.*;
  * Unit tests for {@link AbstractCommand}.
  */
 public class AbstractCommandTest extends AbstractTest {
+    
+    //----------------------------------------------------------------------------------------------
+    // SETUP
+    //----------------------------------------------------------------------------------------------
+    
+    AbstractCommand command;
+    
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        
+        command = new AddChildCommand(container);
+    }
 
     //----------------------------------------------------------------------------------------------
     // TESTS: APPLY ALL
@@ -41,7 +55,7 @@ public class AbstractCommandTest extends AbstractTest {
         final Set<CommandContainer> called = new LinkedHashSet<>();
         final AtomicInteger counter = new AtomicInteger(0);
 
-        AbstractCommand.applyAll(container, new Applier() {
+        command.applyAll(container, new Applier() {
             @Override
             public void apply(CommandContainer container) {
                 called.add(container);
@@ -64,7 +78,7 @@ public class AbstractCommandTest extends AbstractTest {
 
     @Test
     public void compileTypes_should_return_empty_if_no_instances_or_mappings() throws Exception {
-        Set<Class> result = AbstractCommand.compileTypes(container);
+        Set<Class> result = command.compileTypes(container);
 
         assertEquals(0, result.size());
     }
@@ -78,7 +92,7 @@ public class AbstractCommandTest extends AbstractTest {
         expected.add(NoConstructor.class);
         expected.add(NoMethodInterface.class);
 
-        Set<Class> result = AbstractCommand.compileTypes(container);
+        Set<Class> result = command.compileTypes(container);
 
         assertTrue(Objects.deepEquals(expected, result));
     }
@@ -101,7 +115,7 @@ public class AbstractCommandTest extends AbstractTest {
         expected.add(NoConstructor.class);
         expected.add(NoMethodInterface.class);
 
-        Set<Class> result = AbstractCommand.compileTypes(container);
+        Set<Class> result = command.compileTypes(container);
 
         assertTrue(Objects.deepEquals(expected, result));
     }
@@ -121,7 +135,7 @@ public class AbstractCommandTest extends AbstractTest {
         container.addChild(childA);
         container.addChild(childB);
 
-        CommandContainer result = AbstractCommand.find(container, new Matcher() {
+        CommandContainer result = command.findOne(container, new Matcher() {
             @Override
             public boolean matches(CommandContainer container) {
                 return container.mappings.containsValue(NoMethodImplementation.class);
@@ -146,7 +160,7 @@ public class AbstractCommandTest extends AbstractTest {
         container.setParent(parent);
         container.addChild(child);
 
-        Set<CommandContainer> matches = AbstractCommand.findAll(container, new Matcher() {
+        Set<CommandContainer> matches = command.findAll(container, new Matcher() {
             @Override
             public boolean matches(CommandContainer container) {
                 return container.mappings.containsValue(NoMethodImplementation.class);
@@ -168,7 +182,7 @@ public class AbstractCommandTest extends AbstractTest {
         parentContainer.setParent(new CommandContainer());
         container.setParent(parentContainer);
 
-        Object result = AbstractCommand.findMapping(container, NoConstructor.class);
+        Object result = command.findMapping(container, NoConstructor.class);
 
         assertSame(instance, result);
     }
@@ -180,7 +194,7 @@ public class AbstractCommandTest extends AbstractTest {
         parentContainer.setParent(new CommandContainer());
         container.setParent(parentContainer);
 
-        Object result = AbstractCommand.findMapping(container, NoMethodInterface.class);
+        Object result = command.findMapping(container, NoMethodInterface.class);
 
         assertSame(NoMethodImplementation.class, result);
     }
@@ -191,7 +205,7 @@ public class AbstractCommandTest extends AbstractTest {
 
     @Test
     public void getRoot_should_return_self_if_no_parent() throws Exception {
-        assertSame(container, AbstractCommand.getRoot(container));
+        assertSame(container, command.getRoot(container));
     }
 
     @Test
@@ -209,7 +223,7 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer childB = new CommandContainer();
         container.addChild(childB);
 
-        assertSame(root, AbstractCommand.getRoot(childB));
+        assertSame(root, command.getRoot(childB));
     }
 
 }

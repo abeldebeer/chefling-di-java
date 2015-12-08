@@ -34,7 +34,7 @@ class RemoveCommand extends AbstractCommand implements com.cookingfox.chefling.a
             throw new RemoveTypeNotAllowedException(type);
         }
 
-        CommandContainer hasType = find(_container, HasMappingMatcher.get(type));
+        CommandContainer hasType = findOne(_container, HasMappingMatcher.get(type));
 
         if (hasType == null) {
             return;

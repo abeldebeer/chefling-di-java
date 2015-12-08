@@ -14,7 +14,7 @@ class HasCommand extends AbstractCommand implements com.cookingfox.chefling.api.
     public boolean has(final Class type) {
         Matcher matcher = HasMappingMatcher.get(type);
 
-        return matcher.matches(_container) || find(_container, matcher) != null;
+        return matcher.matches(_container) || findOne(_container, matcher) != null;
     }
 
 }
