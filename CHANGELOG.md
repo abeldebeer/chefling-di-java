@@ -1,6 +1,6 @@
 # Chefling DI for Java: Change Log
 
-## [4.0.0](../../tree/v4.0.0) (2015-06-12)
+## [4.0.0](../../tree/v4.0.0) (2015-11-12)
 
 - Removes `Container.getDefault()`: static container instance is unnecessary.
 - Introduces `Chefling.createContainer()` for providing an instance of the default Container
