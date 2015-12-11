@@ -1,5 +1,14 @@
 # Chefling DI for Java: Change Log
 
+## [4.0.0](../../tree/v4.0.0) (2015-06-12)
+
+- Removes `Container.getDefault()`: static container instance is unnecessary.
+- Introduces `Chefling.createContainer()` for providing an instance of the default Container
+implementation.
+- Renames `ContainerInterface` to `Container`.
+- Renames `LifeCycle` methods to `initialize` and `dispose`.
+- Better support for child and parent containers using a full recursive tree implementation.
+
 ## [3.2.0](../../tree/v3.2.0) (2015-06-12)
 
 - First implementation of child container support.
