@@ -47,6 +47,7 @@ public class CommandContainer implements Container {
 
     protected final AddChildCommand addChildCommand = new AddChildCommandImpl(this);
     protected final CreateCommand createCommand = new CreateCommandImpl(this);
+    protected final DispatchCommand dispatchCommand = new DispatchCommandImpl(this);
     protected final GetCommand getCommand = new GetCommandImpl(this);
     protected final HasCommand hasCommand = new HasCommandImpl(this);
     protected final MapFactoryCommand mapFactoryCommand = new MapFactoryCommandImpl(this);
@@ -76,6 +77,11 @@ public class CommandContainer implements Container {
     @Override
     public <T> T create(Class<T> type) throws ContainerException {
         return createCommand.create(type);
+    }
+
+    @Override
+    public <T> void dispatch(T event) throws ContainerException {
+        dispatchCommand.dispatch(event);
     }
 
     @Override

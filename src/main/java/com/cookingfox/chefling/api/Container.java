@@ -10,6 +10,7 @@ public interface Container extends
 
         AddChildCommand,
         CreateCommand,
+        DispatchCommand,
         GetCommand,
         HasCommand,
         MapFactoryCommand,

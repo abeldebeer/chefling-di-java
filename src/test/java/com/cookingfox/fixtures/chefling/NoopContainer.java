@@ -20,6 +20,11 @@ public class NoopContainer implements Container {
     }
 
     @Override
+    public <T> void dispatch(T event) throws ContainerException {
+
+    }
+
+    @Override
     public <T> T get(Class<T> type) throws ContainerException {
         return null;
     }
