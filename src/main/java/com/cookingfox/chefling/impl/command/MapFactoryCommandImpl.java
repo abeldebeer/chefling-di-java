@@ -3,6 +3,10 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.command.MapFactoryCommand;
 import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.exception.FactoryIncorrectGenericException;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * @see MapFactoryCommand
@@ -26,11 +30,35 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 
-        // Note: it is not possible here to check whether the factory will actually return an
-        // instance of the expected type. This would require inspecting <T>, but the value of <T> is
-        // not available during runtime, due to the generics type erasure.
+        final Class genericType = getGenericClass(factory);
+
+        // validate generic type, if available
+        if (genericType != null && !type.isAssignableFrom(genericType)) {
+            throw new FactoryIncorrectGenericException(type, genericType);
+        }
 
         addMapping(type, factory);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED METHODS
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Attempt to extract the generic ("parameterized") type from the factory.
+     */
+    protected Class getGenericClass(Factory factory) {
+        for (Type i : factory.getClass().getGenericInterfaces()) {
+            if (i instanceof ParameterizedType) {
+                final ParameterizedType parameterized = (ParameterizedType) i;
+
+                if (parameterized.getRawType().equals(Factory.class)) {
+                    return (Class) parameterized.getActualTypeArguments()[0];
+                }
+            }
+        }
+
+        return null;
     }
 
 }

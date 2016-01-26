@@ -36,7 +36,7 @@ public class MapFactoryCommandTest extends AbstractTest {
     }
 
     @Test
-    public void mapFactory_should_throw_if_type_not_allowed() {
+    public void mapFactory_should_throw_if_type_not_allowed() throws Exception {
         Factory factory = new Factory() {
             @Override
             public Object createInstance(Container container) throws ContainerException {
@@ -53,6 +53,41 @@ public class MapFactoryCommandTest extends AbstractTest {
                 Assert.assertTrue(e.getMessage(), e instanceof TypeNotAllowedException);
             }
         }
+    }
+
+    @SuppressWarnings("all")
+    @Test(expected = FactoryIncorrectGenericException.class)
+    public void mapFactory_should_throw_for_incorrect_generic_type() throws Exception {
+        Factory<String> incorrectGeneric = new Factory<String>() {
+            @Override
+            public String createInstance(Container container) throws ContainerException {
+                return "foo";
+            }
+        };
+        Factory wrapper = incorrectGeneric;
+
+        container.mapFactory(NoMethodInterface.class, wrapper);
+    }
+
+    @SuppressWarnings("all")
+    @Test
+    public void mapFactory_should_accept_generic_sub_type() throws Exception {
+        final NoMethodImplementation instance = new NoMethodImplementation();
+
+        Factory<NoMethodImplementation> genericSubType = new Factory<NoMethodImplementation>() {
+            @Override
+            public NoMethodImplementation createInstance(Container container) throws ContainerException {
+                return instance;
+            }
+        };
+
+        Factory wrapper = genericSubType;
+
+        container.mapFactory(NoMethodInterface.class, wrapper);
+
+        NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        Assert.assertSame(instance, result);
     }
 
     @Test
