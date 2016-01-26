@@ -32,10 +32,10 @@ class MapTypeCommandImpl extends AbstractCommand implements MapTypeCommand {
         }
 
         // Scenario: there can be another mapping for `subType`. If so, we will use `subType` to
-        // link it to that other mapping.
+        // link it to that other mapping (implicitly).
         Object mappingForSubType = _container.mappings.get(subType);
 
-        if (mappingForSubType == null || !type.isAssignableFrom((Class) mappingForSubType)) {
+        if (mappingForSubType == null) {
             isInstantiable(subType);
         }
 

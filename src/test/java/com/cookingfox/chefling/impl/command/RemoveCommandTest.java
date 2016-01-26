@@ -6,10 +6,7 @@ import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 import com.cookingfox.chefling.api.exception.RemoveTypeNotAllowedException;
-import com.cookingfox.fixtures.chefling.NoConstructor;
-import com.cookingfox.fixtures.chefling.NoMethodImplementation;
-import com.cookingfox.fixtures.chefling.NoMethodInterface;
-import com.cookingfox.fixtures.chefling.QuadruplyTyped;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -109,23 +106,18 @@ public class RemoveCommandTest extends AbstractTest {
         assertFalse("not has A", container.has(QuadruplyTyped.A.class));
     }
 
-    @Test
-    public void remove_quadruply_mapped_types_root_should_remove_all() throws Exception {
+    @Test(expected = RemoveTypeNotAllowedException.class)
+    public void remove_quadruply_mapped_types_root_should_throw() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
         container.mapType(QuadruplyTyped.A.class, QuadruplyTyped.B.class);
 
         container.remove(QuadruplyTyped.D.class);
-
-        assertFalse("not has D", container.has(QuadruplyTyped.D.class));
-        assertFalse("not has C", container.has(QuadruplyTyped.C.class));
-        assertFalse("not has B", container.has(QuadruplyTyped.B.class));
-        assertFalse("not has A", container.has(QuadruplyTyped.A.class));
     }
 
-    @Test
-    public void remove_quadruply_mapped_types_root_should_remove_all_from_children() throws Exception {
+    @Test(expected = RemoveTypeNotAllowedException.class)
+    public void remove_quadruply_mapped_types_from_children_root_should_throw() throws Exception {
         Container childA = new CommandContainer();
         childA.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.addChild(childA);
@@ -143,11 +135,6 @@ public class RemoveCommandTest extends AbstractTest {
         childC.addChild(childD);
 
         container.remove(QuadruplyTyped.D.class);
-
-        assertFalse("not has D", container.has(QuadruplyTyped.D.class));
-        assertFalse("not has C", container.has(QuadruplyTyped.C.class));
-        assertFalse("not has B", container.has(QuadruplyTyped.B.class));
-        assertFalse("not has A", container.has(QuadruplyTyped.A.class));
     }
 
     @Test
@@ -174,6 +161,14 @@ public class RemoveCommandTest extends AbstractTest {
         container.remove(NoMethodInterface.class);
 
         assertFalse(container.has(NoMethodInterface.class));
+    }
+
+    @Test(expected = RemoveTypeNotAllowedException.class)
+    public void remove_should_throw_if_has_alias() throws Exception {
+        container.mapType(InterfaceSegregation.Person.class, InterfaceSegregation.JohnDoe.class);
+        container.mapType(InterfaceSegregation.Talkable.class, InterfaceSegregation.Person.class);
+        container.mapType(InterfaceSegregation.Walkable.class, InterfaceSegregation.Person.class);
+        container.remove(InterfaceSegregation.Person.class);
     }
 
 }

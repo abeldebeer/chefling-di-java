@@ -2,10 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.exception.*;
-import com.cookingfox.fixtures.chefling.NoConstructor;
-import com.cookingfox.fixtures.chefling.NoMethodAbstract;
-import com.cookingfox.fixtures.chefling.NoMethodImplementation;
-import com.cookingfox.fixtures.chefling.NoMethodInterface;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -75,6 +72,13 @@ public class MapTypeCommandTest extends AbstractTest {
     public void mapType_should_allow_to_map_to_previous_mapping() throws Exception {
         container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
+    }
+
+    @Test
+    public void mapType_should_take_into_account_subType_instance_mapping() throws Exception {
+        container.mapInstance(InterfaceSegregation.Person.class, new InterfaceSegregation.JohnDoe());
+        container.mapType(InterfaceSegregation.Talkable.class, InterfaceSegregation.Person.class);
+        container.mapType(InterfaceSegregation.Walkable.class, InterfaceSegregation.Person.class);
     }
 
     @Test

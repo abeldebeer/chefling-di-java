@@ -9,4 +9,8 @@ public class RemoveTypeNotAllowedException extends ContainerException {
         super(String.format("It is not allowed to remove() the mappings and instances for type '%s'", type.getName()));
     }
 
+    public RemoveTypeNotAllowedException(String message) {
+        super(message);
+    }
+
 }

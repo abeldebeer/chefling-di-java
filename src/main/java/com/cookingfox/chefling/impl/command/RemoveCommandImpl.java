@@ -6,10 +6,7 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.RemoveTypeNotAllowedException;
 import com.cookingfox.chefling.impl.helper.Visitor;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @see RemoveCommand
@@ -104,9 +101,24 @@ class RemoveCommandImpl extends AbstractCommand implements RemoveCommand {
             }
         });
 
-        // remove the mappings
-        for (Class toRemoveType : toRemoveTypes) {
-            remove(toRemoveType);
+        if (!toRemoveTypes.isEmpty()) {
+            StringBuilder error = new StringBuilder("The mapping for `");
+            error.append(type.getName());
+            error.append("` can not be removed, because it has other types mapped to it: ");
+
+            Iterator<Class> iterator = toRemoveTypes.iterator();
+
+            while (iterator.hasNext()) {
+                error.append('`');
+                error.append(iterator.next().getName());
+                error.append('`');
+
+                if (iterator.hasNext()) {
+                    error.append(", ");
+                }
+            }
+
+            throw new RemoveTypeNotAllowedException(error.toString());
         }
     }
 
