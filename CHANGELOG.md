@@ -1,5 +1,11 @@
 # Chefling DI for Java: Change Log
 
+## [4.0.1](../../tree/v4.0.1) (2016-01-26)
+
+- Now checks the generic type of Factory instance in `mapFactory()`.
+- Now throws when trying to remove a mapping that has other mappings pointing to it.
+- Fixes minor bug in `mapType()`.
+
 ## [4.0.0](../../tree/v4.0.0) (2015-11-12)
 
 - Removes `Container.getDefault()`: static container instance is unnecessary.
