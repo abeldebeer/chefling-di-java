@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [4.0.2](../../tree/v4.0.2) (2016-02-02)
+
+- Fixes bug where `mapFactory()` would crash on a generic Factory implementation.
+
 ## [4.0.1](../../tree/v4.0.1) (2016-01-26)
 
 - Now checks the generic type of Factory instance in `mapFactory()`.
