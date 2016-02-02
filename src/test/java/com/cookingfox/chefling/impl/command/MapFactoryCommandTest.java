@@ -4,6 +4,7 @@ import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.exception.*;
+import com.cookingfox.fixtures.chefling.GenericInstanceFactory;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodImplementation;
 import com.cookingfox.fixtures.chefling.NoMethodInterface;
@@ -86,6 +87,17 @@ public class MapFactoryCommandTest extends AbstractTest {
         container.mapFactory(NoMethodInterface.class, wrapper);
 
         NoMethodInterface result = container.get(NoMethodInterface.class);
+
+        Assert.assertSame(instance, result);
+    }
+
+    @Test
+    public void mapFactory_should_not_throw_for_generic_factory_impl() throws Exception {
+        final NoConstructor instance = new NoConstructor();
+
+        container.mapFactory(NoConstructor.class, new GenericInstanceFactory<>(instance));
+
+        final NoConstructor result = container.get(NoConstructor.class);
 
         Assert.assertSame(instance, result);
     }
