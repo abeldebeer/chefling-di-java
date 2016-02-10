@@ -231,6 +231,11 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
     protected void addErrorReportEntry(StringBuilder errorBuilder, ResolvabilityResult result, Class type) {
         // add name of this constructor
         String modifierName = Modifier.toString(result.getModifiers());
+
+        if (modifierName.isEmpty()) {
+            modifierName = "non-public";
+        }
+
         errorBuilder.append(String.format("[%s] %s ( ", modifierName, type.getSimpleName()));
 
         Class[] parameterTypes = result.constructor.getParameterTypes();
