@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Package info -->
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>4.0.4-SNAPSHOT</version>
+    <version>4.0.4</version>
     <name>Chefling DI for Java</name>
     <description>
         Chefling is a very minimal dependency injection container written in pure Java.
@@ -57,7 +55,7 @@
         <developerConnection>
             scm:git:ssh://git@github.com/cookingfox/chefling-di-java.git
         </developerConnection>
-        <tag>HEAD</tag>
+        <tag>v4.0.4</tag>
     </scm>
 
     <!-- Distribution -->
