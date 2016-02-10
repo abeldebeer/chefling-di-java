@@ -24,6 +24,7 @@ public class Chefling {
 
         final protected LinkedList<Config> configs = new LinkedList<>();
 
+        @Override
         public Builder add(final Config config) {
             Objects.requireNonNull(config, "Config can not be null");
 
@@ -36,6 +37,7 @@ public class Chefling {
             return this;
         }
 
+        @Override
         public Container build() {
             if (configs.isEmpty()) {
                 throw new ContainerBuilderException("Add configs first");
