@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [4.0.4](../../tree/v4.0.4) (2016-02-10)
+
+- Adds Builder + Config implementation for streamlining a Container bootstrapping.
+
 ## [4.0.2](../../tree/v4.0.2) (2016-02-02)
 
 - Fixes bug where `mapFactory()` would crash on a generic Factory implementation.
