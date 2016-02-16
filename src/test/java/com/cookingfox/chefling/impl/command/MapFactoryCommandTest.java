@@ -56,6 +56,19 @@ public class MapFactoryCommandTest extends AbstractTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void mapFactory_should_not_throw_for_missing_generic_type() throws Exception {
+        Factory factory = new Factory() {
+            @Override
+            public NoConstructor createInstance(Container container) throws ContainerException {
+                return new NoConstructor();
+            }
+        };
+
+        container.mapFactory(NoConstructor.class, factory);
+    }
+
     @SuppressWarnings("all")
     @Test(expected = FactoryIncorrectGenericException.class)
     public void mapFactory_should_throw_for_incorrect_generic_type() throws Exception {

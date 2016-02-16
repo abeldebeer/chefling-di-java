@@ -31,7 +31,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 
-        final Class genericType = getGenericClass(factory);
+        final Class<T> genericType = getGenericClass(factory);
 
         // validate generic type, if available
         if (genericType != null && !type.isAssignableFrom(genericType)) {
@@ -48,27 +48,21 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
     /**
      * Attempt to extract the generic ("parameterized") type from the factory.
      */
-    protected Class getGenericClass(Factory factory) {
-        // inspect generic types
-        for (Type i : factory.getClass().getGenericInterfaces()) {
-            if (i instanceof ParameterizedType) {
-                final ParameterizedType parameterized = (ParameterizedType) i;
+    @SuppressWarnings("unchecked")
+    protected <T> Class<T> getGenericClass(Factory<T> factory) {
+        // get first generic type
+        final Type generic = factory.getClass().getGenericInterfaces()[0];
 
-                // type is factory?
-                if (parameterized.getRawType().equals(Factory.class)) {
-                    final Type type = parameterized.getActualTypeArguments()[0];
-
-                    // cannot use type variable
-                    if (type instanceof TypeVariable) {
-                        return null;
-                    }
-
-                    return (Class) type;
-                }
-            }
+        // not parameterized? skip
+        if (!(generic instanceof ParameterizedType)) {
+            return null;
         }
 
-        return null;
+        // get actual type argument
+        final Type actual = ((ParameterizedType) generic).getActualTypeArguments()[0];
+
+        // is TypeVariable when generic is inferred (e.g. diamond operator)
+        return (actual instanceof TypeVariable) ? null : (Class<T>) actual;
     }
 
 }
