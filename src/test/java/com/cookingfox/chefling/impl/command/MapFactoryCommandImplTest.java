@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Unit tests for {@link MapFactoryCommandImpl}.
  */
-public class MapFactoryCommandTest extends AbstractTest {
+public class MapFactoryCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
     public void mapFactory_should_throw_if_type_null() throws Exception {

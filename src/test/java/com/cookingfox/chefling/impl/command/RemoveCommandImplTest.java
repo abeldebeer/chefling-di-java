@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Unit tests for {@link RemoveCommandImpl}.
  */
-public class RemoveCommandTest extends AbstractTest {
+public class RemoveCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
     public void remove_should_throw_if_type_null() throws Exception {

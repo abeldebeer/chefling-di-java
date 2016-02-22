@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link SetParentCommandImpl}.
  */
-public class SetParentCommandTest extends AbstractTest {
+public class SetParentCommandImplTest extends AbstractTest {
 
     @Test(expected = ContainerException.class)
     public void setParent_should_throw_if_null() throws Exception {

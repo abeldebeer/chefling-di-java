@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 /**
  * Unit tests for {@link MapInstanceCommandImpl}.
  */
-public class MapInstanceCommandTest extends AbstractTest {
+public class MapInstanceCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
     public void mapInstance_should_throw_if_type_null() throws Exception {

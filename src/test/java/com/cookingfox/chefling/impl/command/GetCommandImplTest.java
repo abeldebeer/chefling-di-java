@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Unit tests for {@link GetCommandImpl}.
  */
-public class GetCommandTest extends AbstractTest {
+public class GetCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
     public void get_should_throw_if_type_null() throws Exception {

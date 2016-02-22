@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 /**
  * Unit tests for {@link CreateCommandImpl}.
  */
-public class CreateCommandTest extends AbstractTest {
+public class CreateCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
     public void create_should_throw_if_type_null() throws Exception {

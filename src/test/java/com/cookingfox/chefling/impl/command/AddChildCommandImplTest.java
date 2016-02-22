@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link AddChildCommandImpl}.
  */
-public class AddChildCommandTest extends AbstractTest {
+public class AddChildCommandImplTest extends AbstractTest {
 
     @Test(expected = ContainerException.class)
     public void addChild_should_throw_if_null() throws Exception {

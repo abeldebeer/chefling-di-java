@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link ResetCommandImpl}.
  */
-public class ResetCommandTest extends AbstractTest {
+public class ResetCommandImplTest extends AbstractTest {
 
     @Test
     public void reset_should_remove_mappings_and_instances() throws Exception {

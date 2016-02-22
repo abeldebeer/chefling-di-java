@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link HasCommandImpl}.
  */
-public class HasCommandTest extends AbstractTest {
+public class HasCommandImplTest extends AbstractTest {
 
     @Test
     public void has_should_return_false_if_null() throws Exception {
