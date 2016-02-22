@@ -1,5 +1,11 @@
 # Chefling DI for Java: Change Log
 
+## [5.0.0](../../tree/v5.0.0) (2016-02-22)
+
+- Updates documentation.
+- Adds `createChild()` and `test()` methods.
+- All exceptions are now unchecked: you wouldn't be able to recover.
+
 ## [4.0.4](../../tree/v4.0.4) (2016-02-10)
 
 - Adds Builder + Config implementation for streamlining a Container bootstrapping.

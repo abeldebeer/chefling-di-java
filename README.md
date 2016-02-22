@@ -29,7 +29,7 @@ and add the project to the `dependencies` block in your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.cookingfox:chefling-di-java:4.0.4'
+    compile 'com.cookingfox:chefling-di-java:5.0.0'
 }
 ```
 
@@ -52,7 +52,7 @@ and add the project declaration to your `pom.xml`:
 <dependency>
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>4.0.4</version>
+    <version>5.0.0</version>
 </dependency>
 ```
 
