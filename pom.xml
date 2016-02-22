@@ -5,7 +5,7 @@
     <!-- Package info -->
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1-SNAPSHOT</version>
     <name>Chefling DI for Java</name>
     <description>
         Chefling is a very minimal dependency injection container written in pure Java.
@@ -55,7 +55,7 @@
         <developerConnection>
             scm:git:ssh://git@github.com/cookingfox/chefling-di-java.git
         </developerConnection>
-        <tag>v5.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- Distribution -->
