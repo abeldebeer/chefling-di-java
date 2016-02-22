@@ -1,7 +1,5 @@
 # Chefling DI for Java
 
-### _WARNING: THIS DOCUMENTATION IS OUTDATED (V3). V4 DOCUMENTATION IS ON ITS WAY._
-
 Chefling is a very minimal dependency injection container written in pure Java. It does not rely on
 annotations, only does constructor injection and has limited (but powerful) configuration options.
 
@@ -60,7 +58,11 @@ and add the project declaration to your `pom.xml`:
 
 ## Features
 
-TODO: Features
+- Dependency injection without annotations: keeps your code clean.
+- Automatic resolving of dependencies using reflection and constructor injection.
+- [LifeCycle](#lifecycle) hooks for the creation and destruction phases.
+- [Builder](#builder) to control configuration and initialization order.
+- [Modular configuration](#container-children) support through composite containers.
 
 ## Usage
 
@@ -95,10 +97,11 @@ should only be called directly when you are absolutely sure you need a new insta
 usually not the case.
 
 When `Container#create(type)` is called, Chefling attempts to resolve all dependencies (constructor
-arguments) of the provided type. See the [F.A.Q.](#faq) for information on which types can and can 
-not be resolved by Chefling. If the type implements the `LifeCycle` interface, its `initialize()` 
-method will be called by the `create(type)` method. See [LifeCycle](#lifecycle) for more 
-information.
+arguments) of the provided type. See the
+[F.A.Q.](#can-i-use-all-different-kinds-of-java-types-with-the-container) for information on which 
+types can and can not be resolved by Chefling. If the type implements the `LifeCycle` interface, its 
+`initialize()` method will be called by the `create(type)` method. See [LifeCycle](#lifecycle) for 
+more information.
 
 ### Configure the Container: `map*()` methods
 
@@ -174,10 +177,6 @@ initialization of the application. The Container Builder allows you to modulariz
 configuration into `Config` instances:
 
 ```java
-import com.cookingfox.chefling.api.Config;
-import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.impl.Chefling;
-
 Config libraryConfig = new Config() {
     @Override
     public void apply(Container container) {
@@ -238,6 +237,10 @@ appContainer.mapType(IModule.class, OtherModuleImplementation.class);
 appContainer.addChild(moduleContainer);
 ```
 
+It is also possible to do the inverse: set the parent of a Container, using `setParent(Container)`.
+
+There's a helper method available for creating AND adding a Container child: `createChild()`.
+
 ### Testing the configuration
 
 Since dependencies are resolved at runtime, it can be useful to make sure your configuration is 
@@ -252,8 +255,8 @@ __WARNING: Make sure to remove this call for production builds!__
 
 No, the following types are not allowed:
 
-- Classes in the `java.lang` package: these are considered Java language constructs. Examples:
-`java.lang.String`, `java.lang.Object`, `java.lang.Exception`.
+- Classes in the `java.*` and `javax.*` packages: these are considered Java language constructs. 
+Examples: `java.lang.String`, `java.lang.Exception`, `java.util.LinkedList`.
 - Classes that are not public.
 - Primitive types (e.g. `boolean`, `int`).
 - Exceptions (extends `Throwable`).
@@ -323,7 +326,7 @@ convention over configuration.
 
 #### _Why "Chefling"?_
 
-As an analogy for dependency injection, we used cooking (we're Cooking Fox after all): when asking a
+We used cooking as an analogy for dependency injection (we're Cooking Fox after all): when asking a
 chef to prepare a meal, he/she prepares all the necessary ingredients and uses these to cook the
 dish. This is basically what a DI container does: ask for an instance of a class and it will create
 one, resolving its dependencies. The word "Chefling" suggests a 'small' chef, which corresponds to
