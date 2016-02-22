@@ -83,7 +83,7 @@ Container container = new Chefling.Builder().build();
 See [Builder](#builder) for more information. Also see [Container children](#container-children) for
 instructions on how to create and add Container child configurations.
 
-### Request (create) an instance of a type
+### Ask for an instance of a type: `get(type)` and `create(type)`
 
 There are two ways to have Chefling provide you with an instance of a type (class / interface):
 
@@ -96,13 +96,61 @@ usually not the case.
 
 When `Container#create(type)` is called, Chefling attempts to resolve all dependencies (constructor
 arguments) of the provided type. See the [F.A.Q.](#faq) for information on which types can and can 
-not be resolved by Chefling.
+not be resolved by Chefling. If the type implements the `LifeCycle` interface, its `initialize()` 
+method will be called by the `create(type)` method. See [LifeCycle](#lifecycle) for more 
+information.
 
 ### Configure the Container: `map*()` methods
 
-TODO: `Container#mapInstance(type, instance)`
-TODO: `Container#mapType(type, subType)`
-TODO: `Container#mapFactory(type, factory)`
+You can configure the Container, so that when you ask for a type, the Container provides you with a
+specific instance or implementation.
+
+#### Use a specific instance: `mapInstance(type, instance)`
+
+Mapping a specific instance of a type is useful when it has dependencies on unresolvable types, such
+as `String` or `Boolean`:
+
+```java
+// provide the specific instance
+container.mapInstance(MyClass.class, new MyClass("some value", true));
+
+// `resolved` is the provided instance
+MyClass resolved = container.get(MyClass.class);
+```
+
+#### Use a specific implementation: `mapType(type, subType)`
+
+Chefling can not create an instance of an interface or abstract class, so you will need to define 
+which implementation you want to use:
+
+```java
+// map the interface to a specific implementation
+container.mapType(MyInterface.class, MyImplementation.class);
+
+// `resolved` is an instance of MyImplementation
+MyInterface resolved = container.get(MyInterface.class);
+```
+
+#### Use a factory: `mapFactory(type, factory)`
+
+If a type has dependencies that are both resolvable and unresolvable, you can map a `Factory`
+implementation:
+
+```java
+// map the type to a Factory
+container.mapFactory(MyInterface.class, new Factory<MyInterface>() {
+    @Override
+    public MyInterface createInstance(Container container) {
+        return new MyImplementation("some value", container.get(OtherType.class));
+    }
+});
+
+// `resolved` is the result of the Factory method
+MyInterface resolved = container.get(MyInterface.class);
+```
+
+If the `Factory` returns null or something that is not an instance of the expected type, an 
+exception will be thrown.
 
 ### Testing the configuration
 
