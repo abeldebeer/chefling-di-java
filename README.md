@@ -60,162 +60,98 @@ and add the project declaration to your `pom.xml`:
 
 ## Features
 
-The Chefling [Container interface](src/main/java/com/cookingfox/chefling/api/Container.java) defines 
-the following methods:
-
-- `Object get(Class type)`: Returns an instance of `type`. If a previously stored instance exists, 
-it will always return that same instance. If there is no stored instance, it will create a new one 
-using `create()`, and store and return that.
-
-- `Object create(Class type)`: Creates a new instance of `type`, attempting to resolve its full 
-dependency tree. The instance is not stored (that's what `get()` is for), so only use this method 
-directly when you need a ___new___ instance. It uses the type mappings (from the `map...` methods) 
-to create the instance. If no mapping is available, it attempts to resolve the dependencies by 
-inspecting the constructor parameters. If the created instance implements the `LifeCycle` interface 
-(see "Usage" -> "LifeCycle"), its `initialize()` method will be called.
-
-- `void mapFactory(Class type, Factory factory)`: Map `type` to a `Factory` instance (see "Usage" -> 
-"Factory"), which will create an instance of `type` when it is requested (by `create()`). Which 
-specific instance will be created by the Factory is up to the developer. If the Factory returns 
-`null`, or a value of a different type, then an exception will be thrown by the Container.
-
-- `void mapInstance(Class type, instance)`: Map `type` to a specific instance, which will be 
-returned when `type` is requested. This is useful when `type` has dependencies (constructor 
-parameters) that are not resolvable by the Container (e.g. `int`, `boolean`).
-
-- `void mapType(Class type, Class subType)`: Map `type` to a class (`subType`) that extends it. This 
-makes it possible to set a specific implementation of an interface or abstract class. When `type` is 
-requested an instance of `subType` will be created.
-
-- `boolean has(Class type)`: Returns whether a stored instance or mapping (from the `map...` 
-methods) exists for `type`.
-
-- `void remove(Class type)`: Removes a stored instance and/or mapping for `type`. If an instance 
-exists and it implements `LifeCycle`, its `dispose()` method will be called.
-
-- `void reset()`: Removes all stored instances and mappings. Use this method to clean up the 
-Container in your application's destroy procedure. For every instance that implements `LifeCycle`, 
-its `dispose()` method will be called.
-
-To understand the Container internals,
-[take a look at the source code](src/main/java/com/cookingfox/chefling), or
-[check out the unit tests](src/test/java/com/cookingfox/chefling).
+TODO: Features
 
 ## Usage
 
-Here's an example of the main features of the container:
+### Create a Chefling Container
+
+The easiest way to create a Chefling Container is by doing:
 
 ```java
-class First {
-    String id;
-
-    First(String id) {
-        this.id = id;
-    }
-}
-
-interface ISecond {}
-
-class Second implements ISecond {}
-
-class Third {
-    First first;
-    ISecond second;
-
-    Third(First first, ISecond second) {
-        this.first = first;
-        this.second = second;
-    }
-}
-
-// create a new DI container
-Container container = new Container();
-
-// store a specific instance
-First myFirst = new First("unique id");
-container.mapInstance(First.class, myFirst);
-
-// map interface to implementation:
-// the container will create an instance of Second when ISecond is requested
-container.mapType(ISecond.class, Second.class);
-
-// the container resolves the requested type (Third) and its dependencies
-Third third = container.get(Third.class);
-
-third.first.equals(myFirst); // true
-third.second instanceof Second; // true
+Container container = Chefling.createContainer();
 ```
 
-Explanation:
+This provides you with an instance of the default Container implementation.
 
-1. The `Third` class has two dependencies: `First` (class) and `ISecond` (interface).
-2. By using the container's `mapInstance` method, a specific instance can be stored for a type. In 
-the above example, an instance of `First` is stored, which holds a unique id.
-3. The container's `mapType` method is used to map one type to a sub type. This way you can map an
-interface or abstract class to a concrete implementation. In the example, the `ISecond` interface is
-mapped to the `Second` class.
-4. By calling the container's `get` method, the type is resolved. In this case the `Third` class
-receives the explicitly mapped instance of the `First` class from step 2. The `ISecond` dependency 
-is resolved with an instance of the mapped `Second` class.
+It is also possible to use the designated Builder class:
 
-### Default (static) Container instance
+```java
+Container container = new Chefling.Builder().build();
+```
 
-Some applications need to have access to the same `Container` instance across multiple processes.
-This is especially common in Android, in the case of services. For these occasions a convenience
-singleton method can be used: `Container.getDefault()`. This will create and return a static
-instance of the container. Please be aware that if you use `getDefault()` in one place, you need to
-use it everywhere, otherwise you will get different instances of the container anyway.
+See [Builder](#builder) for more information. Also see [Container children](#container-children) for
+instructions on how to create and add Container child configurations.
+
+### Request (create) an instance of a type
+
+There are two ways to have Chefling provide you with an instance of a type (class / interface):
+
+- `Container#get(type)`: returns a stored instance of the type, or creates and stores a new 
+instance using:
+
+- `Container#create(type)`: always creates a new instance that is NOT stored. This method 
+should only be called directly when you are absolutely sure you need a new instance, which is 
+usually not the case.
+
+When `Container#create(type)` is called, Chefling attempts to resolve all dependencies (constructor
+arguments) of the provided type. See the [F.A.Q.](#faq) for information on which types can and can 
+not be resolved by Chefling.
+
+### Configure the Container: `map*()` methods
+
+TODO: `Container#mapInstance(type, instance)`
+TODO: `Container#mapType(type, subType)`
+TODO: `Container#mapFactory(type, factory)`
+
+### Testing the configuration
+
+TODO: Testing the configuration (`Container#test()`)
 
 ### LifeCycle
 
-The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/api/LifeCycle.java) allows 
-implementing classes to hook into the life cycle processes of the Container:
+TODO: LifeCycle
 
-- When `Container.create()` is called and an instance of the requested type is created, it will call 
-its `initialize()` method. This will also happen for types that have been mapped using the `map...` 
-methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific instance of the 
-class, and it implements the `LifeCycle` interface, then its `initialize()` method will be called.
+### Builder
 
-- The `remove()` and `reset()` methods will call the `dispose` method of instances that implement
-the `LifeCycle` interface.
-
-### Factory
-
-The [`Factory` interface](src/main/java/com/cookingfox/chefling/api/Factory.java) defines one method 
-(`createInstance()`) that is used to create an instance of the provided type. A Factory is generally 
-used when the type can not be resolved by the Container, for example when its constructor parameters 
-are of a primitive type (boolean, int). Using a Factory is more efficient than mapping an instance 
-directly, because it will only be called once it is requested (lazy loaded).
-
-Example:
+When your application grows, the Chefling Container configuration grows as well. You'll start 
+noticing different types of configuration, such as libraries, your application domain and the 
+initialization of the application. The Container Builder allows you to modularize your Chefling
+configuration into `Config` instances:
 
 ```java
-class Bar {}
+import com.cookingfox.chefling.api.Config;
+import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.impl.Chefling;
 
-class Foo {
-    Bar bar;
-    String value;
-
-    Foo(Bar bar, String value) {
-        this.bar = bar;
-        this.value = value;
+Config libraryConfig = new Config() {
+    @Override
+    public void apply(Container container) {
+        // configure container with library dependencies
+        container.mapType(IMyLib.class, MyLibImpl.class);
     }
-}
+};
 
-Container container = new Container();
-
-// map type `Foo` to factory
-container.mapFactory(Foo.class, new Factory<Foo>() {
-    // the `createInstance` method receives a Container instance, 
-    // which can be used to get dependencies
-    public Foo createInstance(Container container) {
-        return new Foo(container.get(Bar.class), "some arbitrary value");
+Config initAppConfig = new Config() {
+    @Override
+    public void apply(Container container) {
+        // initialize application components
+        container.get(MyViewController.class);
     }
-});
+};
 
-// ask the Container for an instance of `Foo`, which will invoke the Factory
-Foo instance = container.get(Foo.class);
+Container container = new Chefling.Builder()
+        .add(libraryConfig)
+        .add(initAppConfig)
+        .build();
 ```
+
+The Builder applies the `Config` instances in the order they were added. Of course, you can define
+your own classes that implement this interface for the desired level of modularity.
+
+### Container children
+
+TODO: Container children
 
 ## F.A.Q.
 
@@ -302,4 +238,4 @@ the limited functionality and scope of this library.
 
 ## Copyright and license
 
-Code and documentation copyright 2015 Cooking Fox. Code released under the Apache 2.0 license.
+Code and documentation copyright 2016 Cooking Fox. Code released under the Apache 2.0 license.
