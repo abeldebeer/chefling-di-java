@@ -15,6 +15,6 @@ public interface MapTypeCommand {
      * @param <T>     Ensures the sub type extends the base type.
      * @throws ContainerException when a mapping for `type` already exists.
      */
-    <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException;
+    <T> void mapType(Class<T> type, Class<? extends T> subType);
 
 }

@@ -76,7 +76,7 @@ public class BuilderTest {
     public void build_should_throw_if_config_throws_container_exception() throws Exception {
         builder.add(new Config() {
             @Override
-            public void apply(Container container) throws ContainerException {
+            public void apply(Container container) {
                 throw new ContainerException("Example");
             }
         }).build();
@@ -86,7 +86,7 @@ public class BuilderTest {
     public void build_should_throw_if_config_throws_generic_error() throws Exception {
         builder.add(new Config() {
             @Override
-            public void apply(Container container) throws ContainerException {
+            public void apply(Container container) {
                 throw new RuntimeException("Example");
             }
         }).build();
@@ -96,7 +96,7 @@ public class BuilderTest {
     public void build_should_apply_config() throws Exception {
         Container container = builder.add(new Config() {
             @Override
-            public void apply(Container container) throws ContainerException {
+            public void apply(Container container) {
                 container.mapInstance(NoConstructor.class, new NoConstructor());
             }
         }).build();
@@ -126,7 +126,7 @@ public class BuilderTest {
 
     private static class NoopConfig implements Config {
         @Override
-        public void apply(Container container) throws ContainerException {
+        public void apply(Container container) {
             // no-op
         }
     }
@@ -139,7 +139,7 @@ public class BuilderTest {
         }
 
         @Override
-        public void apply(Container container) throws ContainerException {
+        public void apply(Container container) {
             list.add(this);
         }
     }

@@ -14,6 +14,6 @@ public interface Config {
      * @param container The Container instance that is being configured.
      * @throws ContainerException
      */
-    void apply(Container container) throws ContainerException;
+    void apply(Container container);
 
 }

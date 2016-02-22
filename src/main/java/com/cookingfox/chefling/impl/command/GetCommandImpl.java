@@ -34,7 +34,7 @@ class GetCommandImpl extends AbstractCommand implements GetCommand {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public <T> T get(Class<T> type) throws ContainerException {
+    public <T> T get(Class<T> type) {
         assertNonNull(type, "type");
 
         CommandContainer existingOwner = findOne(_container, HasMappingMatcher.get(type));
@@ -58,7 +58,7 @@ class GetCommandImpl extends AbstractCommand implements GetCommand {
      * @return The created instance.
      * @throws ContainerException when the instance could not be created.
      */
-    protected <T> T createInstance(Class<T> type) throws ContainerException {
+    protected <T> T createInstance(Class<T> type) {
         T instance;
 
         synchronized (currentlyResolving) {
@@ -135,7 +135,7 @@ class GetCommandImpl extends AbstractCommand implements GetCommand {
      * @throws ContainerException when the instance could not be created.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T useMapping(CommandContainer owner, Class<T> type) throws ContainerException {
+    protected <T> T useMapping(CommandContainer owner, Class<T> type) {
         Object mapping = findMapping(owner, type);
 
         if (type.isInstance(mapping)) {

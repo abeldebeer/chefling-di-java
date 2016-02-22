@@ -17,7 +17,7 @@ public class GenericInstanceFactory<T> implements Factory<T> {
     }
 
     @Override
-    public T createInstance(Container container) throws ContainerException {
+    public T createInstance(Container container) {
         return instance;
     }
 

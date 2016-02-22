@@ -19,6 +19,6 @@ public interface MapFactoryCommand {
      * @throws ContainerException when a mapping for `type` already exists.
      * @see Factory
      */
-    <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException;
+    <T> void mapFactory(Class<T> type, Factory<T> factory);
 
 }

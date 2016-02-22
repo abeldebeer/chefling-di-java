@@ -22,7 +22,7 @@ class AddChildCommandImpl extends AbstractCommand implements AddChildCommand {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void addChild(Container container) throws ContainerException {
+    public void addChild(Container container) {
         if (container == null) {
             throw new ContainerException("Child container cannot be null");
         } else if (container.equals(_container)) {

@@ -22,7 +22,7 @@ class MapTypeCommandImpl extends AbstractCommand implements MapTypeCommand {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
+    public <T> void mapType(Class<T> type, Class<? extends T> subType) {
         assertNonNull(type, "type");
         assertNonNull(subType, "subType");
 

@@ -5,10 +5,10 @@ import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.command.*;
 import com.cookingfox.chefling.api.exception.ContainerException;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.LinkedList;
 
 /**
  * {@link Container} implementation that uses command classes for each container operation.
@@ -22,19 +22,19 @@ public class CommandContainer implements Container {
     /**
      * A collection of child container configurations.
      */
-    protected final Set<CommandContainer> children = new LinkedHashSet<>();
+    protected final LinkedHashSet<CommandContainer> children = new LinkedHashSet<>();
 
     /**
      * Stores created instances, where the key is the type and the value is the instance. This
      * instance is returned the next time the type is requested.
      */
-    protected final Map<Class, Object> instances = new LinkedHashMap<>();
+    protected final LinkedHashMap<Class, Object> instances = new LinkedHashMap<>();
 
     /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the
      * `map...` methods.
      */
-    protected final Map<Class, Object> mappings = new LinkedHashMap<>();
+    protected final LinkedHashMap<Class, Object> mappings = new LinkedHashMap<>();
 
     /**
      * The parent container configuration.
@@ -69,17 +69,17 @@ public class CommandContainer implements Container {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void addChild(Container container) throws ContainerException {
+    public void addChild(Container container) {
         addChildCommand.addChild(container);
     }
 
     @Override
-    public <T> T create(Class<T> type) throws ContainerException {
+    public <T> T create(Class<T> type) {
         return createCommand.create(type);
     }
 
     @Override
-    public <T> T get(Class<T> type) throws ContainerException {
+    public <T> T get(Class<T> type) {
         return getCommand.get(type);
     }
 
@@ -89,22 +89,22 @@ public class CommandContainer implements Container {
     }
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
+    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
         mapFactoryCommand.mapFactory(type, factory);
     }
 
     @Override
-    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
+    public <T> void mapInstance(Class<T> type, T instance) {
         mapInstanceCommand.mapInstance(type, instance);
     }
 
     @Override
-    public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
+    public <T> void mapType(Class<T> type, Class<? extends T> subType) {
         mapTypeCommand.mapType(type, subType);
     }
 
     @Override
-    public void remove(Class type) throws ContainerException {
+    public void remove(Class type) {
         removeCommand.remove(type);
     }
 
@@ -114,7 +114,7 @@ public class CommandContainer implements Container {
     }
 
     @Override
-    public void setParent(Container container) throws ContainerException {
+    public void setParent(Container container) {
         setParentCommand.setParent(container);
     }
 

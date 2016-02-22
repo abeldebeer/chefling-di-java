@@ -43,7 +43,7 @@ class RemoveCommandImpl extends AbstractCommand implements RemoveCommand {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void remove(Class type) throws ContainerException {
+    public void remove(Class type) {
         assertNonNull(type, "type");
 
         if (DO_NOT_REMOVE.contains(type)) {
@@ -85,7 +85,7 @@ class RemoveCommandImpl extends AbstractCommand implements RemoveCommand {
      * @param type The type to remove.
      * @throws ContainerException when the mapping cannot be removed.
      */
-    protected void removeMappingsToType(final Class type) throws ContainerException {
+    protected void removeMappingsToType(final Class type) {
         final Set<Class> toRemoveTypes = new LinkedHashSet<>();
 
         // find mappings TO this type in all container children

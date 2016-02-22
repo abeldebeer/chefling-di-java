@@ -23,7 +23,7 @@ class SetParentCommandImpl extends AbstractCommand implements SetParentCommand {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void setParent(Container container) throws ContainerException {
+    public void setParent(Container container) {
         if (container == null) {
             throw new NullValueNotAllowedException("Parent container can not be null");
         } else if (container.equals(_container)) {

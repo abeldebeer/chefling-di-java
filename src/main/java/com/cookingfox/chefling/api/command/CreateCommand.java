@@ -20,6 +20,6 @@ public interface CreateCommand {
      * @throws ContainerException when the instance cannot be created, for example because its
      *                            dependencies cannot be resolved.
      */
-    <T> T create(Class<T> type) throws ContainerException;
+    <T> T create(Class<T> type);
 
 }

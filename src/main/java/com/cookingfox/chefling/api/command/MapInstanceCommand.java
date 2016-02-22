@@ -17,6 +17,6 @@ public interface MapInstanceCommand {
      * @param <T>      Ensures the instance is of the correct type.
      * @throws ContainerException when a mapping for `type` already exists.
      */
-    <T> void mapInstance(Class<T> type, T instance) throws ContainerException;
+    <T> void mapInstance(Class<T> type, T instance);
 
 }

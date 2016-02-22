@@ -10,17 +10,17 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 public class NoopContainer implements Container {
 
     @Override
-    public void addChild(Container container) throws ContainerException {
+    public void addChild(Container container) {
 
     }
 
     @Override
-    public <T> T create(Class<T> type) throws ContainerException {
+    public <T> T create(Class<T> type) {
         return null;
     }
 
     @Override
-    public <T> T get(Class<T> type) throws ContainerException {
+    public <T> T get(Class<T> type) {
         return null;
     }
 
@@ -30,22 +30,22 @@ public class NoopContainer implements Container {
     }
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
+    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
 
     }
 
     @Override
-    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
+    public <T> void mapInstance(Class<T> type, T instance) {
 
     }
 
     @Override
-    public <T> void mapType(Class<T> type, Class<? extends T> subType) throws ContainerException {
+    public <T> void mapType(Class<T> type, Class<? extends T> subType) {
 
     }
 
     @Override
-    public void remove(Class type) throws ContainerException {
+    public void remove(Class type) {
 
     }
 
@@ -55,7 +55,7 @@ public class NoopContainer implements Container {
     }
 
     @Override
-    public void setParent(Container container) throws ContainerException {
+    public void setParent(Container container) {
 
     }
 

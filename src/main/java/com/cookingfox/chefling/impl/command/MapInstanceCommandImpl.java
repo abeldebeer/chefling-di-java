@@ -22,7 +22,7 @@ class MapInstanceCommandImpl extends AbstractCommand implements MapInstanceComma
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public <T> void mapInstance(Class<T> type, T instance) throws ContainerException {
+    public <T> void mapInstance(Class<T> type, T instance) {
         assertNonNull(type, "type");
         assertNonNull(instance, "instance");
 

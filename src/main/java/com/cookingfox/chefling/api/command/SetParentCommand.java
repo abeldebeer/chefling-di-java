@@ -13,6 +13,6 @@ public interface SetParentCommand {
      *                            contains duplicate mappings to the container it is being added to.
      * @see Container#addChild(Container)
      */
-    void setParent(Container container) throws ContainerException;
+    void setParent(Container container);
 
 }

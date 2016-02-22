@@ -51,7 +51,7 @@ abstract class AbstractCommand {
      * @param value The value for the mapping.
      * @throws ContainerException
      */
-    protected void addMapping(Class type, Object value) throws ContainerException {
+    protected void addMapping(Class type, Object value) {
         isAllowed(type);
 
         synchronized (_container) {
@@ -83,7 +83,7 @@ abstract class AbstractCommand {
      * @param container The new container.
      * @throws ContainerException
      */
-    protected void checkMappingConflicts(CommandContainer container) throws ContainerException {
+    protected void checkMappingConflicts(CommandContainer container) {
         for (Class type : compileTypes(container)) {
             if (_container.has(type)) {
                 throw new ConfigurationConflictException(type);

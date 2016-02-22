@@ -27,7 +27,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) throws ContainerException {
+    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 

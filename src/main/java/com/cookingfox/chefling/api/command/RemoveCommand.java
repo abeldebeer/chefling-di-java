@@ -13,6 +13,6 @@ public interface RemoveCommand {
      * @throws ContainerException when the type is not allowed to be removed.
      * @see LifeCycle#dispose()
      */
-    void remove(Class type) throws ContainerException;
+    void remove(Class type);
 
 }

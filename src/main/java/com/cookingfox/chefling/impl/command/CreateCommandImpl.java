@@ -28,7 +28,7 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T create(Class<T> type) throws ContainerException {
+    public <T> T create(Class<T> type) {
         assertNonNull(type, "type");
         isAllowed(type);
 
@@ -70,7 +70,7 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
      * @throws ContainerException
      */
     @SuppressWarnings("unchecked")
-    protected <T> T createInstance(Class<T> type) throws ContainerException {
+    protected <T> T createInstance(Class<T> type) {
         Constructor constructor = getDefaultConstructor(type);
         Class[] parameterTypes = constructor.getParameterTypes();
         Object[] parameters = new Object[parameterTypes.length];
@@ -272,7 +272,7 @@ class CreateCommandImpl extends AbstractCommand implements CreateCommand {
      * @return The created instance.
      * @throws ContainerException
      */
-    protected <T> T resolveUsingFactory(Factory<T> factory, Class<T> type) throws ContainerException {
+    protected <T> T resolveUsingFactory(Factory<T> factory, Class<T> type) {
         T instance = factory.createInstance(_container);
 
         if (instance == null) {

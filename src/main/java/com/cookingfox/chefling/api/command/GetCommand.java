@@ -15,6 +15,6 @@ public interface GetCommand {
      * @return Instance of `type`.
      * @throws ContainerException when an instance of the type cannot be created.
      */
-    <T> T get(Class<T> type) throws ContainerException;
+    <T> T get(Class<T> type);
 
 }

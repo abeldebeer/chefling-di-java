@@ -26,7 +26,7 @@ public class LifeCycleTest extends AbstractTest {
     public void create_factory_should_call_lifecycle_create() throws Exception {
         Factory<LifeCycleWithCallLog> factory = new Factory<LifeCycleWithCallLog>() {
             @Override
-            public LifeCycleWithCallLog createInstance(Container container) throws ContainerException {
+            public LifeCycleWithCallLog createInstance(Container container) {
                 return new LifeCycleWithCallLog();
             }
         };
