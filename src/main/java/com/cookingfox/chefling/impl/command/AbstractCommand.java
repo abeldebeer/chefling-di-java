@@ -20,7 +20,8 @@ abstract class AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     protected static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
-    protected static final String PACKAGE_JAVA_LANG = "java.lang";
+    protected static final String PACKAGE_JAVA = "java";
+    protected static final String PACKAGE_JAVAX = "javax";
 
     //----------------------------------------------------------------------------------------------
     // PROTECTED PROPERTIES
@@ -218,8 +219,10 @@ abstract class AbstractCommand {
         String errorReason = null;
         int modifiers = type.getModifiers();
 
-        if (isInPackage(type, PACKAGE_JAVA_LANG)) {
-            errorReason = "a Java language construct";
+        if (isInPackage(type, PACKAGE_JAVA)) {
+            errorReason = "a member of the `java.` package";
+        } else if (isInPackage(type, PACKAGE_JAVAX)) {
+            errorReason = "a member of the `javax.` package";
         } else if (isInPackage(type, PACKAGE_CHEFLING)) {
             errorReason = "part of the Chefling library";
         } else if (type.isEnum()) {

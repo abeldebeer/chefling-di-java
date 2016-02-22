@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.mockito.Mockito;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -40,6 +41,7 @@ public abstract class AbstractTest {
             Object.class,
             Class.class,
             String.class,
+            HashMap.class,
             ExampleAnnotation.class,
             boolean.class,
             NonPublicClasses.getPrivateClass(),
@@ -64,6 +66,7 @@ public abstract class AbstractTest {
         notAllowedInstances.put(Object.class, new Object());
         notAllowedInstances.put(Class.class, Object.class);
         notAllowedInstances.put(String.class, "");
+        notAllowedInstances.put(HashMap.class, getMock(HashMap.class));
         notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
         notAllowedInstances.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()));
         notAllowedInstances.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()));
@@ -87,6 +90,7 @@ public abstract class AbstractTest {
     protected HashMap<Class, Class> getNotAllowedSubTypes() {
         HashMap<Class, Class> notAllowedSubTypes = new HashMap<>();
         notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
+        notAllowedSubTypes.put(HashMap.class, LinkedHashMap.class);
         notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
         notAllowedSubTypes.put(Number.class, Integer.class);
         notAllowedSubTypes.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()).getClass());

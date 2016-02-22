@@ -14,9 +14,11 @@ class TestCommandImpl extends AbstractCommand implements TestCommand {
 
     @Override
     public synchronized void test() {
+        // recursively loop through all containers
         visitAll(_container, new Visitor() {
             @Override
             public void visit(final CommandContainer container) {
+                // resolve all mappings in container
                 for (Class mapping : container.mappings.keySet()) {
                     container.get(mapping);
                 }
