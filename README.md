@@ -152,13 +152,19 @@ MyInterface resolved = container.get(MyInterface.class);
 If the `Factory` returns null or something that is not an instance of the expected type, an 
 exception will be thrown.
 
-### Testing the configuration
-
-TODO: Testing the configuration (`Container#test()`)
-
 ### LifeCycle
 
-TODO: LifeCycle
+The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/api/LifeCycle.java) allows 
+implementing classes to hook into the life cycle processes of the Container:
+
+- When `Container#create(type)` is called and an instance of the requested type is created, it will 
+call its `initialize()` method. This will also happen for types that have been mapped using the 
+`map...` methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific 
+instance of the class, and it implements the `LifeCycle` interface, then its `initialize()` method 
+will be called.
+
+- The `remove()` and `reset()` methods will call the `dispose()` method of instances that implement
+the `LifeCycle` interface.
 
 ### Builder
 
@@ -189,9 +195,9 @@ Config initAppConfig = new Config() {
 };
 
 Container container = new Chefling.Builder()
-        .add(libraryConfig)
-        .add(initAppConfig)
-        .build();
+    .add(libraryConfig)
+    .add(initAppConfig)
+    .build();
 ```
 
 The Builder applies the `Config` instances in the order they were added. Of course, you can define
@@ -199,7 +205,46 @@ your own classes that implement this interface for the desired level of modulari
 
 ### Container children
 
-TODO: Container children
+Chefling supports modularizing Container configurations through a composite pattern:
+
+```java
+// example module configuration
+Container moduleContainer = Chefling.createContainer();
+moduleContainer.mapType(IModule.class, ModuleImplementation.class);
+
+// app container configuration
+Container appContainer = Chefling.createContainer();
+appContainer.mapType(IApp.class, AppImpl.class);
+
+// add module configuration to app container
+appContainer.addChild(moduleContainer);
+```
+
+This means that when the `appContainer` asks for `IModule`, it will receive a `ModuleImplementation`
+instance.
+
+Note that when a child Container is added which contains a mapping or instance for a type that is 
+already present in the Container it is added to, an exception will be thrown:
+
+```java
+Container moduleContainer = Chefling.createContainer();
+moduleContainer.mapType(IModule.class, ModuleImplementation.class);
+
+// container configuration with same mapping
+Container appContainer = Chefling.createContainer();
+appContainer.mapType(IModule.class, OtherModuleImplementation.class);
+
+// exception: mapping for "IModule" already exists
+appContainer.addChild(moduleContainer);
+```
+
+### Testing the configuration
+
+Since dependencies are resolved at runtime, it can be useful to make sure your configuration is 
+correct during the development phase. To have Chefling resolve all mappings, use the 
+`Container#test()` method. This will bring any configuration issues to light.
+
+__WARNING: Make sure to remove this call for production builds!__
 
 ## F.A.Q.
 
