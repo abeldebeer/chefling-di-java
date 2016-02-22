@@ -2,7 +2,6 @@ package com.cookingfox.fixtures.chefling;
 
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
-import com.cookingfox.chefling.api.exception.ContainerException;
 
 /**
  * Implementation of {@link Container} interface without any functionality.
@@ -16,6 +15,11 @@ public class NoopContainer implements Container {
 
     @Override
     public <T> T create(Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public Container createChild() {
         return null;
     }
 
@@ -56,6 +60,11 @@ public class NoopContainer implements Container {
 
     @Override
     public void setParent(Container container) {
+
+    }
+
+    @Override
+    public void test() {
 
     }
 

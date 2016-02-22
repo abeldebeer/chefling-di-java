@@ -9,6 +9,7 @@ import com.cookingfox.chefling.api.command.*;
 public interface Container extends
 
         AddChildCommand,
+        CreateChildCommand,
         CreateCommand,
         GetCommand,
         HasCommand,
@@ -17,6 +18,7 @@ public interface Container extends
         MapTypeCommand,
         RemoveCommand,
         ResetCommand,
-        SetParentCommand {
+        SetParentCommand,
+        TestCommand {
 
 }

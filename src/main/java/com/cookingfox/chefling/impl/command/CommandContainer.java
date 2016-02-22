@@ -3,12 +3,9 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.command.*;
-import com.cookingfox.chefling.api.exception.ContainerException;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 
 /**
  * {@link Container} implementation that uses command classes for each container operation.
@@ -46,6 +43,7 @@ public class CommandContainer implements Container {
     //----------------------------------------------------------------------------------------------
 
     protected final AddChildCommand addChildCommand = new AddChildCommandImpl(this);
+    protected final CreateChildCommand createChildCommand = new CreateChildCommandImpl(this);
     protected final CreateCommand createCommand = new CreateCommandImpl(this);
     protected final GetCommand getCommand = new GetCommandImpl(this);
     protected final HasCommand hasCommand = new HasCommandImpl(this);
@@ -55,6 +53,7 @@ public class CommandContainer implements Container {
     protected final RemoveCommand removeCommand = new RemoveCommandImpl(this);
     protected final ResetCommand resetCommand = new ResetCommandImpl(this);
     protected final SetParentCommand setParentCommand = new SetParentCommandImpl(this);
+    protected final TestCommand testCommand = new TestCommandImpl(this);
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -76,6 +75,11 @@ public class CommandContainer implements Container {
     @Override
     public <T> T create(Class<T> type) {
         return createCommand.create(type);
+    }
+
+    @Override
+    public Container createChild() {
+        return createChildCommand.createChild();
     }
 
     @Override
@@ -116,6 +120,11 @@ public class CommandContainer implements Container {
     @Override
     public void setParent(Container container) {
         setParentCommand.setParent(container);
+    }
+
+    @Override
+    public void test() {
+        testCommand.test();
     }
 
 }
