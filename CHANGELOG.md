@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [5.0.1](../../tree/v5.0.1) (2016-03-15)
+
+- Improves exception messages.
+
 ## [5.0.0](../../tree/v5.0.0) (2016-02-22)
 
 - Updates documentation.
