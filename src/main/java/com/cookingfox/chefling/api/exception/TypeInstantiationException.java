@@ -7,7 +7,8 @@ public class TypeInstantiationException extends ContainerException {
 
     public TypeInstantiationException(Class type, Throwable cause) {
         super(String.format("Type '%s' could not be instantiated: %s",
-                type.getName(), cause.getMessage()));
+                type.getName(),
+                cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName()));
     }
 
 }
