@@ -1,6 +1,7 @@
 package com.cookingfox.fixtures.chefling;
 
 import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.event.ContainerEvent;
 import com.cookingfox.chefling.api.Factory;
 
 /**
@@ -21,6 +22,11 @@ public class NoopContainer implements Container {
     @Override
     public Container createChild() {
         return null;
+    }
+
+    @Override
+    public void dispatch(ContainerEvent event) {
+
     }
 
     @Override

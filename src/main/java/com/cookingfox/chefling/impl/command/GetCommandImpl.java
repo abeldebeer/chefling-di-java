@@ -1,10 +1,16 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.command.GetCommand;
+import com.cookingfox.chefling.api.event.ContainerListener;
 import com.cookingfox.chefling.api.exception.CircularDependencyDetectedException;
 import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.impl.helper.RegisteredListener;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * @see GetCommand
@@ -80,6 +86,10 @@ class GetCommandImpl extends AbstractCommand implements GetCommand {
             }
         }
 
+        if (instance instanceof ContainerListener) {
+            registerListener(type, (ContainerListener) instance);
+        }
+
         return instance;
     }
 
@@ -123,6 +133,70 @@ class GetCommandImpl extends AbstractCommand implements GetCommand {
         }
 
         return builder;
+    }
+
+    /**
+     * Validates the subscriber method and returns its event type.
+     * FIXME: 16/03/16 Add tests for this method
+     */
+    protected Class getValidEventType(final Method method) {
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new ContainerException("Event handler methods must be public");
+        }
+
+        final Class[] parameterTypes = method.getParameterTypes();
+
+        if (parameterTypes.length != 1) {
+            throw new ContainerException("Event handler can only have one parameter: the event object");
+        }
+
+        final Class eventClass = parameterTypes[0];
+        final Package eventPackage = eventClass.getPackage();
+
+        if (eventClass.isInterface()) {
+            throw new ContainerException("Interface not allowed!");
+        }
+
+        if (eventPackage != null && eventPackage.getName().startsWith("java.")) {
+            throw new ContainerException("Event types from `java.*` package are not allowed");
+        }
+
+        return eventClass;
+    }
+
+    protected void registerListener(final Class type, final ContainerListener instance) {
+        final Method[] subjectMethods = type.getDeclaredMethods();
+        final Set<RegisteredListener> listeners = new LinkedHashSet<>();
+
+        // extract all subscriber's event listeners
+        for (Method method : subjectMethods) {
+            // no subscriber: skip
+            if (!ContainerListener.METHOD_NAME.equals(method.getName())) {
+                continue;
+            }
+
+            final Class eventClass = getValidEventType(method);
+
+            listeners.add(new RegisteredListener(instance, method, eventClass));
+        }
+
+        if (listeners.isEmpty()) {
+            throw new ContainerException("ContainerListener does not have any methods named '" +
+                    ContainerListener.METHOD_NAME + "'");
+        }
+
+        for (final RegisteredListener listener : listeners) {
+            final Class eventClass = listener.eventClass;
+
+            Set<RegisteredListener> _listeners = _container.listeners.get(eventClass);
+
+            if (_listeners == null) {
+                _listeners = new LinkedHashSet<>();
+                _container.listeners.put(eventClass, _listeners);
+            }
+
+            _listeners.add(listener);
+        }
     }
 
     /**

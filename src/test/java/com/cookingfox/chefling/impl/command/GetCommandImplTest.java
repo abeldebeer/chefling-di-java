@@ -194,4 +194,9 @@ public class GetCommandImplTest extends AbstractTest {
         }
     }
 
+    @Test(expected = ContainerException.class)
+    public void get_should_throw_if_class_is_listener_without_methods() throws Exception {
+        container.get(ZeroContainerEventListener.class);
+    }
+
 }

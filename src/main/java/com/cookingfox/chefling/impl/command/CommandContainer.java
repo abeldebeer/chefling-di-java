@@ -3,9 +3,12 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.Container;
 import com.cookingfox.chefling.api.Factory;
 import com.cookingfox.chefling.api.command.*;
+import com.cookingfox.chefling.api.event.ContainerEvent;
+import com.cookingfox.chefling.impl.helper.RegisteredListener;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * {@link Container} implementation that uses command classes for each container operation.
@@ -28,6 +31,11 @@ public class CommandContainer implements Container {
     protected final LinkedHashMap<Class, Object> instances = new LinkedHashMap<>();
 
     /**
+     * Stores registered event listeners by event type.
+     */
+    protected final LinkedHashMap<Class, Set<RegisteredListener>> listeners = new LinkedHashMap<>();
+
+    /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the
      * `map...` methods.
      */
@@ -45,6 +53,7 @@ public class CommandContainer implements Container {
     protected final AddChildCommand addChildCommand = new AddChildCommandImpl(this);
     protected final CreateChildCommand createChildCommand = new CreateChildCommandImpl(this);
     protected final CreateCommand createCommand = new CreateCommandImpl(this);
+    protected final DispatchCommand dispatchCommand = new DispatchCommandImpl(this);
     protected final GetCommand getCommand = new GetCommandImpl(this);
     protected final HasCommand hasCommand = new HasCommandImpl(this);
     protected final MapFactoryCommand mapFactoryCommand = new MapFactoryCommandImpl(this);
@@ -80,6 +89,11 @@ public class CommandContainer implements Container {
     @Override
     public Container createChild() {
         return createChildCommand.createChild();
+    }
+
+    @Override
+    public void dispatch(ContainerEvent event) {
+        dispatchCommand.dispatch(event);
     }
 
     @Override
