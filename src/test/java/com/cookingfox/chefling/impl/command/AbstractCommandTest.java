@@ -1,8 +1,8 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
-import com.cookingfox.chefling.impl.helper.Visitor;
-import com.cookingfox.chefling.impl.helper.Matcher;
+import com.cookingfox.chefling.impl.helper.CommandContainerVisitor;
+import com.cookingfox.chefling.impl.helper.CommandContainerMatcher;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodAbstract;
 import com.cookingfox.fixtures.chefling.NoMethodImplementation;
@@ -33,7 +33,7 @@ public class AbstractCommandTest extends AbstractTest {
     public void setUp() throws Exception {
         super.setUp();
         
-        command = new AddChildCommandImpl(container);
+        command = new AddChildContainerCommandImpl(container);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -47,15 +47,15 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer childA = new CommandContainer();
         CommandContainer childB = new CommandContainer();
 
-        parentA.setParent(parentB);
-        container.setParent(parentA);
-        container.addChild(childA);
-        childA.addChild(childB);
+        parentA.setParentContainer(parentB);
+        container.setParentContainer(parentA);
+        container.addChildContainer(childA);
+        childA.addChildContainer(childB);
 
         final Set<CommandContainer> called = new LinkedHashSet<>();
         final AtomicInteger counter = new AtomicInteger(0);
 
-        command.visitAll(container, new Visitor() {
+        command.visitAll(container, new CommandContainerVisitor() {
             @Override
             public void visit(CommandContainer container) {
                 called.add(container);
@@ -85,7 +85,7 @@ public class AbstractCommandTest extends AbstractTest {
 
     @Test
     public void compileTypes_should_return_types_of_one_container() throws Exception {
-        container.get(NoConstructor.class);
+        container.getInstance(NoConstructor.class);
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         Set<Class> expected = new HashSet<>();
@@ -102,14 +102,14 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer root = new CommandContainer();
 
         CommandContainer childA = new CommandContainer();
-        childA.get(NoConstructor.class);
+        childA.getInstance(NoConstructor.class);
 
         CommandContainer childB = new CommandContainer();
         childB.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
-        container.addChild(childA);
-        root.addChild(childB);
-        root.addChild(container);
+        container.addChildContainer(childA);
+        root.addChildContainer(childB);
+        root.addChildContainer(container);
 
         Set<Class> expected = new HashSet<>();
         expected.add(NoConstructor.class);
@@ -132,10 +132,10 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer childB = new CommandContainer();
         childB.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
 
-        container.addChild(childA);
-        container.addChild(childB);
+        container.addChildContainer(childA);
+        container.addChildContainer(childB);
 
-        CommandContainer result = command.findOne(container, new Matcher() {
+        CommandContainer result = command.findOne(container, new CommandContainerMatcher() {
             @Override
             public boolean matches(CommandContainer container) {
                 return container.mappings.containsValue(NoMethodImplementation.class);
@@ -157,10 +157,10 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer child = new CommandContainer();
         child.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
 
-        container.setParent(parent);
-        container.addChild(child);
+        container.setParentContainer(parent);
+        container.addChildContainer(child);
 
-        Set<CommandContainer> matches = command.findAll(container, new Matcher() {
+        Set<CommandContainer> matches = command.findAll(container, new CommandContainerMatcher() {
             @Override
             public boolean matches(CommandContainer container) {
                 return container.mappings.containsValue(NoMethodImplementation.class);
@@ -178,9 +178,9 @@ public class AbstractCommandTest extends AbstractTest {
     @Test
     public void findMapping_should_return_instance() throws Exception {
         CommandContainer parentContainer = new CommandContainer();
-        NoConstructor instance = parentContainer.get(NoConstructor.class);
-        parentContainer.setParent(new CommandContainer());
-        container.setParent(parentContainer);
+        NoConstructor instance = parentContainer.getInstance(NoConstructor.class);
+        parentContainer.setParentContainer(new CommandContainer());
+        container.setParentContainer(parentContainer);
 
         Object result = command.findMapping(container, NoConstructor.class);
 
@@ -191,8 +191,8 @@ public class AbstractCommandTest extends AbstractTest {
     public void findMapping_should_return_mapping() throws Exception {
         CommandContainer parentContainer = new CommandContainer();
         parentContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
-        parentContainer.setParent(new CommandContainer());
-        container.setParent(parentContainer);
+        parentContainer.setParentContainer(new CommandContainer());
+        container.setParentContainer(parentContainer);
 
         Object result = command.findMapping(container, NoMethodInterface.class);
 
@@ -213,15 +213,15 @@ public class AbstractCommandTest extends AbstractTest {
         CommandContainer root = new CommandContainer();
 
         CommandContainer parentA = new CommandContainer();
-        parentA.setParent(root);
+        parentA.setParentContainer(root);
 
-        container.setParent(parentA);
+        container.setParentContainer(parentA);
 
         CommandContainer childA = new CommandContainer();
-        container.addChild(childA);
+        container.addChildContainer(childA);
 
         CommandContainer childB = new CommandContainer();
-        container.addChild(childB);
+        container.addChildContainer(childB);
 
         assertSame(root, command.getRoot(childB));
     }

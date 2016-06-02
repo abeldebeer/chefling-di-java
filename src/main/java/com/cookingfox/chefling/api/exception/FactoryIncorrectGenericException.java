@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when a Factory has an incorrect generic type.
+ * Thrown when a Chefling Factory has an incorrect generic type.
  */
 public class FactoryIncorrectGenericException extends ContainerException {
 

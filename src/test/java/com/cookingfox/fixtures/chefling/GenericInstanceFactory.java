@@ -1,14 +1,13 @@
 package com.cookingfox.fixtures.chefling;
 
-import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.api.Factory;
-import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.CheflingFactory;
+import com.cookingfox.chefling.api.CheflingContainer;
 
 /**
- * Generic {@link Factory} implementation which accepts and returns an instance. Only useful for
+ * Generic {@link CheflingFactory} implementation which accepts and returns an instance. Only useful for
  * testing.
  */
-public class GenericInstanceFactory<T> implements Factory<T> {
+public class GenericInstanceFactory<T> implements CheflingFactory<T> {
 
     public final T instance;
 
@@ -17,7 +16,7 @@ public class GenericInstanceFactory<T> implements Factory<T> {
     }
 
     @Override
-    public T createInstance(Container container) {
+    public T createInstance(CheflingContainer container) {
         return instance;
     }
 

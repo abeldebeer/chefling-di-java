@@ -1,13 +1,13 @@
 package com.cookingfox.fixtures.chefling;
 
-import com.cookingfox.chefling.api.LifeCycle;
+import com.cookingfox.chefling.api.CheflingLifecycle;
 
 import java.util.LinkedList;
 
 /**
- * Example {@link LifeCycle} implementation, that logs the calls to its methods.
+ * Example {@link CheflingLifecycle} implementation, that logs the calls to its methods.
  */
-public class LifeCycleWithCallLog implements LifeCycle {
+public class LifecycleWithCallLog implements CheflingLifecycle {
 
     public final LinkedList<Long> initializeCalls = new LinkedList<>();
     public final LinkedList<Long> disposeCalls = new LinkedList<>();

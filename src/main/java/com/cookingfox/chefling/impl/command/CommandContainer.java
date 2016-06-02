@@ -1,19 +1,19 @@
 package com.cookingfox.chefling.impl.command;
 
-import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.CheflingContainer;
+import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.command.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
- * {@link Container} implementation that uses command classes for each container operation.
+ * {@link CheflingContainer} implementation that uses command classes for each container operation.
  */
-public class CommandContainer implements Container {
+public class CommandContainer implements CheflingContainer {
 
     //----------------------------------------------------------------------------------------------
-    // PROTECTED PROPERTIES
+    // PROPERTIES
     //----------------------------------------------------------------------------------------------
 
     /**
@@ -42,25 +42,25 @@ public class CommandContainer implements Container {
     // COMMAND INSTANCES
     //----------------------------------------------------------------------------------------------
 
-    protected final AddChildCommand addChildCommand = new AddChildCommandImpl(this);
-    protected final CreateChildCommand createChildCommand = new CreateChildCommandImpl(this);
-    protected final CreateCommand createCommand = new CreateCommandImpl(this);
-    protected final GetCommand getCommand = new GetCommandImpl(this);
-    protected final HasCommand hasCommand = new HasCommandImpl(this);
-    protected final MapFactoryCommand mapFactoryCommand = new MapFactoryCommandImpl(this);
-    protected final MapInstanceCommand mapInstanceCommand = new MapInstanceCommandImpl(this);
-    protected final MapTypeCommand mapTypeCommand = new MapTypeCommandImpl(this);
-    protected final RemoveCommand removeCommand = new RemoveCommandImpl(this);
-    protected final ResetCommand resetCommand = new ResetCommandImpl(this);
-    protected final SetParentCommand setParentCommand = new SetParentCommandImpl(this);
-    protected final TestCommand testCommand = new TestCommandImpl(this);
+    protected AddChildContainerCommand addChildContainer = new AddChildContainerCommandImpl(this);
+    protected CreateChildContainerCommand createChild = new CreateChildContainerCommandImpl(this);
+    protected CreateInstanceCommand createInstance = new CreateInstanceCommandImpl(this);
+    protected GetInstanceCommand getInstance = new GetInstanceCommandImpl(this);
+    protected HasInstanceOrMappingCommand hasInstanceOrMapping = new HasInstanceOrMappingCommandImpl(this);
+    protected MapFactoryCommand mapFactory = new MapFactoryCommandImpl(this);
+    protected MapInstanceCommand mapInstance = new MapInstanceCommandImpl(this);
+    protected MapTypeCommand mapType = new MapTypeCommandImpl(this);
+    protected RemoveInstanceAndMappingCommand removeInstanceAndMapping = new RemoveInstanceAndMappingCommandImpl(this);
+    protected ResetContainerCommand resetContainer = new ResetContainerCommandImpl(this);
+    protected SetParentContainerCommand setParentContainer = new SetParentContainerCommandImpl(this);
+    protected ValidateContainerCommand validateContainer = new ValidateContainerCommandImpl(this);
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     //----------------------------------------------------------------------------------------------
 
     public CommandContainer() {
-        reset();
+        resetContainer();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -68,63 +68,63 @@ public class CommandContainer implements Container {
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void addChild(Container container) {
-        addChildCommand.addChild(container);
+    public void addChildContainer(CheflingContainer container) {
+        addChildContainer.addChildContainer(container);
     }
 
     @Override
-    public <T> T create(Class<T> type) {
-        return createCommand.create(type);
+    public <T> T createInstance(Class<T> type) {
+        return createInstance.createInstance(type);
     }
 
     @Override
-    public Container createChild() {
-        return createChildCommand.createChild();
+    public CheflingContainer createChildContainer() {
+        return createChild.createChildContainer();
     }
 
     @Override
-    public <T> T get(Class<T> type) {
-        return getCommand.get(type);
+    public <T> T getInstance(Class<T> type) {
+        return getInstance.getInstance(type);
     }
 
     @Override
-    public boolean has(Class type) {
-        return hasCommand.has(type);
+    public boolean hasInstanceOrMapping(Class type) {
+        return hasInstanceOrMapping.hasInstanceOrMapping(type);
     }
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
-        mapFactoryCommand.mapFactory(type, factory);
+    public <T> void mapFactory(Class<T> type, CheflingFactory<T> factory) {
+        mapFactory.mapFactory(type, factory);
     }
 
     @Override
     public <T> void mapInstance(Class<T> type, T instance) {
-        mapInstanceCommand.mapInstance(type, instance);
+        mapInstance.mapInstance(type, instance);
     }
 
     @Override
     public <T> void mapType(Class<T> type, Class<? extends T> subType) {
-        mapTypeCommand.mapType(type, subType);
+        mapType.mapType(type, subType);
     }
 
     @Override
-    public void remove(Class type) {
-        removeCommand.remove(type);
+    public void removeInstanceAndMapping(Class type) {
+        removeInstanceAndMapping.removeInstanceAndMapping(type);
     }
 
     @Override
-    public void reset() {
-        resetCommand.reset();
+    public void resetContainer() {
+        resetContainer.resetContainer();
     }
 
     @Override
-    public void setParent(Container container) {
-        setParentCommand.setParent(container);
+    public void setParentContainer(CheflingContainer container) {
+        setParentContainer.setParentContainer(container);
     }
 
     @Override
-    public void test() {
-        testCommand.test();
+    public void validateContainer() {
+        validateContainer.validateContainer();
     }
 
 }

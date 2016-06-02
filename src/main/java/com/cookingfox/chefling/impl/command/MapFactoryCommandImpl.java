@@ -1,8 +1,7 @@
 package com.cookingfox.chefling.impl.command;
 
-import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.command.MapFactoryCommand;
-import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.FactoryIncorrectGenericException;
 
 import java.lang.reflect.ParameterizedType;
@@ -27,7 +26,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
+    public <T> void mapFactory(Class<T> type, CheflingFactory<T> factory) {
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 
@@ -49,7 +48,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
      * Attempt to extract the generic ("parameterized") type from the factory.
      */
     @SuppressWarnings("unchecked")
-    protected <T> Class<T> getGenericClass(Factory<T> factory) {
+    protected <T> Class<T> getGenericClass(CheflingFactory<T> factory) {
         // get first generic type
         final Type generic = factory.getClass().getGenericInterfaces()[0];
 

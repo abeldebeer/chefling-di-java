@@ -1,40 +1,40 @@
 package com.cookingfox.fixtures.chefling;
 
-import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.CheflingContainer;
+import com.cookingfox.chefling.api.CheflingFactory;
 
 /**
- * Implementation of {@link Container} interface without any functionality.
+ * Implementation of {@link CheflingContainer} interface without any functionality.
  */
-public class NoopContainer implements Container {
+public class NoopContainer implements CheflingContainer {
 
     @Override
-    public void addChild(Container container) {
+    public void addChildContainer(CheflingContainer container) {
 
     }
 
     @Override
-    public <T> T create(Class<T> type) {
+    public <T> T createInstance(Class<T> type) {
         return null;
     }
 
     @Override
-    public Container createChild() {
+    public CheflingContainer createChildContainer() {
         return null;
     }
 
     @Override
-    public <T> T get(Class<T> type) {
+    public <T> T getInstance(Class<T> type) {
         return null;
     }
 
     @Override
-    public boolean has(Class type) {
+    public boolean hasInstanceOrMapping(Class type) {
         return false;
     }
 
     @Override
-    public <T> void mapFactory(Class<T> type, Factory<T> factory) {
+    public <T> void mapFactory(Class<T> type, CheflingFactory<T> factory) {
 
     }
 
@@ -49,22 +49,22 @@ public class NoopContainer implements Container {
     }
 
     @Override
-    public void remove(Class type) {
+    public void removeInstanceAndMapping(Class type) {
 
     }
 
     @Override
-    public void reset() {
+    public void resetContainer() {
 
     }
 
     @Override
-    public void setParent(Container container) {
+    public void setParentContainer(CheflingContainer container) {
 
     }
 
     @Override
-    public void test() {
+    public void validateContainer() {
 
     }
 

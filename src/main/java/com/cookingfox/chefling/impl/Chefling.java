@@ -1,7 +1,8 @@
 package com.cookingfox.chefling.impl;
 
-import com.cookingfox.chefling.api.Config;
-import com.cookingfox.chefling.api.Container;
+import com.cookingfox.chefling.api.CheflingBuilder;
+import com.cookingfox.chefling.api.CheflingConfig;
+import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.exception.ContainerBuilderException;
 import com.cookingfox.chefling.impl.command.CommandContainer;
 
@@ -11,21 +12,34 @@ import java.util.Objects;
 /**
  * Helper class for managing Chefling containers.
  */
-public class Chefling {
+public final class Chefling {
 
     /**
-     * Creates a new instance of the default Chefling {@link Container} implementation.
+     * Creates a new Chefling Builder.
      */
-    public static Container createContainer() {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Creates a new instance of the default Chefling {@link CheflingContainer} implementation.
+     */
+    public static CheflingContainer createContainer() {
         return new CommandContainer();
     }
 
-    public static class Builder implements com.cookingfox.chefling.api.Builder {
+    /**
+     * Chefling Builder implementation.
+     */
+    public static class Builder implements CheflingBuilder {
 
-        final protected LinkedList<Config> configs = new LinkedList<>();
+        /**
+         * List of added configurations.
+         */
+        final LinkedList<CheflingConfig> configs = new LinkedList<>();
 
         @Override
-        public Builder add(final Config config) {
+        public CheflingBuilder addConfig(final CheflingConfig config) {
             Objects.requireNonNull(config, "Config can not be null");
 
             if (configs.contains(config)) {
@@ -38,18 +52,18 @@ public class Chefling {
         }
 
         @Override
-        public Container build() {
+        public CheflingContainer buildContainer() {
             if (configs.isEmpty()) {
                 throw new ContainerBuilderException("Add configs first");
             }
 
-            final Container container = createContainer();
+            final CheflingContainer container = createContainer();
 
-            for (Config config : configs) {
+            for (CheflingConfig config : configs) {
                 try {
                     config.apply(container);
                 } catch (Exception e) {
-                    throw new ContainerBuilderException("An error occurred during build", e);
+                    throw new ContainerBuilderException("An error occurred during build container", e);
                 }
             }
 

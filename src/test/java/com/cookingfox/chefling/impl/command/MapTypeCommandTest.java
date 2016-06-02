@@ -16,28 +16,28 @@ import static org.junit.Assert.*;
 public class MapTypeCommandTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapType_should_throw_if_type_null() throws Exception {
+    public void should_throw_if_type_null() throws Exception {
         container.mapType(null, NoConstructor.class);
     }
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapType_should_throw_if_subType_null() throws Exception {
+    public void should_throw_if_subType_null() throws Exception {
         container.mapType(getClass(), null);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapType_should_throw_if_mapping_exists() throws Exception {
+    public void should_throw_if_mapping_exists() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
     }
 
     @Test(expected = NotASubTypeException.class)
-    public void mapType_should_throw_if_sub_type_same_as_type() throws Exception {
+    public void should_throw_if_sub_type_same_as_type() throws Exception {
         container.mapType(NoMethodImplementation.class, NoMethodImplementation.class);
     }
 
     @Test(expected = NotASubTypeException.class)
-    public void mapType_should_throw_if_sub_type_not_extends_type() throws Exception {
+    public void should_throw_if_sub_type_not_extends_type() throws Exception {
         Class type = NoConstructor.class;
         Class subType = Object.class;
 
@@ -45,7 +45,7 @@ public class MapTypeCommandTest extends AbstractTest {
     }
 
     @Test
-    public void mapType_should_throw_if_base_type_not_allowed() throws Exception {
+    public void should_throw_if_base_type_not_allowed() throws Exception {
         for (Map.Entry<Class, Class> entry : getNotAllowedSubTypes().entrySet()) {
             try {
                 container.mapType(entry.getKey(), entry.getValue());
@@ -58,31 +58,31 @@ public class MapTypeCommandTest extends AbstractTest {
     }
 
     @Test(expected = TypeNotInstantiableException.class)
-    public void mapType_should_throw_if_sub_type_not_instantiable() throws Exception {
+    public void should_throw_if_sub_type_not_instantiable() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapType_should_throw_when_first_mapInstance_then_mapType() throws Exception {
+    public void should_throw_when_first_mapInstance_then_mapType() throws Exception {
         container.mapInstance(NoMethodInterface.class, new NoMethodImplementation());
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
     }
 
     @Test
-    public void mapType_should_allow_to_map_to_previous_mapping() throws Exception {
+    public void should_allow_to_map_to_previous_mapping() throws Exception {
         container.mapType(NoMethodAbstract.class, NoMethodImplementation.class);
         container.mapType(NoMethodInterface.class, NoMethodAbstract.class);
     }
 
     @Test
-    public void mapType_should_take_into_account_subType_instance_mapping() throws Exception {
+    public void should_take_into_account_subType_instance_mapping() throws Exception {
         container.mapInstance(InterfaceSegregation.Person.class, new InterfaceSegregation.JohnDoe());
         container.mapType(InterfaceSegregation.Talkable.class, InterfaceSegregation.Person.class);
         container.mapType(InterfaceSegregation.Walkable.class, InterfaceSegregation.Person.class);
     }
 
     @Test
-    public void mapType_should_pass_concurrency_test() {
+    public void should_pass_concurrency_test() {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<>();
 

@@ -85,22 +85,22 @@ Container container = new Chefling.Builder().build();
 See [Builder](#builder) for more information. Also see [Container children](#container-children) for
 instructions on how to create and add Container child configurations.
 
-### Ask for an instance of a type: `get(type)` and `create(type)`
+### Ask for an instance of a type: `get(type)` and `createInstance(type)`
 
 There are two ways to have Chefling provide you with an instance of a type (class / interface):
 
 - `Container#get(type)`: returns a stored instance of the type, or creates and stores a new 
 instance using:
 
-- `Container#create(type)`: always creates a new instance that is NOT stored. This method 
+- `Container#createInstance(type)`: always creates a new instance that is NOT stored. This method
 should only be called directly when you are absolutely sure you need a new instance, which is 
 usually not the case.
 
-When `Container#create(type)` is called, Chefling attempts to resolve all dependencies (constructor
+When `Container#createInstance(type)` is called, Chefling attempts to resolve all dependencies (constructor
 arguments) of the provided type. See the
 [F.A.Q.](#can-i-use-all-different-kinds-of-java-types-with-the-container) for information on which 
 types can and can not be resolved by Chefling. If the type implements the `LifeCycle` interface, its 
-`initialize()` method will be called by the `create(type)` method. See [LifeCycle](#lifecycle) for 
+`initialize()` method will be called by the `createInstance(type)` method. See [LifeCycle](#lifecycle) for
 more information.
 
 ### Configure the Container: `map*()` methods
@@ -160,13 +160,13 @@ exception will be thrown.
 The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/api/LifeCycle.java) allows 
 implementing classes to hook into the life cycle processes of the Container:
 
-- When `Container#create(type)` is called and an instance of the requested type is created, it will 
+- When `Container#createInstance(type)` is called and an instance of the requested type is created, it will
 call its `initialize()` method. This will also happen for types that have been mapped using the 
 `map...` methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific 
 instance of the class, and it implements the `LifeCycle` interface, then its `initialize()` method 
 will be called.
 
-- The `remove()` and `reset()` methods will call the `dispose()` method of instances that implement
+- The `removeInstanceAndMapping()` and `resetContainer()` methods will call the `dispose()` method of instances that implement
 the `LifeCycle` interface.
 
 ### Builder
@@ -216,7 +216,7 @@ Container appContainer = Chefling.createContainer();
 appContainer.mapType(IApp.class, AppImpl.class);
 
 // add module configuration to app container
-appContainer.addChild(moduleContainer);
+appContainer.addChildContainer(moduleContainer);
 ```
 
 This means that when the `appContainer` asks for `IModule`, it will receive a `ModuleImplementation`
@@ -234,18 +234,19 @@ Container appContainer = Chefling.createContainer();
 appContainer.mapType(IModule.class, OtherModuleImplementation.class);
 
 // exception: mapping for "IModule" already exists
-appContainer.addChild(moduleContainer);
+appContainer.addChildContainer(moduleContainer);
 ```
 
-It is also possible to do the inverse: set the parent of a Container, using `setParent(Container)`.
+It is also possible to do the inverse: set the parent of a Container, using `setParentContainer(Container)`.
 
-There's a helper method available for creating AND adding a Container child: `createChild()`.
+There's a helper method available for creating AND adding a Container child:
+`createChildContainer()`.
 
 ### Testing the configuration
 
 Since dependencies are resolved at runtime, it can be useful to make sure your configuration is 
 correct during the development phase. To have Chefling resolve all mappings, use the 
-`Container#test()` method. This will bring any configuration issues to light.
+`Container#validateContainer()` method. This will bring any configuration issues to light.
 
 __WARNING: Make sure to remove this call for production builds!__
 
@@ -271,7 +272,7 @@ be created of the type (e.g. `enum`, annotation).
 
 #### _Java supports multiple constructors. How does Chefling decide which one to use?_
 
-The `create()` method walks through all constructors and picks one when either:
+The `createInstance()` method walks through all constructors and picks one when either:
 
 - The constructor has no parameters. It makes it the most reasonable default.
 - All constructor parameters are resolvable by the container. (see question above)

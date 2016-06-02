@@ -1,8 +1,8 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
-import com.cookingfox.chefling.api.Container;
-import com.cookingfox.chefling.api.Factory;
+import com.cookingfox.chefling.api.CheflingContainer;
+import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.exception.*;
 import com.cookingfox.fixtures.chefling.GenericInstanceFactory;
 import com.cookingfox.fixtures.chefling.NoConstructor;
@@ -20,10 +20,10 @@ import java.util.Map;
 public class MapFactoryCommandImplTest extends AbstractTest {
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapFactory_should_throw_if_type_null() throws Exception {
-        Factory factory = new Factory() {
+    public void should_throw_if_type_null() throws Exception {
+        CheflingFactory factory = new CheflingFactory() {
             @Override
-            public Object createInstance(Container container) {
+            public Object createInstance(CheflingContainer container) {
                 return null;
             }
         };
@@ -32,15 +32,15 @@ public class MapFactoryCommandImplTest extends AbstractTest {
     }
 
     @Test(expected = NullValueNotAllowedException.class)
-    public void mapFactory_should_throw_if_factory_null() throws Exception {
+    public void should_throw_if_factory_null() throws Exception {
         container.mapFactory(getClass(), null);
     }
 
     @Test
-    public void mapFactory_should_throw_if_type_not_allowed() throws Exception {
-        Factory factory = new Factory() {
+    public void should_throw_if_type_not_allowed() throws Exception {
+        CheflingFactory factory = new CheflingFactory() {
             @Override
-            public Object createInstance(Container container) {
+            public Object createInstance(CheflingContainer container) {
                 return null;
             }
         };
@@ -58,10 +58,10 @@ public class MapFactoryCommandImplTest extends AbstractTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void mapFactory_should_not_throw_for_missing_generic_type() throws Exception {
-        Factory factory = new Factory() {
+    public void should_not_throw_for_missing_generic_type() throws Exception {
+        CheflingFactory factory = new CheflingFactory() {
             @Override
-            public NoConstructor createInstance(Container container) {
+            public NoConstructor createInstance(CheflingContainer container) {
                 return new NoConstructor();
             }
         };
@@ -71,57 +71,57 @@ public class MapFactoryCommandImplTest extends AbstractTest {
 
     @SuppressWarnings("all")
     @Test(expected = FactoryIncorrectGenericException.class)
-    public void mapFactory_should_throw_for_incorrect_generic_type() throws Exception {
-        Factory<String> incorrectGeneric = new Factory<String>() {
+    public void should_throw_for_incorrect_generic_type() throws Exception {
+        CheflingFactory<String> incorrectGeneric = new CheflingFactory<String>() {
             @Override
-            public String createInstance(Container container) {
+            public String createInstance(CheflingContainer container) {
                 return "foo";
             }
         };
-        Factory wrapper = incorrectGeneric;
+        CheflingFactory wrapper = incorrectGeneric;
 
         container.mapFactory(NoMethodInterface.class, wrapper);
     }
 
     @SuppressWarnings("all")
     @Test
-    public void mapFactory_should_accept_generic_sub_type() throws Exception {
+    public void should_accept_generic_sub_type() throws Exception {
         final NoMethodImplementation instance = new NoMethodImplementation();
 
-        Factory<NoMethodImplementation> genericSubType = new Factory<NoMethodImplementation>() {
+        CheflingFactory<NoMethodImplementation> genericSubType = new CheflingFactory<NoMethodImplementation>() {
             @Override
-            public NoMethodImplementation createInstance(Container container) {
+            public NoMethodImplementation createInstance(CheflingContainer container) {
                 return instance;
             }
         };
 
-        Factory wrapper = genericSubType;
+        CheflingFactory wrapper = genericSubType;
 
         container.mapFactory(NoMethodInterface.class, wrapper);
 
-        NoMethodInterface result = container.get(NoMethodInterface.class);
+        NoMethodInterface result = container.getInstance(NoMethodInterface.class);
 
         Assert.assertSame(instance, result);
     }
 
     @Test
-    public void mapFactory_should_not_throw_for_generic_factory_impl() throws Exception {
+    public void should_not_throw_for_generic_factory_impl() throws Exception {
         final NoConstructor instance = new NoConstructor();
 
         container.mapFactory(NoConstructor.class, new GenericInstanceFactory<>(instance));
 
-        final NoConstructor result = container.get(NoConstructor.class);
+        final NoConstructor result = container.getInstance(NoConstructor.class);
 
         Assert.assertSame(instance, result);
     }
 
     @Test
-    public void mapFactory_simple_should_resolve_expected() throws Exception {
+    public void should_resolve_simple() throws Exception {
         final LinkedList<Integer> callHashCodes = new LinkedList<>();
 
-        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+        CheflingFactory<NoConstructor> factory = new CheflingFactory<NoConstructor>() {
             @Override
-            public NoConstructor createInstance(Container container) {
+            public NoConstructor createInstance(CheflingContainer container) {
                 callHashCodes.add(hashCode());
                 return new NoConstructor();
             }
@@ -129,44 +129,44 @@ public class MapFactoryCommandImplTest extends AbstractTest {
 
         container.mapFactory(NoConstructor.class, factory);
 
-        NoConstructor result = container.get(NoConstructor.class);
+        NoConstructor result = container.getInstance(NoConstructor.class);
 
         Assert.assertNotNull(result);
         Assert.assertEquals(1, callHashCodes.size());
     }
 
     @Test(expected = FactoryReturnedNullException.class)
-    public void mapFactory_should_throw_if_returns_null() throws Exception {
-        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+    public void should_throw_if_returns_null() throws Exception {
+        CheflingFactory<NoConstructor> factory = new CheflingFactory<NoConstructor>() {
             @Override
-            public NoConstructor createInstance(Container container) {
+            public NoConstructor createInstance(CheflingContainer container) {
                 return null;
             }
         };
 
         container.mapFactory(NoConstructor.class, factory);
-        container.get(NoConstructor.class);
+        container.getInstance(NoConstructor.class);
     }
 
     @SuppressWarnings("unchecked")
     @Test(expected = FactoryReturnedUnexpectedValueException.class)
-    public void mapFactory_should_throw_if_returns_invalid() throws Exception {
-        Factory factory = new Factory() {
+    public void should_throw_if_returns_invalid() throws Exception {
+        CheflingFactory factory = new CheflingFactory() {
             @Override
-            public Object createInstance(Container container) {
+            public Object createInstance(CheflingContainer container) {
                 return "some unexpected value";
             }
         };
 
         container.mapFactory(NoConstructor.class, factory);
-        container.get(NoConstructor.class);
+        container.getInstance(NoConstructor.class);
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapFactory_should_throw_if_type_already_mapped() throws Exception {
-        Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+    public void should_throw_if_type_already_mapped() throws Exception {
+        CheflingFactory<NoMethodInterface> factory = new CheflingFactory<NoMethodInterface>() {
             @Override
-            public NoMethodInterface createInstance(Container container) {
+            public NoMethodInterface createInstance(CheflingContainer container) {
                 return null;
             }
         };
@@ -176,25 +176,25 @@ public class MapFactoryCommandImplTest extends AbstractTest {
     }
 
     @Test(expected = TypeMappingAlreadyExistsException.class)
-    public void mapFactory_should_throw_if_has_instance() throws Exception {
-        Factory<NoConstructor> factory = new Factory<NoConstructor>() {
+    public void should_throw_if_has_instance() throws Exception {
+        CheflingFactory<NoConstructor> factory = new CheflingFactory<NoConstructor>() {
             @Override
-            public NoConstructor createInstance(Container container) {
+            public NoConstructor createInstance(CheflingContainer container) {
                 return null;
             }
         };
 
-        container.get(NoConstructor.class);
+        container.getInstance(NoConstructor.class);
         container.mapFactory(NoConstructor.class, factory);
     }
 
     @Test
-    public void mapFactory_should_pass_concurrency_test() throws Exception {
+    public void should_pass_concurrency_test() throws Exception {
         int numTests = 10;
         final LinkedList<Exception> exceptions = new LinkedList<>();
-        final Factory<NoMethodInterface> factory = new Factory<NoMethodInterface>() {
+        final CheflingFactory<NoMethodInterface> factory = new CheflingFactory<NoMethodInterface>() {
             @Override
-            public NoMethodInterface createInstance(Container container) {
+            public NoMethodInterface createInstance(CheflingContainer container) {
                 return null;
             }
         };
