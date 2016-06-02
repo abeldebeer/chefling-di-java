@@ -1,6 +1,6 @@
 # Chefling DI for Java
 
-Chefling is a very minimal dependency injection container written in pure Java. It does not rely on
+Chefling is a minimal dependency injection container written in pure Java. It does not rely on
 annotations, only does constructor injection and has limited (but powerful) configuration options.
 
 Chefling requires at minimum Java 7.
@@ -60,52 +60,54 @@ and add the project declaration to your `pom.xml`:
 
 - Dependency injection without annotations: keeps your code clean.
 - Automatic resolving of dependencies using reflection and constructor injection.
-- [LifeCycle](#lifecycle) hooks for the creation and destruction phases.
+- [Lifecycle](#lifecycle) hooks for the creation and destruction phases.
 - [Builder](#builder) to control configuration and initialization order.
-- [Modular configuration](#container-children) support through composite containers.
+- [Modular container configurations](#Modular-container-configurations) support through composite
+containers.
 
 ## Usage
 
-### Create a Chefling Container
+### Create a Chefling container
 
-The easiest way to create a Chefling Container is by doing:
+The easiest way to create a Chefling container is by doing:
 
 ```java
-Container container = Chefling.createContainer();
+CheflingContainer container = Chefling.createContainer();
 ```
 
-This provides you with an instance of the default Container implementation.
+This provides you with an instance of the default container implementation.
 
 It is also possible to use the designated Builder class:
 
 ```java
-Container container = new Chefling.Builder().build();
+CheflingContainer container = Chefling.builder().addConfig(/* (omitted) */).buildContainer();
 ```
 
-See [Builder](#builder) for more information. Also see [Container children](#container-children) for
-instructions on how to create and add Container child configurations.
+See [Builder](#builder) for more information. Also see
+[Modular container configurations](#Modular-container-configurations) for instructions on how to
+create and add container child configurations.
 
-### Ask for an instance of a type: `get(type)` and `createInstance(type)`
+### Ask for an instance of a type: `getInstance(type)` and `createInstance(type)`
 
 There are two ways to have Chefling provide you with an instance of a type (class / interface):
 
-- `Container#get(type)`: returns a stored instance of the type, or creates and stores a new 
-instance using:
+- `CheflingContainer#getInstance(type)`: returns a stored instance of the type, or creates and 
+stores a new instance, using:
 
-- `Container#createInstance(type)`: always creates a new instance that is NOT stored. This method
-should only be called directly when you are absolutely sure you need a new instance, which is 
+- `CheflingContainer#createInstance(type)`: always creates a new instance that is NOT stored. This 
+method should only be called directly when you are absolutely sure you need a new instance, which is 
 usually not the case.
 
-When `Container#createInstance(type)` is called, Chefling attempts to resolve all dependencies (constructor
-arguments) of the provided type. See the
+When `CheflingContainer#createInstance(type)` is called, Chefling attempts to resolve all 
+dependencies (constructor arguments) of the provided type. See the
 [F.A.Q.](#can-i-use-all-different-kinds-of-java-types-with-the-container) for information on which 
-types can and can not be resolved by Chefling. If the type implements the `LifeCycle` interface, its 
-`initialize()` method will be called by the `createInstance(type)` method. See [LifeCycle](#lifecycle) for
-more information.
+types can and can not be resolved by Chefling. If the type implements the `CheflingLifecycle` 
+interface, its `initialize()` method will be called by the `createInstance(type)` method. See 
+[Lifecycle](#lifecycle) for more information.
 
-### Configure the Container: `map*()` methods
+### Configure the container: `map*()` methods
 
-You can configure the Container, so that when you ask for a type, the Container provides you with a
+You can configure the container, so that when you ask for a type, the container provides you with a
 specific instance or implementation.
 
 #### Use a specific instance: `mapInstance(type, instance)`
@@ -118,7 +120,7 @@ as `String` or `Boolean`:
 container.mapInstance(MyClass.class, new MyClass("some value", true));
 
 // `resolved` is the provided instance
-MyClass resolved = container.get(MyClass.class);
+MyClass resolved = container.getInstance(MyClass.class);
 ```
 
 #### Use a specific implementation: `mapType(type, subType)`
@@ -131,88 +133,90 @@ which implementation you want to use:
 container.mapType(MyInterface.class, MyImplementation.class);
 
 // `resolved` is an instance of MyImplementation
-MyInterface resolved = container.get(MyInterface.class);
+MyInterface resolved = container.getInstance(MyInterface.class);
 ```
 
 #### Use a factory: `mapFactory(type, factory)`
 
-If a type has dependencies that are both resolvable and unresolvable, you can map a `Factory`
-implementation:
+If a type has dependencies that are both resolvable and unresolvable, you can map a 
+`CheflingFactory` implementation:
 
 ```java
-// map the type to a Factory
-container.mapFactory(MyInterface.class, new Factory<MyInterface>() {
+// map the type to a factory
+container.mapFactory(MyInterface.class, new CheflingFactory<MyInterface>() {
     @Override
-    public MyInterface createInstance(Container container) {
-        return new MyImplementation("some value", container.get(OtherType.class));
+    public MyInterface createInstance(CheflingContainer container) {
+        return new MyImplementation("some value", container.getInstance(OtherType.class));
     }
 });
 
 // `resolved` is the result of the Factory method
-MyInterface resolved = container.get(MyInterface.class);
+MyInterface resolved = container.getInstance(MyInterface.class);
 ```
 
 If the `Factory` returns null or something that is not an instance of the expected type, an 
 exception will be thrown.
 
-### LifeCycle
+### Lifecycle
 
-The [`LifeCycle` interface](src/main/java/com/cookingfox/chefling/api/LifeCycle.java) allows 
-implementing classes to hook into the life cycle processes of the Container:
+The [`CheflingLifecycle` interface](src/main/java/com/cookingfox/chefling/api/CheflingLifecycle.java)
+allows implementing classes to hook into the lifecycle processes of the container:
 
-- When `Container#createInstance(type)` is called and an instance of the requested type is created, it will
-call its `initialize()` method. This will also happen for types that have been mapped using the 
-`map...` methods, even `mapInstance()`. For example, if a type `Foo` is mapped to a specific 
-instance of the class, and it implements the `LifeCycle` interface, then its `initialize()` method 
-will be called.
+- When `CheflingContainer#createInstance(type)` is called and an instance of the requested type is 
+created, it will call the `CheflingLifecycle#initialize()` method. This will also happen for types 
+that have been mapped using the `map...` methods, even `mapInstance()`. For example, if a type `Foo` 
+is mapped to a specific instance of the class, and it implements the `CheflingLifecycle` interface, 
+then its `initialize()` method will be called.
 
-- The `removeInstanceAndMapping()` and `resetContainer()` methods will call the `dispose()` method of instances that implement
-the `LifeCycle` interface.
+- The `CheflingContainer#removeInstanceAndMapping()` and `CheflingContainer#resetContainer()` 
+methods will call the `CheflingLifecycle#dispose()` method of instances that implement the 
+`CheflingLifecycle` interface.
 
 ### Builder
 
-When your application grows, the Chefling Container configuration grows as well. You'll start 
+As your application grows, the Chefling container configuration grows as well. You'll start 
 noticing different types of configuration, such as libraries, your application domain and the 
-initialization of the application. The Container Builder allows you to modularize your Chefling
-configuration into `Config` instances:
+initialization of the application. The `CheflingBuilder` allows you to modularize your Chefling
+configuration into `CheflingConfig` instances:
 
 ```java
-Config libraryConfig = new Config() {
+CheflingConfig libraryConfig = new CheflingConfig() {
     @Override
-    public void apply(Container container) {
+    public void apply(CheflingContainer container) {
         // configure container with library dependencies
         container.mapType(IMyLib.class, MyLibImpl.class);
     }
 };
 
-Config initAppConfig = new Config() {
+CheflingConfig initAppConfig = new CheflingConfig() {
     @Override
-    public void apply(Container container) {
+    public void apply(CheflingContainer container) {
         // initialize application components
-        container.get(MyViewController.class);
+        container.getInstance(MyViewController.class);
     }
 };
 
-Container container = new Chefling.Builder()
-    .add(libraryConfig)
-    .add(initAppConfig)
-    .build();
+CheflingContainer container = new Chefling.Builder()
+    .addConfig(libraryConfig)
+    .addConfig(initAppConfig)
+    .buildContainer();
 ```
 
-The Builder applies the `Config` instances in the order they were added. Of course, you can define
-your own classes that implement this interface for the desired level of modularity.
+The `CheflingContainer` applies the `CheflingConfig` instances in the order they were added. Of
+course, you can define your own classes that implement this interface for the desired level of
+modularity.
 
-### Container children
+### Modular container configurations
 
-Chefling supports modularizing Container configurations through a composite pattern:
+Chefling supports modularizing container configurations through a composite pattern:
 
 ```java
 // example module configuration
-Container moduleContainer = Chefling.createContainer();
+CheflingContainer moduleContainer = Chefling.createContainer();
 moduleContainer.mapType(IModule.class, ModuleImplementation.class);
 
-// app container configuration
-Container appContainer = Chefling.createContainer();
+// other container configuration
+CheflingContainer appContainer = Chefling.createContainer();
 appContainer.mapType(IApp.class, AppImpl.class);
 
 // add module configuration to app container
@@ -222,31 +226,34 @@ appContainer.addChildContainer(moduleContainer);
 This means that when the `appContainer` asks for `IModule`, it will receive a `ModuleImplementation`
 instance.
 
-Note that when a child Container is added which contains a mapping or instance for a type that is 
-already present in the Container it is added to, an exception will be thrown:
+Note that when a child container is added which contains a mapping or instance for a type that is
+already present in the container it is added to, an exception will be thrown:
 
 ```java
-Container moduleContainer = Chefling.createContainer();
+CheflingContainer moduleContainer = Chefling.createContainer();
 moduleContainer.mapType(IModule.class, ModuleImplementation.class);
 
 // container configuration with same mapping
-Container appContainer = Chefling.createContainer();
+CheflingContainer appContainer = Chefling.createContainer();
 appContainer.mapType(IModule.class, OtherModuleImplementation.class);
 
 // exception: mapping for "IModule" already exists
 appContainer.addChildContainer(moduleContainer);
 ```
 
-It is also possible to do the inverse: set the parent of a Container, using `setParentContainer(Container)`.
+It is also possible to do the inverse: set the parent of a container, using
+`setParentContainer(CheflingContainer)`.
 
-There's a helper method available for creating AND adding a Container child:
+There's a helper method available for creating a child container and adding it immediately:
 `createChildContainer()`.
 
-### Testing the configuration
+### Validating the configuration
 
 Since dependencies are resolved at runtime, it can be useful to make sure your configuration is 
 correct during the development phase. To have Chefling resolve all mappings, use the 
-`Container#validateContainer()` method. This will bring any configuration issues to light.
+`CheflingContainer#validateContainer()` method. This will bring any configuration issues to light.
+Note that resolving the full object graph is an expensive operation, so it should only be used
+during development.
 
 __WARNING: Make sure to remove this call for production builds!__
 
@@ -260,10 +267,10 @@ No, the following types are not allowed:
 Examples: `java.lang.String`, `java.lang.Exception`, `java.util.LinkedList`.
 - Classes that are not public.
 - Primitive types (e.g. `boolean`, `int`).
-- Exceptions (extends `Throwable`).
+- Exceptions (or anything which extends `Throwable`).
 - `enum` types.
 - Annotations.
-- Non-static member classes.
+- Non-static member ("inner") classes.
 - Anonymous classes.
 
 These types are not allowed because the container would not know how to resolve them automatically.
