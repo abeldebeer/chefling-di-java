@@ -30,7 +30,7 @@ class ResetContainerCommandImpl extends AbstractCommand implements ResetContaine
             public void visit(CommandContainer container) {
                 // call destroy method for life cycle objects
                 for (Map.Entry<Class, Object> entry : container.instances.entrySet()) {
-                    lifeCycleDispose(entry.getValue());
+                    lifecycleDispose(entry.getValue());
                 }
 
                 container.instances.clear();

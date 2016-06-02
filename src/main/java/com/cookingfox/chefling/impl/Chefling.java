@@ -14,10 +14,14 @@ import java.util.Objects;
  */
 public final class Chefling {
 
+    private Chefling() {
+        // should not be instantiated
+    }
+
     /**
      * Creates a new Chefling Builder.
      */
-    public static Builder builder() {
+    public static CheflingBuilder builder() {
         return new Builder();
     }
 

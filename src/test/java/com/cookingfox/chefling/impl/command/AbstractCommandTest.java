@@ -22,17 +22,17 @@ import static org.junit.Assert.*;
  * Unit tests for {@link AbstractCommand}.
  */
 public class AbstractCommandTest extends AbstractTest {
-    
+
     //----------------------------------------------------------------------------------------------
     // SETUP
     //----------------------------------------------------------------------------------------------
-    
+
     AbstractCommand command;
-    
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        
+
         command = new AddChildContainerCommandImpl(container);
     }
 

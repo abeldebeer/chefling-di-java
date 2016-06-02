@@ -5,9 +5,9 @@ import com.cookingfox.chefling.api.CheflingContainer;
 public interface CreateChildContainerCommand {
 
     /**
-     * Creates a new Container and adds it as a child.
+     * Creates a new container and adds it as a child.
      *
-     * @return The created child Container.
+     * @return The created child container.
      * @see CheflingContainer#addChildContainer(CheflingContainer)
      */
     CheflingContainer createChildContainer();

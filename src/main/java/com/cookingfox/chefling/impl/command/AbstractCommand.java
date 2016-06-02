@@ -138,7 +138,8 @@ abstract class AbstractCommand {
      * @param current The current container instance to traverse the children of.
      * @param matcher The matcher to check for a certain condition.
      */
-    void findAllRecursive(final Set<CommandContainer> result, CommandContainer current, CommandContainerMatcher matcher) {
+    void findAllRecursive(final Set<CommandContainer> result, CommandContainer current,
+                          CommandContainerMatcher matcher) {
         if (matcher.matches(current)) {
             result.add(current);
         }
@@ -183,6 +184,13 @@ abstract class AbstractCommand {
         return findOneRecursive(getRoot(target), matcher);
     }
 
+    /**
+     * Find one container in all children of `current`, by recursively traversing the child tree.
+     *
+     * @param current The current container (child) to match.
+     * @param matcher The matcher operation to use for each container child.
+     * @return The matching container or null.
+     */
     CommandContainer findOneRecursive(CommandContainer current, CommandContainerMatcher matcher) {
         if (matcher.matches(current)) {
             return current;
@@ -210,33 +218,30 @@ abstract class AbstractCommand {
     }
 
     /**
-     * Is this type allowed to be mapped in the Container?
+     * Is this type allowed to be mapped in the container?
      *
      * @param type The type to validate.
      * @throws TypeNotAllowedException
      */
     void isAllowed(Class type) throws TypeNotAllowedException {
-        String errorReason = null;
-        int modifiers = type.getModifiers();
-
-        if (isInPackage(type, PACKAGE_JAVA)) {
-            errorReason = "a member of the `java.` package";
-        } else if (isInPackage(type, PACKAGE_JAVAX)) {
-            errorReason = "a member of the `javax.` package";
+        if (isInPackage(type, PACKAGE_JAVAX)) {
+            throw new TypeNotAllowedException(type,"a member of the `javax.` package");
+        } else if (isInPackage(type, PACKAGE_JAVA)) {
+            throw new TypeNotAllowedException(type,"a member of the `java.` package");
         } else if (isInPackage(type, PACKAGE_CHEFLING)) {
-            errorReason = "part of the Chefling library";
+            throw new TypeNotAllowedException(type,"part of the Chefling library");
         } else if (type.isEnum()) {
-            errorReason = "an enum";
+            throw new TypeNotAllowedException(type,"an enum");
         } else if (type.isAnnotation()) {
-            errorReason = "an annotation";
-        } else if (!Modifier.isPublic(modifiers)) {
-            errorReason = "not public";
-        } else if (type.isMemberClass() && !Modifier.isStatic(modifiers)) {
-            errorReason = "a member class";
+            throw new TypeNotAllowedException(type,"an annotation");
         }
-
-        if (errorReason != null) {
-            throw new TypeNotAllowedException(type, errorReason);
+        
+        final int modifiers = type.getModifiers();
+        
+        if (!Modifier.isPublic(modifiers)) {
+            throw new TypeNotAllowedException(type,"not public");
+        } else if (type.isMemberClass() && !Modifier.isStatic(modifiers)) {
+            throw new TypeNotAllowedException(type,"a member class");
         }
     }
 
@@ -274,11 +279,12 @@ abstract class AbstractCommand {
     }
 
     /**
-     * Call the {@link CheflingLifecycle#dispose()} method if the object is a {@link CheflingLifecycle} instance.
+     * Call the {@link CheflingLifecycle#dispose()} method if the object is a
+     * {@link CheflingLifecycle} instance.
      *
      * @param instance An object.
      */
-    void lifeCycleDispose(Object instance) {
+    void lifecycleDispose(Object instance) {
         if (instance instanceof CheflingLifecycle) {
             ((CheflingLifecycle) instance).dispose();
         }
@@ -313,8 +319,8 @@ abstract class AbstractCommand {
     //----------------------------------------------------------------------------------------------
 
     /**
-     * A {@link CommandContainerMatcher} implementation that returns true if the provided container has an instance
-     * mapping for the provided type. This is an optimization: by using
+     * A {@link CommandContainerMatcher} implementation that returns true if the provided container
+     * has an instance mapping for the provided type. This is an optimization: by using
      * {@link HasMappingMatcher#get(Class)} we can re-use the matcher instance.
      */
     static class HasMappingMatcher implements CommandContainerMatcher {

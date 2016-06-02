@@ -69,7 +69,7 @@ class RemoveInstanceAndMappingCommandImpl extends AbstractCommand implements Rem
         CommandContainer typeOwner = findOne(_container, HasMappingMatcher.get(type));
 
         // call destroy method for life cycle objects
-        lifeCycleDispose(typeOwner.instances.get(type));
+        lifecycleDispose(typeOwner.instances.get(type));
 
         synchronized (_container) {
             // remove type from maps

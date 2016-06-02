@@ -3,7 +3,7 @@ package com.cookingfox.chefling.impl.helper;
 import com.cookingfox.chefling.impl.command.CommandContainer;
 
 /**
- * Interface for Visitor design pattern, applied to container instances.
+ * Interface for Visitor design pattern, applied to command container instances.
  */
 public interface CommandContainerVisitor {
 

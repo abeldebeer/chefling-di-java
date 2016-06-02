@@ -2,7 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.command.AddChildContainerCommand;
-import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.exception.InvalidChildContainerException;
 
 /**
  * @see AddChildContainerCommand
@@ -24,18 +24,19 @@ class AddChildContainerCommandImpl extends AbstractCommand implements AddChildCo
     @Override
     public void addChildContainer(CheflingContainer container) {
         if (container == null) {
-            throw new ContainerException("Child container cannot be null");
+            throw new InvalidChildContainerException("Child container cannot be null");
         } else if (container.equals(_container)) {
-            throw new ContainerException("Child container can not be the same instance as the " +
-                    "container it is being added to");
+            throw new InvalidChildContainerException("Child container can not be the same " +
+                    "instance as the container it is being added to");
         } else if (!(container instanceof CommandContainer)) {
-            throw new ContainerException("Child container must be an instance of CommandContainer");
+            throw new InvalidChildContainerException("Child container must be an instance of " +
+                    "CommandContainer");
         }
 
         CommandContainer child = (CommandContainer) container;
 
         if (child.parent != null) {
-            throw new ContainerException("Child container has already been added");
+            throw new InvalidChildContainerException("Child container has already been added");
         }
 
         checkMappingConflicts(child);

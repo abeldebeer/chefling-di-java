@@ -7,13 +7,13 @@ import com.cookingfox.chefling.api.exception.ContainerException;
 public interface MapFactoryCommand {
 
     /**
-     * Map `type` to a Factory, which will create an instance of `type` when it is requested (by
-     * {@link CheflingContainer#createInstance(Class)}). Which specific instance will be created by the Factory is
-     * up to the developer. The return value is validated by the Container: if `null` or another
-     * unexpected value is returned, an exception will be thrown. If a mapping for `type` already
-     * exists when this method is called, an exception will be thrown.
+     * Map `type` to a factory, which will create an instance of `type` when it is requested (by
+     * {@link CheflingContainer#createInstance(Class)}). Which specific instance will be created by
+     * the factory is up to the developer. The return value is validated by the container: if `null`
+     * or another unexpected value is returned, an exception will be thrown. If a mapping for `type`
+     * already exists when this method is called, an exception will be thrown.
      *
-     * @param type    The type (class, interface) of the object that will be created by the Factory.
+     * @param type    The type (class, interface) of the object that will be created by the factory.
      * @param factory A factory instance.
      * @param <T>     Ensures a factory of the expected type is passed.
      * @throws ContainerException when a mapping for `type` already exists.

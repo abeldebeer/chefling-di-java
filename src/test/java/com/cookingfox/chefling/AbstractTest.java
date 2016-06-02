@@ -10,6 +10,8 @@ import com.cookingfox.fixtures.chefling.*;
 import org.junit.Before;
 import org.mockito.Mockito;
 
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -37,11 +39,12 @@ public abstract class AbstractTest {
     /**
      * Examples of types that are not instantiable.
      */
-    protected Class[] notInstantiableTypes = {
+    protected final Class[] notInstantiableTypes = {
             Object.class,
             Class.class,
             String.class,
             HashMap.class,
+            SimpleJavaFileObject.class,
             ExampleAnnotation.class,
             boolean.class,
             NonPublicClasses.getPrivateClass(),
@@ -67,6 +70,7 @@ public abstract class AbstractTest {
         notAllowedInstances.put(Class.class, Object.class);
         notAllowedInstances.put(String.class, "");
         notAllowedInstances.put(HashMap.class, getMock(HashMap.class));
+        notAllowedInstances.put(SimpleJavaFileObject.class, getMock(SimpleJavaFileObject.class));
         notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
         notAllowedInstances.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()));
         notAllowedInstances.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()));
@@ -91,6 +95,7 @@ public abstract class AbstractTest {
         HashMap<Class, Class> notAllowedSubTypes = new HashMap<>();
         notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
         notAllowedSubTypes.put(HashMap.class, LinkedHashMap.class);
+        notAllowedSubTypes.put(JavaFileObject.class, SimpleJavaFileObject.class);
         notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
         notAllowedSubTypes.put(Number.class, Integer.class);
         notAllowedSubTypes.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()).getClass());

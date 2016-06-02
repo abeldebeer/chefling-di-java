@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when an error occurs during configuration and processing of Container Builder.
+ * Thrown when an error occurs during configuration and processing of container Builder.
  */
 public class ContainerBuilderException extends RuntimeException {
 

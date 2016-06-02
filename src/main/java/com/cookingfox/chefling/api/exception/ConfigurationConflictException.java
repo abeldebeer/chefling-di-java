@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when a Container's configuration (instances / mappings) intersects with the Container it
+ * Thrown when a container's configuration (instances / mappings) intersects with the container it
  * is being added to.
  */
 public class ConfigurationConflictException extends ContainerException {

@@ -190,7 +190,7 @@ public class GetInstanceCommandImplTest extends AbstractTest {
         try {
             container.getInstance(DeeplyNestedUnresolvableConstructor.A.class);
         } catch (ContainerException e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 

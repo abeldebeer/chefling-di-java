@@ -120,4 +120,16 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
         assertTrue(result instanceof QuadruplyTyped.E);
     }
 
+    /**
+     * Note: this test is just for checking the exception output.
+     */
+    @Test
+    public void should_provide_expected_stack_trace() throws Exception {
+        try {
+            container.createInstance(ThrowingConstructor.class);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+    }
+
 }

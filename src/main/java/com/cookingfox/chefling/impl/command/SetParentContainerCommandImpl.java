@@ -2,7 +2,7 @@ package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.command.SetParentContainerCommand;
-import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.exception.InvalidParentContainerException;
 import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 
 /**
@@ -27,12 +27,13 @@ class SetParentContainerCommandImpl extends AbstractCommand implements SetParent
         if (container == null) {
             throw new NullValueNotAllowedException("Parent container can not be null");
         } else if (container.equals(_container)) {
-            throw new ContainerException("Parent container can not be the same instance as the " +
-                    "container it is being added to");
+            throw new InvalidParentContainerException("Parent container can not be the same " +
+                    "instance as the container it is being added to");
         } else if (_container.parent != null) {
-            throw new ContainerException("Parent container is already set");
+            throw new InvalidParentContainerException("Parent container is already set");
         } else if (!(container instanceof CommandContainer)) {
-            throw new ContainerException("Parent container must be an instance of CommandContainer");
+            throw new InvalidParentContainerException("Parent container must be an instance of " +
+                    "CommandContainer");
         }
 
         CommandContainer parent = (CommandContainer) container;

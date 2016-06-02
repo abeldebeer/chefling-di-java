@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when a Chefling Factory returns null.
+ * Thrown when a Chefling factory returns null.
  */
 public class FactoryReturnedNullException extends ContainerException {
 

@@ -125,7 +125,7 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
 
     /**
      * Create a "resolvability" result: check all constructor parameters to see whether they are
-     * resolvable by the Container.
+     * resolvable by the container.
      *
      * @param constructor The constructor to check.
      * @return The result.
@@ -193,7 +193,7 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     protected String buildErrorMessage(Class type, Map<Integer, List<ResolvabilityResult>> resultMap) {
         // build error message
         StringBuilder errorBuilder = new StringBuilder();
-        errorBuilder.append("it does not have constructors that are resolvable by the Container:\n\n");
+        errorBuilder.append("it does not have constructors that are resolvable by the container:\n\n");
 
         Iterator iterator = resultMap.entrySet().iterator();
 
@@ -264,10 +264,10 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     }
 
     /**
-     * Resolves a type using a Factory instance. Throws if the returned value is null or invalid.
+     * Resolves a type using a factory instance. Throws if the returned value is null or invalid.
      *
-     * @param factory The Factory object.
-     * @param type    The expected type that the Factory should return.
+     * @param factory The factory object.
+     * @param type    The expected type that the factory should return.
      * @param <T>     Ensures the return value is cast to expected type.
      * @return The created instance.
      * @throws ContainerException

@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when a Chefling Factory returns an unexpected value.
+ * Thrown when a Chefling factory returns an unexpected value.
  */
 public class FactoryReturnedUnexpectedValueException extends ContainerException {
 

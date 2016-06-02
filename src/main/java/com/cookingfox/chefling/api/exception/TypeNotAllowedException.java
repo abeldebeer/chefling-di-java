@@ -1,7 +1,7 @@
 package com.cookingfox.chefling.api.exception;
 
 /**
- * Thrown when this type is not allowed to be used in the Container, e.g. an enum.
+ * Thrown when this type is not allowed to be used in the container, e.g. an enum.
  */
 public class TypeNotAllowedException extends ContainerException {
 
