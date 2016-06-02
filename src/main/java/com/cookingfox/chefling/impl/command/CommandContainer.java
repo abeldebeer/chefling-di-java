@@ -3,6 +3,7 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.command.*;
+import com.cookingfox.chefling.impl.helper.ConstructorParameters;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -11,6 +12,15 @@ import java.util.LinkedHashSet;
  * {@link CheflingContainer} implementation that uses command classes for each container operation.
  */
 public class CommandContainer implements CheflingContainer {
+
+    //----------------------------------------------------------------------------------------------
+    // STATIC PROPERTIES
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Cache for selected constructor + parameter types, since this is an expensive operation.
+     */
+    final static LinkedHashMap<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
 
     //----------------------------------------------------------------------------------------------
     // PROPERTIES

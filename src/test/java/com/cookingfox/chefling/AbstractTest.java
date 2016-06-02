@@ -6,6 +6,7 @@ import com.cookingfox.chefling.api.CheflingLifecycle;
 import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.TypeNotAllowedException;
 import com.cookingfox.chefling.impl.command.CommandContainer;
+import com.cookingfox.chefling.impl.command.CommandContainerTestHelper;
 import com.cookingfox.fixtures.chefling.*;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -29,6 +30,9 @@ public abstract class AbstractTest {
 
     @Before
     public void setUp() throws Exception {
+        // clear static type cache
+        CommandContainerTestHelper.CLEAR_TYPE_CACHE();
+
         container = new CommandContainer();
     }
 

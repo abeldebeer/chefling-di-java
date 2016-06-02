@@ -132,4 +132,16 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
         }
     }
 
+    @Test
+    public void should_use_type_cache() throws Exception {
+        assertFalse(CommandContainer.TYPE_CACHE.containsKey(OneParamConstructor.class));
+        assertFalse(CommandContainer.TYPE_CACHE.containsKey(NoConstructor.class));
+
+        // depends on `NoConstructor`
+        container.createInstance(OneParamConstructor.class);
+
+        assertTrue(CommandContainer.TYPE_CACHE.containsKey(OneParamConstructor.class));
+        assertTrue(CommandContainer.TYPE_CACHE.containsKey(NoConstructor.class));
+    }
+
 }

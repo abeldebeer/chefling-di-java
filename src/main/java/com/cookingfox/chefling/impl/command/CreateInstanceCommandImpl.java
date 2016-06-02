@@ -4,10 +4,13 @@ import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.CheflingLifecycle;
 import com.cookingfox.chefling.api.command.CreateInstanceCommand;
 import com.cookingfox.chefling.api.exception.*;
+import com.cookingfox.chefling.impl.helper.ConstructorParameters;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.*;
+
+import static com.cookingfox.chefling.impl.command.CommandContainer.TYPE_CACHE;
 
 /**
  * @see CreateInstanceCommand
@@ -69,10 +72,41 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
      * @return New instance of the type.
      * @throws ContainerException
      */
-    @SuppressWarnings("unchecked")
     protected <T> T constructInstance(Class<T> type) {
+        // cached constructor + parameters for this type
+        ConstructorParameters cached = TYPE_CACHE.get(type);
+
+        // resolve using cache
+        if (cached != null) {
+            return newInstance(type, cached.constructor, cached.parameterTypes);
+        }
+
+        // determine default constructor + parameters
         Constructor constructor = getDefaultConstructor(type);
         Class[] parameterTypes = constructor.getParameterTypes();
+
+        // create instance
+        T instance = newInstance(type, constructor, parameterTypes);
+
+        // success: cache constructor + parameters for this type
+        TYPE_CACHE.put(type, new ConstructorParameters(constructor, parameterTypes));
+
+        return instance;
+    }
+
+    /**
+     * Creates a new instance by providing the correct parameters to the selected constructor.
+     *
+     * @param type           The type to instantiate.
+     * @param constructor    The selected constructor for this type.
+     * @param parameterTypes The parameter types of the constructor.
+     * @param <T>            Ensures the returned object is cast to the expected type.
+     * @return New instance of the type.
+     * @throws ContainerException
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> T newInstance(Class<T> type, Constructor constructor, Class[] parameterTypes)
+            throws ContainerException {
         Object[] parameters = new Object[parameterTypes.length];
 
         // gather constructor parameters based on their types
@@ -291,12 +325,12 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     /**
      * Represents information for an unresolvable constructor parameter.
      */
-    protected static class UnresolvableParameter {
+    static final class UnresolvableParameter {
 
-        public final int parameterIndex;
-        public final Exception exception;
+        final int parameterIndex;
+        final Exception exception;
 
-        public UnresolvableParameter(int parameterIndex, Exception exception) {
+        UnresolvableParameter(int parameterIndex, Exception exception) {
             this.parameterIndex = parameterIndex;
             this.exception = exception;
         }
@@ -306,28 +340,29 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     /**
      * Represents information for a constructor's resolvability.
      */
-    protected static class ResolvabilityResult {
+    static final class ResolvabilityResult {
 
-        public final Constructor constructor;
-        public final int numParameters;
-        public final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<>();
+        final Constructor constructor;
+        final int numParameters;
+        final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<>();
 
-        public ResolvabilityResult(Constructor constructor, int numParameters) {
+        ResolvabilityResult(Constructor constructor, int numParameters) {
             this.constructor = constructor;
             this.numParameters = numParameters;
         }
 
-        public int getModifiers() {
+        int getModifiers() {
             return constructor.getModifiers();
         }
 
-        public boolean isPublic() {
+        boolean isPublic() {
             return Modifier.isPublic(getModifiers());
         }
 
-        public boolean isResolvable() {
+        boolean isResolvable() {
             return isPublic() && unresolvable.isEmpty();
         }
 
     }
+
 }

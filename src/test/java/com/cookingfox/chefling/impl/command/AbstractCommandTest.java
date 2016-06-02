@@ -1,8 +1,8 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.AbstractTest;
-import com.cookingfox.chefling.impl.helper.CommandContainerVisitor;
 import com.cookingfox.chefling.impl.helper.CommandContainerMatcher;
+import com.cookingfox.chefling.impl.helper.CommandContainerVisitor;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoMethodAbstract;
 import com.cookingfox.fixtures.chefling.NoMethodImplementation;
