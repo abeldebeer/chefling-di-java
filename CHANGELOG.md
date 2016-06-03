@@ -1,5 +1,10 @@
 # Chefling DI for Java: Change Log
 
+## [6.0.1](../../tree/v6.0.1) (2016-06-03)
+
+- Renames almost all methods to better describe the operations.
+- Improves performance by caching constructors and their parameter types.
+
 ## [5.0.1](../../tree/v5.0.1) (2016-03-15)
 
 - Improves exception messages.
