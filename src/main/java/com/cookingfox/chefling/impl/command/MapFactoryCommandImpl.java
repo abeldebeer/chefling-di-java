@@ -11,7 +11,7 @@ import java.lang.reflect.TypeVariable;
 /**
  * @see MapFactoryCommand
  */
-class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand {
+public class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -30,7 +30,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 
-        final Class<T> genericType = getGenericClass(factory);
+        Class<T> genericType = getGenericClass(factory);
 
         // validate generic type, if available
         if (genericType != null && !type.isAssignableFrom(genericType)) {
@@ -50,7 +50,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
     @SuppressWarnings("unchecked")
     protected <T> Class<T> getGenericClass(CheflingFactory<T> factory) {
         // get first generic type
-        final Type generic = factory.getClass().getGenericInterfaces()[0];
+        Type generic = factory.getClass().getGenericInterfaces()[0];
 
         // not parameterized? skip
         if (!(generic instanceof ParameterizedType)) {
@@ -58,7 +58,7 @@ class MapFactoryCommandImpl extends AbstractCommand implements MapFactoryCommand
         }
 
         // get actual type argument
-        final Type actual = ((ParameterizedType) generic).getActualTypeArguments()[0];
+        Type actual = ((ParameterizedType) generic).getActualTypeArguments()[0];
 
         // is TypeVariable when generic is inferred (e.g. diamond operator)
         return (actual instanceof TypeVariable) ? null : (Class<T>) actual;

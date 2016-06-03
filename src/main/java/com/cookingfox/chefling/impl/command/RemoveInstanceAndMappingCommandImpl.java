@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * @see RemoveInstanceAndMappingCommand
  */
-class RemoveInstanceAndMappingCommandImpl extends AbstractCommand implements RemoveInstanceAndMappingCommand {
+public class RemoveInstanceAndMappingCommandImpl extends AbstractCommand implements RemoveInstanceAndMappingCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTANTS
@@ -20,14 +20,16 @@ class RemoveInstanceAndMappingCommandImpl extends AbstractCommand implements Rem
     /**
      * Set of classes that should not be removed.
      */
-    static final Set<Class> DO_NOT_REMOVE = new HashSet<>();
+    protected static final Set<Class> DO_NOT_REMOVE;
 
     /**
      * Static initializer.
      */
     static {
-        DO_NOT_REMOVE.add(CheflingContainer.class);
-        DO_NOT_REMOVE.add(CommandContainer.class);
+        Set<Class> doNotRemove = new HashSet<>();
+        doNotRemove.add(CheflingContainer.class);
+        doNotRemove.add(CommandContainer.class);
+        DO_NOT_REMOVE = Collections.unmodifiableSet(doNotRemove);
     }
 
     //----------------------------------------------------------------------------------------------

@@ -106,11 +106,11 @@ public class MapFactoryCommandImplTest extends AbstractTest {
 
     @Test
     public void should_not_throw_for_generic_factory_impl() throws Exception {
-        final NoConstructor instance = new NoConstructor();
+        NoConstructor instance = new NoConstructor();
 
         container.mapFactory(NoConstructor.class, new GenericInstanceFactory<>(instance));
 
-        final NoConstructor result = container.getInstance(NoConstructor.class);
+        NoConstructor result = container.getInstance(NoConstructor.class);
 
         Assert.assertSame(instance, result);
     }

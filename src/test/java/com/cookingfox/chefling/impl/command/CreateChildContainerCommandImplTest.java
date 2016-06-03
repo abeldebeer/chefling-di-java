@@ -23,7 +23,7 @@ public class CreateChildContainerCommandImplTest extends AbstractTest {
 
     @Test
     public void should_add_child() throws Exception {
-        final NoMethodInterface instance = new NoMethodImplementation();
+        NoMethodInterface instance = new NoMethodImplementation();
 
         CheflingContainer child = container.createChildContainer();
         child.mapInstance(NoMethodInterface.class, instance);

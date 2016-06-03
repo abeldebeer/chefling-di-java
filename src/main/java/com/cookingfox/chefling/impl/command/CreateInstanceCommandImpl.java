@@ -10,12 +10,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import static com.cookingfox.chefling.impl.command.CommandContainer.TYPE_CACHE;
-
 /**
  * @see CreateInstanceCommand
  */
-class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanceCommand {
+public class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanceCommand {
+
+    //----------------------------------------------------------------------------------------------
+    // STATIC PROPERTIES
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Cache for selected constructor + parameter types, since this is an expensive operation.
+     */
+    protected final static LinkedHashMap<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -325,12 +332,12 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     /**
      * Represents information for an unresolvable constructor parameter.
      */
-    static final class UnresolvableParameter {
+    protected static class UnresolvableParameter {
 
-        final int parameterIndex;
-        final Exception exception;
+        protected final int parameterIndex;
+        protected final Exception exception;
 
-        UnresolvableParameter(int parameterIndex, Exception exception) {
+        protected UnresolvableParameter(int parameterIndex, Exception exception) {
             this.parameterIndex = parameterIndex;
             this.exception = exception;
         }
@@ -340,26 +347,26 @@ class CreateInstanceCommandImpl extends AbstractCommand implements CreateInstanc
     /**
      * Represents information for a constructor's resolvability.
      */
-    static final class ResolvabilityResult {
+    protected static class ResolvabilityResult {
 
-        final Constructor constructor;
-        final int numParameters;
-        final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<>();
+        protected final Constructor constructor;
+        protected final int numParameters;
+        protected final ArrayList<UnresolvableParameter> unresolvable = new ArrayList<>();
 
-        ResolvabilityResult(Constructor constructor, int numParameters) {
+        protected ResolvabilityResult(Constructor constructor, int numParameters) {
             this.constructor = constructor;
             this.numParameters = numParameters;
         }
 
-        int getModifiers() {
+        protected int getModifiers() {
             return constructor.getModifiers();
         }
 
-        boolean isPublic() {
+        protected boolean isPublic() {
             return Modifier.isPublic(getModifiers());
         }
 
-        boolean isResolvable() {
+        protected boolean isResolvable() {
             return isPublic() && unresolvable.isEmpty();
         }
 

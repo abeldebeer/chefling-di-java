@@ -7,7 +7,7 @@ import com.cookingfox.chefling.api.exception.NotASubTypeException;
 /**
  * @see MapTypeCommand
  */
-class MapTypeCommandImpl extends AbstractCommand implements MapTypeCommand {
+public class MapTypeCommandImpl extends AbstractCommand implements MapTypeCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

@@ -42,7 +42,7 @@ public class CheflingBuilderTest {
 
     @Test(expected = ContainerBuilderException.class)
     public void add_should_throw_if_adding_same_instance_twice() throws Exception {
-        final CheflingConfig config = new NoopConfig();
+        CheflingConfig config = new NoopConfig();
 
         builder.addConfig(config);
         builder.addConfig(config);
@@ -50,9 +50,9 @@ public class CheflingBuilderTest {
 
     @Test
     public void add_should_add_config() throws Exception {
-        final CheflingConfig first = new NoopConfig();
-        final CheflingConfig second = new NoopConfig();
-        final CheflingConfig third = new NoopConfig();
+        CheflingConfig first = new NoopConfig();
+        CheflingConfig second = new NoopConfig();
+        CheflingConfig third = new NoopConfig();
 
         builder.addConfig(first);
         builder.addConfig(second);
@@ -106,14 +106,14 @@ public class CheflingBuilderTest {
 
     @Test
     public void build_should_apply_configs_in_sequence() throws Exception {
-        final List<CheflingConfig> testList = new LinkedList<>();
-        final CheflingConfig first = new AddToListConfig(testList);
-        final CheflingConfig second = new AddToListConfig(testList);
-        final CheflingConfig third = new AddToListConfig(testList);
+        List<CheflingConfig> testList = new LinkedList<>();
+        CheflingConfig first = new AddToListConfig(testList);
+        CheflingConfig second = new AddToListConfig(testList);
+        CheflingConfig third = new AddToListConfig(testList);
 
         builder.addConfig(first).addConfig(second).addConfig(third).buildContainer();
 
-        final Iterator<CheflingConfig> iterator = testList.iterator();
+        Iterator<CheflingConfig> iterator = testList.iterator();
 
         assertSame(first, iterator.next());
         assertSame(second, iterator.next());
@@ -132,7 +132,7 @@ public class CheflingBuilderTest {
     }
 
     private static class AddToListConfig implements CheflingConfig {
-        final List<CheflingConfig> list;
+        List<CheflingConfig> list;
 
         public AddToListConfig(List<CheflingConfig> list) {
             this.list = list;

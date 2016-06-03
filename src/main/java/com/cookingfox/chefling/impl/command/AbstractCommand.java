@@ -13,15 +13,15 @@ import java.util.Set;
 /**
  * Base class for container commands used by the {@link CommandContainer}.
  */
-abstract class AbstractCommand {
+public abstract class AbstractCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTANTS
     //----------------------------------------------------------------------------------------------
 
-    static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
-    static final String PACKAGE_JAVA = "java";
-    static final String PACKAGE_JAVAX = "javax";
+    protected static final String PACKAGE_CHEFLING = "com.cookingfox.chefling";
+    protected static final String PACKAGE_JAVA = "java";
+    protected static final String PACKAGE_JAVAX = "javax";
 
     //----------------------------------------------------------------------------------------------
     //  PROPERTIES
@@ -30,7 +30,7 @@ abstract class AbstractCommand {
     /**
      * A reference to the container instance that this command is being applied to.
      */
-    final CommandContainer _container;
+    protected final CommandContainer _container;
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -52,7 +52,7 @@ abstract class AbstractCommand {
      * @param value The value for the mapping.
      * @throws ContainerException
      */
-    void addMapping(Class type, Object value) {
+    protected void addMapping(Class type, Object value) {
         isAllowed(type);
 
         synchronized (_container) {
@@ -71,7 +71,7 @@ abstract class AbstractCommand {
      * @param name  The name of the variable.
      * @throws NullValueNotAllowedException
      */
-    void assertNonNull(Object value, String name) throws NullValueNotAllowedException {
+    protected void assertNonNull(Object value, String name) throws NullValueNotAllowedException {
         if (value == null) {
             throw new NullValueNotAllowedException(name);
         }
@@ -84,7 +84,7 @@ abstract class AbstractCommand {
      * @param container The new container.
      * @throws ContainerException
      */
-    void checkMappingConflicts(CommandContainer container) {
+    protected void checkMappingConflicts(CommandContainer container) {
         for (Class type : compileTypes(container)) {
             if (_container.hasInstanceOrMapping(type)) {
                 throw new ConfigurationConflictException(type);
@@ -98,7 +98,7 @@ abstract class AbstractCommand {
      * @param container The source container.
      * @return Set of all types within the container.
      */
-    Set<Class> compileTypes(CommandContainer container) {
+    protected Set<Class> compileTypes(CommandContainer container) {
         final Set<Class> types = new LinkedHashSet<>();
 
         visitAll(container, new CommandContainerVisitor() {
@@ -123,8 +123,8 @@ abstract class AbstractCommand {
      * @param matcher The matcher to check for a certain condition.
      * @return A set of containers that match.
      */
-    Set<CommandContainer> findAll(CommandContainer start, CommandContainerMatcher matcher) {
-        final Set<CommandContainer> result = new LinkedHashSet<>();
+    protected Set<CommandContainer> findAll(CommandContainer start, CommandContainerMatcher matcher) {
+        Set<CommandContainer> result = new LinkedHashSet<>();
 
         findAllRecursive(result, getRoot(start), matcher);
 
@@ -138,8 +138,8 @@ abstract class AbstractCommand {
      * @param current The current container instance to traverse the children of.
      * @param matcher The matcher to check for a certain condition.
      */
-    void findAllRecursive(final Set<CommandContainer> result, CommandContainer current,
-                          CommandContainerMatcher matcher) {
+    protected void findAllRecursive(Set<CommandContainer> result, CommandContainer current,
+                                    CommandContainerMatcher matcher) {
         if (matcher.matches(current)) {
             result.add(current);
         }
@@ -156,7 +156,7 @@ abstract class AbstractCommand {
      * @param type      The type to check for.
      * @return The instance or type mapping from one of the container children, or null if not found.
      */
-    Object findMapping(CommandContainer container, Class type) {
+    protected Object findMapping(CommandContainer container, Class type) {
         CommandContainer match = findOne(container, HasMappingMatcher.get(type));
 
         if (match == null) {
@@ -176,7 +176,7 @@ abstract class AbstractCommand {
      * @param matcher The matcher operation to use for each container child.
      * @return The matching container or null.
      */
-    CommandContainer findOne(CommandContainer target, CommandContainerMatcher matcher) {
+    protected CommandContainer findOne(CommandContainer target, CommandContainerMatcher matcher) {
         if (matcher.matches(target)) {
             return target;
         }
@@ -191,7 +191,7 @@ abstract class AbstractCommand {
      * @param matcher The matcher operation to use for each container child.
      * @return The matching container or null.
      */
-    CommandContainer findOneRecursive(CommandContainer current, CommandContainerMatcher matcher) {
+    protected CommandContainer findOneRecursive(CommandContainer current, CommandContainerMatcher matcher) {
         if (matcher.matches(current)) {
             return current;
         }
@@ -213,7 +213,7 @@ abstract class AbstractCommand {
      * @param current The current container instance in the recursive operation.
      * @return The root container.
      */
-    CommandContainer getRoot(CommandContainer current) {
+    protected CommandContainer getRoot(CommandContainer current) {
         return current.parent == null ? current : getRoot(current.parent);
     }
 
@@ -223,25 +223,25 @@ abstract class AbstractCommand {
      * @param type The type to validate.
      * @throws TypeNotAllowedException
      */
-    void isAllowed(Class type) throws TypeNotAllowedException {
+    protected void isAllowed(Class type) throws TypeNotAllowedException {
         if (isInPackage(type, PACKAGE_JAVAX)) {
-            throw new TypeNotAllowedException(type,"a member of the `javax.` package");
+            throw new TypeNotAllowedException(type, "a member of the `javax.` package");
         } else if (isInPackage(type, PACKAGE_JAVA)) {
-            throw new TypeNotAllowedException(type,"a member of the `java.` package");
+            throw new TypeNotAllowedException(type, "a member of the `java.` package");
         } else if (isInPackage(type, PACKAGE_CHEFLING)) {
-            throw new TypeNotAllowedException(type,"part of the Chefling library");
+            throw new TypeNotAllowedException(type, "part of the Chefling library");
         } else if (type.isEnum()) {
-            throw new TypeNotAllowedException(type,"an enum");
+            throw new TypeNotAllowedException(type, "an enum");
         } else if (type.isAnnotation()) {
-            throw new TypeNotAllowedException(type,"an annotation");
+            throw new TypeNotAllowedException(type, "an annotation");
         }
-        
-        final int modifiers = type.getModifiers();
-        
+
+        int modifiers = type.getModifiers();
+
         if (!Modifier.isPublic(modifiers)) {
-            throw new TypeNotAllowedException(type,"not public");
+            throw new TypeNotAllowedException(type, "not public");
         } else if (type.isMemberClass() && !Modifier.isStatic(modifiers)) {
-            throw new TypeNotAllowedException(type,"a member class");
+            throw new TypeNotAllowedException(type, "a member class");
         }
     }
 
@@ -251,7 +251,7 @@ abstract class AbstractCommand {
      * @param type The type to validate.
      * @throws TypeNotAllowedException
      */
-    void isInstantiable(Class type) throws TypeNotAllowedException {
+    protected void isInstantiable(Class type) throws TypeNotAllowedException {
         isAllowed(type);
 
         String errorReason = null;
@@ -274,7 +274,7 @@ abstract class AbstractCommand {
      * @param pkg  The root package name.
      * @return Whether this type is in the provided package.
      */
-    boolean isInPackage(Class type, String pkg) {
+    protected boolean isInPackage(Class type, String pkg) {
         return type.getName().startsWith(pkg);
     }
 
@@ -284,7 +284,7 @@ abstract class AbstractCommand {
      *
      * @param instance An object.
      */
-    void lifecycleDispose(Object instance) {
+    protected void lifecycleDispose(Object instance) {
         if (instance instanceof CheflingLifecycle) {
             ((CheflingLifecycle) instance).dispose();
         }
@@ -296,7 +296,7 @@ abstract class AbstractCommand {
      * @param container The container instance to use to get the root container.
      * @param visitor   The operation to apply to all container children.
      */
-    void visitAll(CommandContainer container, CommandContainerVisitor visitor) {
+    protected void visitAll(CommandContainer container, CommandContainerVisitor visitor) {
         visitRecursive(getRoot(container), visitor);
     }
 
@@ -306,7 +306,7 @@ abstract class AbstractCommand {
      * @param current The container to traverse the children of.
      * @param visitor The operation to apply to all container children.
      */
-    void visitRecursive(CommandContainer current, CommandContainerVisitor visitor) {
+    protected void visitRecursive(CommandContainer current, CommandContainerVisitor visitor) {
         visitor.visit(current);
 
         for (CommandContainer child : current.children) {
@@ -323,12 +323,12 @@ abstract class AbstractCommand {
      * has an instance mapping for the provided type. This is an optimization: by using
      * {@link HasMappingMatcher#get(Class)} we can re-use the matcher instance.
      */
-    static class HasMappingMatcher implements CommandContainerMatcher {
+    protected static class HasMappingMatcher implements CommandContainerMatcher {
 
         /**
          * The matcher instance to re-use.
          */
-        static HasMappingMatcher instance = new HasMappingMatcher();
+        protected static final HasMappingMatcher instance = new HasMappingMatcher();
 
         /**
          * The type to match.

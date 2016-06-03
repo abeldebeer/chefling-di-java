@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * @see GetInstanceCommand
  */
-class GetInstanceCommandImpl extends AbstractCommand implements GetInstanceCommand {
+public class GetInstanceCommandImpl extends AbstractCommand implements GetInstanceCommand {
 
     //----------------------------------------------------------------------------------------------
     // PROTECTED PROPERTIES

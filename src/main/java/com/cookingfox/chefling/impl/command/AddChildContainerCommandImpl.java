@@ -7,7 +7,7 @@ import com.cookingfox.chefling.api.exception.InvalidChildContainerException;
 /**
  * @see AddChildContainerCommand
  */
-class AddChildContainerCommandImpl extends AbstractCommand implements AddChildContainerCommand {
+public class AddChildContainerCommandImpl extends AbstractCommand implements AddChildContainerCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

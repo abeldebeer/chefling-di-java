@@ -40,10 +40,10 @@ public final class Chefling {
         /**
          * List of added configurations.
          */
-        final LinkedList<CheflingConfig> configs = new LinkedList<>();
+        protected final LinkedList<CheflingConfig> configs = new LinkedList<>();
 
         @Override
-        public CheflingBuilder addConfig(final CheflingConfig config) {
+        public CheflingBuilder addConfig(CheflingConfig config) {
             Objects.requireNonNull(config, "Config can not be null");
 
             if (configs.contains(config)) {
@@ -61,7 +61,7 @@ public final class Chefling {
                 throw new ContainerBuilderException("Add configs first");
             }
 
-            final CheflingContainer container = createContainer();
+            CheflingContainer container = createContainer();
 
             for (CheflingConfig config : configs) {
                 try {

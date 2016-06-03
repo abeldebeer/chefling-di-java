@@ -1,13 +1,12 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.command.MapInstanceCommand;
-import com.cookingfox.chefling.api.exception.ContainerException;
 import com.cookingfox.chefling.api.exception.NotAnInstanceOfTypeException;
 
 /**
  * @see MapInstanceCommand
  */
-class MapInstanceCommandImpl extends AbstractCommand implements MapInstanceCommand {
+public class MapInstanceCommandImpl extends AbstractCommand implements MapInstanceCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

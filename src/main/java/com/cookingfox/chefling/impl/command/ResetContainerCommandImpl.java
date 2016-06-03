@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @see ResetContainerCommand
  */
-class ResetContainerCommandImpl extends AbstractCommand implements ResetContainerCommand {
+public class ResetContainerCommandImpl extends AbstractCommand implements ResetContainerCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

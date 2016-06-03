@@ -6,7 +6,7 @@ import com.cookingfox.chefling.impl.helper.CommandContainerMatcher;
 /**
  * @see HasInstanceOrMappingCommand
  */
-class HasInstanceOrMappingCommandImpl extends AbstractCommand implements HasInstanceOrMappingCommand {
+public class HasInstanceOrMappingCommandImpl extends AbstractCommand implements HasInstanceOrMappingCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -21,7 +21,7 @@ class HasInstanceOrMappingCommandImpl extends AbstractCommand implements HasInst
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public boolean hasInstanceOrMapping(final Class type) {
+    public boolean hasInstanceOrMapping(Class type) {
         CommandContainerMatcher matcher = HasMappingMatcher.get(type);
 
         return matcher.matches(_container) || findOne(_container, matcher) != null;

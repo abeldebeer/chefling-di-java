@@ -14,15 +14,6 @@ import java.util.LinkedHashSet;
 public class CommandContainer implements CheflingContainer {
 
     //----------------------------------------------------------------------------------------------
-    // STATIC PROPERTIES
-    //----------------------------------------------------------------------------------------------
-
-    /**
-     * Cache for selected constructor + parameter types, since this is an expensive operation.
-     */
-    final static LinkedHashMap<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
-
-    //----------------------------------------------------------------------------------------------
     // PROPERTIES
     //----------------------------------------------------------------------------------------------
 

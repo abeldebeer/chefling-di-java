@@ -8,7 +8,7 @@ import com.cookingfox.chefling.api.exception.NullValueNotAllowedException;
 /**
  * @see SetParentContainerCommand
  */
-class SetParentContainerCommandImpl extends AbstractCommand implements SetParentContainerCommand {
+public class SetParentContainerCommandImpl extends AbstractCommand implements SetParentContainerCommand {
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS

@@ -6,7 +6,7 @@ import com.cookingfox.chefling.api.command.CreateChildContainerCommand;
 /**
  * @see CreateChildContainerCommand
  */
-class CreateChildContainerCommandImpl extends AbstractCommand implements CreateChildContainerCommand {
+public class CreateChildContainerCommandImpl extends AbstractCommand implements CreateChildContainerCommand {
 
     public CreateChildContainerCommandImpl(CommandContainer container) {
         super(container);

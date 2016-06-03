@@ -5,7 +5,7 @@ import java.lang.reflect.Constructor;
 /**
  * Wraps a type's selected constructor + parameter types, so it can be cached.
  */
-public final class ConstructorParameters {
+public class ConstructorParameters {
 
     public final Constructor constructor;
     public final Class[] parameterTypes;

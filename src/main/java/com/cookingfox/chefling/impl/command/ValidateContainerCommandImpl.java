@@ -6,7 +6,7 @@ import com.cookingfox.chefling.impl.helper.CommandContainerVisitor;
 /**
  * @see ValidateContainerCommand
  */
-class ValidateContainerCommandImpl extends AbstractCommand implements ValidateContainerCommand {
+public class ValidateContainerCommandImpl extends AbstractCommand implements ValidateContainerCommand {
 
     public ValidateContainerCommandImpl(CommandContainer container) {
         super(container);
@@ -17,7 +17,7 @@ class ValidateContainerCommandImpl extends AbstractCommand implements ValidateCo
         // recursively loop through all containers
         visitAll(_container, new CommandContainerVisitor() {
             @Override
-            public void visit(final CommandContainer container) {
+            public void visit(CommandContainer container) {
                 // resolve all mappings in container
                 for (Class mapping : container.mappings.keySet()) {
                     container.getInstance(mapping);
