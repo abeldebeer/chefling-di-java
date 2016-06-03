@@ -3,7 +3,7 @@ package com.cookingfox.chefling;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.CheflingLifecycle;
-import com.cookingfox.fixtures.chefling.LifecycleWithCallLog;
+import com.cookingfox.fixtures.chefling._LifecycleWithCallLog;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,11 +11,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit tests for {@link CheflingLifecycle} callbacks.
  */
-public class LifecycleTest extends AbstractTest {
+public class _LifecycleTest extends AbstractTest {
 
     @Test
     public void create_type_should_call_lifecycle_create() throws Exception {
-        LifecycleWithCallLog instance = container.createInstance(LifecycleWithCallLog.class);
+        _LifecycleWithCallLog instance = container.createInstance(_LifecycleWithCallLog.class);
 
         assertEquals(1, instance.initializeCalls.size());
         assertEquals(0, instance.disposeCalls.size());
@@ -23,16 +23,16 @@ public class LifecycleTest extends AbstractTest {
 
     @Test
     public void create_factory_should_call_lifecycle_create() throws Exception {
-        CheflingFactory<LifecycleWithCallLog> factory = new CheflingFactory<LifecycleWithCallLog>() {
+        CheflingFactory<_LifecycleWithCallLog> factory = new CheflingFactory<_LifecycleWithCallLog>() {
             @Override
-            public LifecycleWithCallLog createInstance(CheflingContainer container) {
-                return new LifecycleWithCallLog();
+            public _LifecycleWithCallLog createInstance(CheflingContainer container) {
+                return new _LifecycleWithCallLog();
             }
         };
 
-        container.mapFactory(LifecycleWithCallLog.class, factory);
+        container.mapFactory(_LifecycleWithCallLog.class, factory);
 
-        LifecycleWithCallLog instance = container.createInstance(LifecycleWithCallLog.class);
+        _LifecycleWithCallLog instance = container.createInstance(_LifecycleWithCallLog.class);
 
         assertEquals(1, instance.initializeCalls.size());
         assertEquals(0, instance.disposeCalls.size());
@@ -40,10 +40,10 @@ public class LifecycleTest extends AbstractTest {
 
     @Test
     public void create_instance_should_call_lifecycle_create() throws Exception {
-        LifecycleWithCallLog instance = new LifecycleWithCallLog();
+        _LifecycleWithCallLog instance = new _LifecycleWithCallLog();
 
-        container.mapInstance(LifecycleWithCallLog.class, instance);
-        container.createInstance(LifecycleWithCallLog.class);
+        container.mapInstance(_LifecycleWithCallLog.class, instance);
+        container.createInstance(_LifecycleWithCallLog.class);
 
         assertEquals(1, instance.initializeCalls.size());
         assertEquals(0, instance.disposeCalls.size());
@@ -51,7 +51,7 @@ public class LifecycleTest extends AbstractTest {
 
     @Test
     public void reset_should_call_lifecycle_destroy() throws Exception {
-        LifecycleWithCallLog instance = container.getInstance(LifecycleWithCallLog.class);
+        _LifecycleWithCallLog instance = container.getInstance(_LifecycleWithCallLog.class);
 
         container.resetContainer();
 
@@ -61,9 +61,9 @@ public class LifecycleTest extends AbstractTest {
 
     @Test
     public void remove_should_call_lifecycle_destroy() throws Exception {
-        LifecycleWithCallLog instance = container.getInstance(LifecycleWithCallLog.class);
+        _LifecycleWithCallLog instance = container.getInstance(_LifecycleWithCallLog.class);
 
-        container.removeInstanceAndMapping(LifecycleWithCallLog.class);
+        container.removeInstanceAndMapping(_LifecycleWithCallLog.class);
 
         assertEquals(1, instance.initializeCalls.size());
         assertEquals(1, instance.disposeCalls.size());
