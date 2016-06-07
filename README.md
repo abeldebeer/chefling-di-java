@@ -67,9 +67,13 @@ containers.
 
 ## Usage
 
+You can find the JavaDoc on
+[javadoc.io](http://www.javadoc.io/doc/com.cookingfox/chefling-di-java/6.0.1).
+
 ### Create a Chefling container
 
-The easiest way to create a Chefling container is by doing:
+The easiest way to create a
+[`CheflingContainer`](src/main/java/com/cookingfox/chefling/api/CheflingContainer.java) is by doing:
 
 ```java
 CheflingContainer container = Chefling.createContainer();
@@ -139,7 +143,7 @@ MyInterface resolved = container.getInstance(MyInterface.class);
 #### Use a factory: `mapFactory(type, factory)`
 
 If a type has dependencies that are both resolvable and unresolvable, you can map a 
-`CheflingFactory` implementation:
+[`CheflingFactory`](src/main/java/com/cookingfox/chefling/api/CheflingFactory.java) implementation:
 
 ```java
 // map the type to a factory
@@ -176,8 +180,9 @@ methods will call the `CheflingLifecycle#dispose()` method of instances that imp
 
 As your application grows, the Chefling container configuration grows as well. You'll start 
 noticing different types of configuration, such as libraries, your application domain and the 
-initialization of the application. The `CheflingBuilder` allows you to modularize your Chefling
-configuration into `CheflingConfig` instances:
+initialization of the application. The
+[`CheflingBuilder`](src/main/java/com/cookingfox/chefling/api/CheflingBuilder.java) allows you to
+modularize your Chefling configuration into `CheflingConfig` instances:
 
 ```java
 CheflingConfig libraryConfig = new CheflingConfig() {
