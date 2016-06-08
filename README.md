@@ -6,6 +6,7 @@ annotations, only does constructor injection and has limited (but powerful) conf
 Chefling requires at minimum Java 7.
 
 [![Build Status](https://travis-ci.org/cookingfox/chefling-di-java.svg?branch=master)](https://travis-ci.org/cookingfox/chefling-di-java)
+[![Javadocs](http://www.javadoc.io/badge/com.cookingfox/chefling-di-java.svg)](http://www.javadoc.io/doc/com.cookingfox/chefling-di-java)
 
 ## Download
 
@@ -67,7 +68,7 @@ containers.
 
 ## Usage
 
-You can find the JavaDoc on
+You can find the Javadocs on
 [javadoc.io](http://www.javadoc.io/doc/com.cookingfox/chefling-di-java/6.0.1).
 
 ### Create a Chefling container
