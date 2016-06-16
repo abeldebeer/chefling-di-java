@@ -1,5 +1,10 @@
 # Chefling DI for Java: Change Log
 
+## [6.1.0](../../tree/v6.1.0) (2016-06-16)
+
+- Adds `CheflingBuilder#removeConfig()` to be able to override a container configuration before it
+is built.
+
 ## [6.0.1](../../tree/v6.0.1) (2016-06-03)
 
 - Renames almost all methods to better describe the operations.
