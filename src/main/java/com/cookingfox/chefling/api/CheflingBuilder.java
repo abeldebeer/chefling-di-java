@@ -26,4 +26,13 @@ public interface CheflingBuilder {
      */
     CheflingContainer buildContainer();
 
+    /**
+     * Remove a container configuration.
+     *
+     * @param config The configuration object to remove.
+     * @return The current Builder instance.
+     * @throws ContainerBuilderException
+     */
+    CheflingBuilder removeConfig(CheflingConfig config);
+
 }

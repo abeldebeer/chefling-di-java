@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.impl;
 
+import com.cookingfox.chefling.api.CheflingBuilder;
 import com.cookingfox.chefling.api.CheflingConfig;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.exception.ContainerBuilderException;
@@ -12,8 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link Chefling.Builder}.
@@ -36,12 +36,12 @@ public class CheflingBuilderTest {
     //----------------------------------------------------------------------------------------------
 
     @Test(expected = NullPointerException.class)
-    public void add_should_throw_if_null() throws Exception {
+    public void addConfig_should_throw_if_null() throws Exception {
         builder.addConfig(null);
     }
 
     @Test(expected = ContainerBuilderException.class)
-    public void add_should_throw_if_adding_same_instance_twice() throws Exception {
+    public void addConfig_should_throw_if_adding_same_instance_twice() throws Exception {
         CheflingConfig config = new NoopConfig();
 
         builder.addConfig(config);
@@ -49,7 +49,7 @@ public class CheflingBuilderTest {
     }
 
     @Test
-    public void add_should_add_config() throws Exception {
+    public void addConfig_should_add_config() throws Exception {
         CheflingConfig first = new NoopConfig();
         CheflingConfig second = new NoopConfig();
         CheflingConfig third = new NoopConfig();
@@ -68,12 +68,12 @@ public class CheflingBuilderTest {
     //----------------------------------------------------------------------------------------------
 
     @Test(expected = ContainerBuilderException.class)
-    public void build_should_throw_if_no_configs() throws Exception {
+    public void buildContainer_should_throw_if_no_configs() throws Exception {
         builder.buildContainer();
     }
 
     @Test(expected = ContainerBuilderException.class)
-    public void build_should_throw_if_config_throws_container_exception() throws Exception {
+    public void buildContainer_should_throw_if_config_throws_container_exception() throws Exception {
         builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
@@ -83,7 +83,7 @@ public class CheflingBuilderTest {
     }
 
     @Test(expected = ContainerBuilderException.class)
-    public void build_should_throw_if_config_throws_generic_error() throws Exception {
+    public void buildContainer_should_throw_if_config_throws_generic_error() throws Exception {
         builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
@@ -93,7 +93,7 @@ public class CheflingBuilderTest {
     }
 
     @Test
-    public void build_should_apply_config() throws Exception {
+    public void buildContainer_should_apply_config() throws Exception {
         CheflingContainer container = builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
@@ -105,7 +105,7 @@ public class CheflingBuilderTest {
     }
 
     @Test
-    public void build_should_apply_configs_in_sequence() throws Exception {
+    public void buildContainer_should_apply_configs_in_sequence() throws Exception {
         List<CheflingConfig> testList = new LinkedList<>();
         CheflingConfig first = new AddToListConfig(testList);
         CheflingConfig second = new AddToListConfig(testList);
@@ -118,6 +118,43 @@ public class CheflingBuilderTest {
         assertSame(first, iterator.next());
         assertSame(second, iterator.next());
         assertSame(third, iterator.next());
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: removeConfig
+    //----------------------------------------------------------------------------------------------
+
+    @Test(expected = NullPointerException.class)
+    public void removeConfig_should_throw_if_config_null() throws Exception {
+        builder.removeConfig(null);
+    }
+
+    @Test(expected = ContainerBuilderException.class)
+    public void removeConfig_should_throw_if_not_added() throws Exception {
+        builder.removeConfig(new NoopConfig());
+    }
+
+    @Test
+    public void removeConfig_should_remove_config() throws Exception {
+        CheflingConfig config = new NoopConfig();
+
+        builder.addConfig(config);
+
+        assertTrue(builder.configs.contains(config));
+
+        builder.removeConfig(config);
+
+        assertFalse(builder.configs.contains(config));
+    }
+
+    @Test
+    public void removeConfig_should_return_builder() throws Exception {
+        CheflingConfig config = new NoopConfig();
+        builder.addConfig(config);
+
+        CheflingBuilder returned = this.builder.removeConfig(config);
+
+        assertSame(builder, returned);
     }
 
     //----------------------------------------------------------------------------------------------

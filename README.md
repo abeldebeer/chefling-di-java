@@ -18,7 +18,8 @@ To include the package in your projects, you can add the jCenter repository.
 
 ### Gradle
 
-Add jCenter to your `repositories` block:
+Add jCenter to your `repositories` block (not necessary for Android - jCenter is the default
+repository):
 
 ```groovy
 repositories {
@@ -211,6 +212,10 @@ CheflingContainer container = new Chefling.Builder()
 The `CheflingContainer` applies the `CheflingConfig` instances in the order they were added. Of
 course, you can define your own classes that implement this interface for the desired level of
 modularity.
+
+The [`CheflingBuilder`](src/main/java/com/cookingfox/chefling/api/CheflingBuilder.java) also
+contains a `removeConfig()` method which can be used to override a `CheflingConfig` (for example
+for testing) before it is built.
 
 ### Modular container configurations
 

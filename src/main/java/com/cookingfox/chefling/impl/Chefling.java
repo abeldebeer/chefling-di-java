@@ -6,8 +6,10 @@ import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.exception.ContainerBuilderException;
 import com.cookingfox.chefling.impl.command.CommandContainer;
 
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Helper class for managing Chefling containers.
@@ -40,13 +42,11 @@ public final class Chefling {
         /**
          * List of added configurations.
          */
-        protected final LinkedList<CheflingConfig> configs = new LinkedList<>();
+        protected final Set<CheflingConfig> configs = new LinkedHashSet<>();
 
         @Override
         public CheflingBuilder addConfig(CheflingConfig config) {
-            Objects.requireNonNull(config, "Config can not be null");
-
-            if (configs.contains(config)) {
+            if (configs.contains(requireNonNull(config, "Config can not be null"))) {
                 throw new ContainerBuilderException("Config was already added");
             }
 
@@ -72,6 +72,17 @@ public final class Chefling {
             }
 
             return container;
+        }
+
+        @Override
+        public CheflingBuilder removeConfig(CheflingConfig config) {
+            if (!configs.contains(requireNonNull(config, "Config can not be null"))) {
+                throw new ContainerBuilderException("Can not remove config that is not added: " + config);
+            }
+
+            configs.remove(config);
+
+            return this;
         }
 
     }
