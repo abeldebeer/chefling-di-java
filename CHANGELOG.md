@@ -1,5 +1,10 @@
 # Chefling DI for Java: Change Log
 
+## [6.2.0](../../tree/v6.2.0) (2016-06-17)
+
+- Introduces `CheflingBuilder#applyToContainer()` to be able to apply CheflingConfigs to an existing
+container instance.
+
 ## [6.1.0](../../tree/v6.1.0) (2016-06-16)
 
 - Adds `CheflingBuilder#removeConfig()` to be able to override a container configuration before it
