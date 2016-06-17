@@ -56,12 +56,12 @@ public final class Chefling {
         }
 
         @Override
-        public CheflingContainer buildContainer() {
+        public CheflingContainer applyToContainer(CheflingContainer container) {
+            requireNonNull(container, "Container can not be null");
+
             if (configs.isEmpty()) {
                 throw new ContainerBuilderException("Add configs first");
             }
-
-            CheflingContainer container = createContainer();
 
             for (CheflingConfig config : configs) {
                 try {
@@ -72,6 +72,11 @@ public final class Chefling {
             }
 
             return container;
+        }
+
+        @Override
+        public CheflingContainer buildContainer() {
+            return applyToContainer(createContainer());
         }
 
         @Override

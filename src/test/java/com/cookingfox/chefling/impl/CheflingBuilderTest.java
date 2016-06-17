@@ -64,36 +64,84 @@ public class CheflingBuilderTest {
     }
 
     //----------------------------------------------------------------------------------------------
-    // TESTS: buildContainer
+    // TESTS: applyToContainer
     //----------------------------------------------------------------------------------------------
 
-    @Test(expected = ContainerBuilderException.class)
-    public void buildContainer_should_throw_if_no_configs() throws Exception {
-        builder.buildContainer();
+    @Test(expected = NullPointerException.class)
+    public void applyToContainer_should_throw_if_container_null() throws Exception {
+        builder.applyToContainer(null);
+    }
+
+    @Test
+    public void applyToContainer_should_return_provided_instance() throws Exception {
+        CheflingContainer container = Chefling.createContainer();
+
+        builder.addConfig(new NoopConfig());
+
+        CheflingContainer returned = builder.applyToContainer(container);
+
+        assertSame(container, returned);
     }
 
     @Test(expected = ContainerBuilderException.class)
-    public void buildContainer_should_throw_if_config_throws_container_exception() throws Exception {
+    public void applyToContainer_should_throw_if_no_configs() throws Exception {
+        builder.applyToContainer(Chefling.createContainer());
+    }
+
+    @Test(expected = ContainerBuilderException.class)
+    public void applyToContainer_should_throw_if_config_throws_container_exception() throws Exception {
         builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
                 throw new ContainerException("Example");
             }
-        }).buildContainer();
+        }).applyToContainer(Chefling.createContainer());
     }
 
     @Test(expected = ContainerBuilderException.class)
-    public void buildContainer_should_throw_if_config_throws_generic_error() throws Exception {
+    public void applyToContainer_should_throw_if_config_throws_generic_error() throws Exception {
         builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
                 throw new RuntimeException("Example");
             }
-        }).buildContainer();
+        }).applyToContainer(Chefling.createContainer());
     }
 
     @Test
-    public void buildContainer_should_apply_config() throws Exception {
+    public void applyToContainer_should_apply_config() throws Exception {
+        CheflingContainer container = builder.addConfig(new CheflingConfig() {
+            @Override
+            public void apply(CheflingContainer container) {
+                container.mapInstance(NoConstructor.class, new NoConstructor());
+            }
+        }).applyToContainer(Chefling.createContainer());
+
+        assertTrue(container.hasInstanceOrMapping(NoConstructor.class));
+    }
+
+    @Test
+    public void applyToContainer_should_apply_configs_in_sequence() throws Exception {
+        List<CheflingConfig> testList = new LinkedList<>();
+        CheflingConfig first = new AddToListConfig(testList);
+        CheflingConfig second = new AddToListConfig(testList);
+        CheflingConfig third = new AddToListConfig(testList);
+
+        builder.addConfig(first).addConfig(second).addConfig(third).applyToContainer(Chefling.createContainer());
+
+        Iterator<CheflingConfig> iterator = testList.iterator();
+
+        assertSame(first, iterator.next());
+        assertSame(second, iterator.next());
+        assertSame(third, iterator.next());
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: buildContainer
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void buildContainer_should_create_container_and_apply_config() throws Exception {
         CheflingContainer container = builder.addConfig(new CheflingConfig() {
             @Override
             public void apply(CheflingContainer container) {
@@ -102,22 +150,6 @@ public class CheflingBuilderTest {
         }).buildContainer();
 
         assertTrue(container.hasInstanceOrMapping(NoConstructor.class));
-    }
-
-    @Test
-    public void buildContainer_should_apply_configs_in_sequence() throws Exception {
-        List<CheflingConfig> testList = new LinkedList<>();
-        CheflingConfig first = new AddToListConfig(testList);
-        CheflingConfig second = new AddToListConfig(testList);
-        CheflingConfig third = new AddToListConfig(testList);
-
-        builder.addConfig(first).addConfig(second).addConfig(third).buildContainer();
-
-        Iterator<CheflingConfig> iterator = testList.iterator();
-
-        assertSame(first, iterator.next());
-        assertSame(second, iterator.next());
-        assertSame(third, iterator.next());
     }
 
     //----------------------------------------------------------------------------------------------

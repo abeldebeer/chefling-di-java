@@ -18,6 +18,16 @@ public interface CheflingBuilder {
     CheflingBuilder addConfig(CheflingConfig config);
 
     /**
+     * Instead of creating a new container, applies the added configs to the provided container
+     * instance.
+     *
+     * @param container The container to apply the configs to.
+     * @return The container.
+     * @throws ContainerBuilderException
+     */
+    CheflingContainer applyToContainer(CheflingContainer container);
+
+    /**
      * Creates a new container instance and applies all added configs.
      *
      * @return The created container instance.
