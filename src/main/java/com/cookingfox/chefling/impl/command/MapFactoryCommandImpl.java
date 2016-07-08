@@ -30,7 +30,7 @@ public class MapFactoryCommandImpl extends AbstractCommand implements MapFactory
         assertNonNull(type, "type");
         assertNonNull(factory, "factory");
 
-        Class<T> genericType = getGenericClass(factory);
+        Class genericType = getGenericType(factory.getClass());
 
         // validate generic type, if available
         if (genericType != null && !type.isAssignableFrom(genericType)) {
@@ -48,20 +48,36 @@ public class MapFactoryCommandImpl extends AbstractCommand implements MapFactory
      * Attempt to extract the generic ("parameterized") type from the factory.
      */
     @SuppressWarnings("unchecked")
-    protected <T> Class<T> getGenericClass(CheflingFactory<T> factory) {
+    protected Class getGenericType(Class<? extends CheflingFactory> factoryClass) {
+        // get factory's generic interfaces
+        Type[] genericInterfaces = factoryClass.getGenericInterfaces();
+
+        // no generic interfaces: factory might be in super class
+        if (genericInterfaces == null || genericInterfaces.length == 0) {
+            Class superClass = factoryClass.getSuperclass();
+
+            // arrived at root class: Object
+            if (Object.class.equals(superClass)) {
+                return null;
+            }
+
+            // get generic type of super class
+            return getGenericType(superClass);
+        }
+
         // get first generic type
-        Type generic = factory.getClass().getGenericInterfaces()[0];
+        Type firstGenericType = genericInterfaces[0];
 
         // not parameterized? skip
-        if (!(generic instanceof ParameterizedType)) {
+        if (!(firstGenericType instanceof ParameterizedType)) {
             return null;
         }
 
         // get actual type argument
-        Type actual = ((ParameterizedType) generic).getActualTypeArguments()[0];
+        Type actual = ((ParameterizedType) firstGenericType).getActualTypeArguments()[0];
 
         // is TypeVariable when generic is inferred (e.g. diamond operator)
-        return (actual instanceof TypeVariable) ? null : (Class<T>) actual;
+        return (actual instanceof TypeVariable) ? null : (Class) actual;
     }
 
 }

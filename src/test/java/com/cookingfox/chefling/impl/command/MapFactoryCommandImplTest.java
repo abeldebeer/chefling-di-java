@@ -4,10 +4,7 @@ import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.exception.*;
-import com.cookingfox.fixtures.chefling.GenericInstanceFactory;
-import com.cookingfox.fixtures.chefling.NoConstructor;
-import com.cookingfox.fixtures.chefling.NoMethodImplementation;
-import com.cookingfox.fixtures.chefling.NoMethodInterface;
+import com.cookingfox.fixtures.chefling.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -113,6 +110,31 @@ public class MapFactoryCommandImplTest extends AbstractTest {
         NoConstructor result = container.getInstance(NoConstructor.class);
 
         Assert.assertSame(instance, result);
+    }
+
+    @Test
+    public void should_not_throw_for_anonymous_implementation_of_existing_factory() throws Exception {
+        NoConstructorFactory factory = new NoConstructorFactory() {
+            @Override
+            public NoConstructor createInstance(CheflingContainer container) {
+                return super.createInstance(container);
+            }
+        };
+
+        container.mapFactory(NoConstructor.class, factory);
+    }
+
+    @Test(expected = FactoryIncorrectGenericException.class)
+    public void should_throw_for_incorrect_anonymous_implementation_of_existing_factory() throws Exception {
+        NoConstructorFactory factory = new NoConstructorFactory() {
+            @Override
+            public NoConstructor createInstance(CheflingContainer container) {
+                return super.createInstance(container);
+            }
+        };
+
+        // noinspection unchecked
+        container.mapFactory(OneParamConstructor.class, (CheflingFactory) factory);
     }
 
     @Test
