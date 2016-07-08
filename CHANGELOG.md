@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [6.2.1](../../tree/v6.2.1) (2016-07-08)
+
+- Fixes factory generic type validation with more complex factory object graph.
+
 ## [6.2.0](../../tree/v6.2.0) (2016-06-17)
 
 - Introduces `CheflingBuilder#applyToContainer()` to be able to apply CheflingConfigs to an existing
