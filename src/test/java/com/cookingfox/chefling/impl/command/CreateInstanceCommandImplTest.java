@@ -132,6 +132,18 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
         }
     }
 
+    /**
+     * Note: this test is just for checking the exception output.
+     */
+    @Test
+    public void should_create_proper_error_message() throws Exception {
+        try {
+            container.createInstance(RequiresProperErrorMessage.class);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+    }
+
     @Test
     public void should_use_type_cache() throws Exception {
         assertFalse(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(OneParamConstructor.class));
@@ -142,6 +154,26 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
 
         assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(OneParamConstructor.class));
         assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(NoConstructor.class));
+
+        // use cached constructor parameters
+        container.createInstance(OneParamConstructor.class);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: constructInstance
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    public void constructInstance_should_return_instance_created_with_type_cache() throws Exception {
+        CreateInstanceCommandImpl createInstanceCommand = new CreateInstanceCommandImpl(container);
+
+        createInstanceCommand.constructInstance(NoConstructor.class);
+
+        assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(NoConstructor.class));
+
+        NoConstructor createdWithCache = createInstanceCommand.constructInstance(NoConstructor.class);
+
+        assertNotNull(createdWithCache);
     }
 
 }

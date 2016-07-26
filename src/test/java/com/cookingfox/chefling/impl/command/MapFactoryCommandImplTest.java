@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static org.junit.Assert.assertNull;
+
 /**
  * Unit tests for {@link MapFactoryCommandImpl}.
  */
@@ -235,6 +237,30 @@ public class MapFactoryCommandImplTest extends AbstractTest {
         runConcurrencyTest(test, numTests);
 
         Assert.assertEquals("Expected number of exceptions", numTests - 1, exceptions.size());
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: getGenericType
+    //----------------------------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void getGenericType_should_return_null_for_root_super_class() throws Exception {
+        MapFactoryCommandImpl mapFactoryCommand = new MapFactoryCommandImpl(container);
+
+        Class result = mapFactoryCommand.getGenericType((Class) NoConstructor.class);
+
+        assertNull(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void getGenericType_should_return_null_for_object_class() throws Exception {
+        MapFactoryCommandImpl mapFactoryCommand = new MapFactoryCommandImpl(container);
+
+        Class result = mapFactoryCommand.getGenericType((Class) Object.class);
+
+        assertNull(result);
     }
 
 }

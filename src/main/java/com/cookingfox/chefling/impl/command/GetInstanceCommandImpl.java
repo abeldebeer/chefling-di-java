@@ -37,7 +37,7 @@ public class GetInstanceCommandImpl extends AbstractCommand implements GetInstan
     public <T> T getInstance(Class<T> type) {
         assertNonNull(type, "type");
 
-        CommandContainer existingOwner = findOne(_container, HasMappingMatcher.get(type));
+        CommandContainer existingOwner = findOneWithInstanceOrMapping(_container, type);
 
         if (existingOwner == null) {
             return createInstance(type);
@@ -136,7 +136,7 @@ public class GetInstanceCommandImpl extends AbstractCommand implements GetInstan
      */
     @SuppressWarnings("unchecked")
     protected <T> T useMapping(CommandContainer owner, Class<T> type) {
-        Object mapping = findMapping(owner, type);
+        Object mapping = findInstanceOrMapping(owner, type);
 
         if (type.isInstance(mapping)) {
             // existing mapping is instance: save on mapping owner

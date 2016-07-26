@@ -182,7 +182,7 @@ public class AbstractCommandTest extends AbstractTest {
         parentContainer.setParentContainer(new CommandContainer());
         container.setParentContainer(parentContainer);
 
-        Object result = command.findMapping(container, NoConstructor.class);
+        Object result = command.findInstanceOrMapping(container, NoConstructor.class);
 
         assertSame(instance, result);
     }
@@ -194,7 +194,7 @@ public class AbstractCommandTest extends AbstractTest {
         parentContainer.setParentContainer(new CommandContainer());
         container.setParentContainer(parentContainer);
 
-        Object result = command.findMapping(container, NoMethodInterface.class);
+        Object result = command.findInstanceOrMapping(container, NoMethodInterface.class);
 
         assertSame(NoMethodImplementation.class, result);
     }

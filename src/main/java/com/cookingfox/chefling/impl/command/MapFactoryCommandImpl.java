@@ -56,8 +56,8 @@ public class MapFactoryCommandImpl extends AbstractCommand implements MapFactory
         if (genericInterfaces == null || genericInterfaces.length == 0) {
             Class superClass = factoryClass.getSuperclass();
 
-            // arrived at root class: Object
-            if (Object.class.equals(superClass)) {
+            // super class is null or root class (Object)
+            if (superClass == null || Object.class.equals(superClass)) {
                 return null;
             }
 

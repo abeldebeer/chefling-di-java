@@ -156,15 +156,18 @@ public abstract class AbstractCommand {
      * @param type      The type to check for.
      * @return The instance or type mapping from one of the container children, or null if not found.
      */
-    protected Object findMapping(CommandContainer container, Class type) {
-        CommandContainer match = findOne(container, HasMappingMatcher.get(type));
+    protected Object findInstanceOrMapping(CommandContainer container, Class type) {
+        CommandContainer match = findOneWithInstanceOrMapping(container, type);
 
+        // no container child has an instance or mapping for this type
         if (match == null) {
             return null;
         }
 
+        // attempt to get instance from matching container
         Object instance = match.instances.get(type);
 
+        // attempt to get mapping from matching container
         return instance != null ? instance : match.mappings.get(type);
     }
 
@@ -182,6 +185,17 @@ public abstract class AbstractCommand {
         }
 
         return findOneRecursive(getRoot(target), matcher);
+    }
+
+    /**
+     * Find a container in all children that contains an instance or mapping for the provided type.
+     *
+     * @param container The target container to use to get the root.
+     * @param type      The type to match.
+     * @return The matching container or null.
+     */
+    protected CommandContainer findOneWithInstanceOrMapping(CommandContainer container, Class type) {
+        return findOne(container, HasInstanceOrMappingMatcher.get(type));
     }
 
     /**
@@ -321,14 +335,14 @@ public abstract class AbstractCommand {
     /**
      * A {@link CommandContainerMatcher} implementation that returns true if the provided container
      * has an instance mapping for the provided type. This is an optimization: by using
-     * {@link HasMappingMatcher#get(Class)} we can re-use the matcher instance.
+     * {@link HasInstanceOrMappingMatcher#get(Class)} we can re-use the matcher instance.
      */
-    protected static class HasMappingMatcher implements CommandContainerMatcher {
+    protected static class HasInstanceOrMappingMatcher implements CommandContainerMatcher {
 
         /**
          * The matcher instance to re-use.
          */
-        protected static final HasMappingMatcher instance = new HasMappingMatcher();
+        protected static final HasInstanceOrMappingMatcher instance = new HasInstanceOrMappingMatcher();
 
         /**
          * The type to match.
@@ -338,7 +352,7 @@ public abstract class AbstractCommand {
         /**
          * Constructor is disabled: use {@link #get(Class)}.
          */
-        private HasMappingMatcher() {
+        private HasInstanceOrMappingMatcher() {
         }
 
         @Override
@@ -352,7 +366,7 @@ public abstract class AbstractCommand {
          * @param type The type to match.
          * @return The matcher instance.
          */
-        public static HasMappingMatcher get(Class type) {
+        public static HasInstanceOrMappingMatcher get(Class type) {
             instance.type = type;
 
             return instance;

@@ -25,16 +25,16 @@ public class CommandContainer implements CheflingContainer {
     protected final Set<CommandContainer> children = new LinkedHashSet<>();
 
     /**
-     * Stores created instances, where the key is the type and the value is the instance. This
-     * instance is returned the next time the type is requested.
-     */
-    protected final Map<Class, Object> instances = new LinkedHashMap<>();
-
-    /**
      * A collection of container listeners, so that they can be notified of events in the container
      * lifecycle.
      */
     protected final Set<CheflingContainerListener> containerListeners = new LinkedHashSet<>();
+
+    /**
+     * Stores created instances, where the key is the type and the value is the instance. This
+     * instance is returned the next time the type is requested.
+     */
+    protected final Map<Class, Object> instances = new LinkedHashMap<>();
 
     /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the

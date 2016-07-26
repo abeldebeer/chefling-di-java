@@ -42,20 +42,20 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         assertNonNull(type, "type");
         isAllowed(type);
 
-        Object mapping = findMapping(_container, type);
+        final Object existing = findInstanceOrMapping(_container, type);
         T instance;
 
-        if (mapping instanceof Class) {
-            // create instance using mapped type
-            instance = createInstance((Class<T>) mapping);
-        } else if (type.isInstance(mapping)) {
-            // mapping is instance
-            instance = (T) mapping;
-        } else if (mapping instanceof CheflingFactory) {
+        if (existing instanceof Class) {
+            // type is mapped to another type: create an instance using the mapped type
+            instance = createInstance((Class<T>) existing);
+        } else if (type.isInstance(existing)) {
+            // existing is instance
+            instance = (T) existing;
+        } else if (existing instanceof CheflingFactory) {
             // use factory to create instance
-            instance = resolveUsingFactory((CheflingFactory<T>) mapping, type);
+            instance = resolveUsingFactory((CheflingFactory<T>) existing, type);
         } else {
-            // no mapping: create instance using provided type
+            // no existing mapping or instance: create instance using provided type
             instance = constructInstance(type);
         }
 
@@ -239,7 +239,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         Iterator iterator = resultMap.entrySet().iterator();
 
         while (iterator.hasNext()) {
-            @SuppressWarnings("unchecked")
+            // noinspection unchecked
             Map.Entry<Integer, List<ResolvabilityResult>> entry = (Map.Entry) iterator.next();
             List<ResolvabilityResult> resultList = entry.getValue();
 
@@ -286,6 +286,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
             Class parameterType = parameterTypes[i];
             errorBuilder.append(parameterType.getName());
 
+            // add separator between parameter types
             if (i < parameterTypes.length - 1) {
                 errorBuilder.append(", ");
             }

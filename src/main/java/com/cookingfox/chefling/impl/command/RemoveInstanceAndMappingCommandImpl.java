@@ -68,7 +68,7 @@ public class RemoveInstanceAndMappingCommandImpl extends AbstractCommand impleme
      * @param type The type to remove.
      */
     protected void removeMappingsForType(Class type) {
-        CommandContainer typeOwner = findOne(_container, HasMappingMatcher.get(type));
+        CommandContainer typeOwner = findOneWithInstanceOrMapping(_container, type);
 
         // call destroy method for life cycle objects
         lifecycleDispose(typeOwner.instances.get(type));
