@@ -1,12 +1,14 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.CheflingContainer;
+import com.cookingfox.chefling.api.CheflingContainerListener;
 import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.command.*;
-import com.cookingfox.chefling.impl.helper.ConstructorParameters;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * {@link CheflingContainer} implementation that uses command classes for each container operation.
@@ -20,19 +22,25 @@ public class CommandContainer implements CheflingContainer {
     /**
      * A collection of child container configurations.
      */
-    protected final LinkedHashSet<CommandContainer> children = new LinkedHashSet<>();
+    protected final Set<CommandContainer> children = new LinkedHashSet<>();
 
     /**
      * Stores created instances, where the key is the type and the value is the instance. This
      * instance is returned the next time the type is requested.
      */
-    protected final LinkedHashMap<Class, Object> instances = new LinkedHashMap<>();
+    protected final Map<Class, Object> instances = new LinkedHashMap<>();
+
+    /**
+     * A collection of container listeners, so that they can be notified of events in the container
+     * lifecycle.
+     */
+    protected final Set<CheflingContainerListener> containerListeners = new LinkedHashSet<>();
 
     /**
      * Stores type mappings, where the key is the type and the value is the mapping provided by the
      * `map...` methods.
      */
-    protected final LinkedHashMap<Class, Object> mappings = new LinkedHashMap<>();
+    protected final Map<Class, Object> mappings = new LinkedHashMap<>();
 
     /**
      * The parent container configuration.
@@ -126,6 +134,19 @@ public class CommandContainer implements CheflingContainer {
     @Override
     public void validateContainer() {
         validateContainer.validateContainer();
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // PROTECTED METHODS
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Add a collection of container listeners.
+     *
+     * @param containerListeners The collection of listeners to add.
+     */
+    protected void addContainerListeners(Set<CheflingContainerListener> containerListeners) {
+        this.containerListeners.addAll(containerListeners);
     }
 
 }

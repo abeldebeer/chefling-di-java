@@ -14,7 +14,7 @@ public class CreateChildContainerCommandImpl extends AbstractCommand implements 
 
     @Override
     public CheflingContainer createChildContainer() {
-        CheflingContainer child = new CommandContainer();
+        CheflingContainer child = CommandContainerBuilder.createContainer();
 
         _container.addChildContainer(child);
 

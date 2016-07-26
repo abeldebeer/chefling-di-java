@@ -1,5 +1,6 @@
 package com.cookingfox.chefling.impl;
 
+import com.cookingfox.chefling.impl.command.CommandContainerBuilder;
 import com.cookingfox.chefling.impl.command.CommandContainer;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class CheflingTest {
 
     @Test
     public void builder_should_return_new_builder() throws Exception {
-        assertTrue(Chefling.builder() instanceof Chefling.Builder);
+        assertTrue(Chefling.builder() instanceof CommandContainerBuilder);
     }
 
     //----------------------------------------------------------------------------------------------

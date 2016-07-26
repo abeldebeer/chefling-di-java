@@ -1,6 +1,7 @@
 package com.cookingfox.chefling.impl.command;
 
 import com.cookingfox.chefling.api.CheflingContainer;
+import com.cookingfox.chefling.api.CheflingContainerListener;
 import com.cookingfox.chefling.api.command.ResetContainerCommand;
 import com.cookingfox.chefling.impl.helper.CommandContainerVisitor;
 
@@ -25,6 +26,12 @@ public class ResetContainerCommandImpl extends AbstractCommand implements ResetC
 
     @Override
     public void resetContainer() {
+        // container listener: pre container dispose
+        for (CheflingContainerListener listener : _container.containerListeners) {
+            listener.preContainerDispose(_container);
+        }
+
+        // loop through all container children
         visitAll(_container, new CommandContainerVisitor() {
             @Override
             public void visit(CommandContainer container) {
@@ -33,11 +40,21 @@ public class ResetContainerCommandImpl extends AbstractCommand implements ResetC
                     lifecycleDispose(entry.getValue());
                 }
 
+                // remove all stored instances and mappings
                 container.instances.clear();
                 container.mappings.clear();
             }
         });
 
+        // container listener: post container dispose
+        for (CheflingContainerListener listener : _container.containerListeners) {
+            listener.postContainerDispose(_container);
+        }
+
+        // clear lifecycle references
+        _container.containerListeners.clear();
+
+        // re-initialize: set references to current container instance
         _container.instances.put(CheflingContainer.class, _container);
         _container.instances.put(CommandContainer.class, _container);
     }
