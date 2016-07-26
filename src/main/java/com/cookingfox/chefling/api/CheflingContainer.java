@@ -11,13 +11,13 @@ public interface CheflingContainer extends
         AddChildContainerCommand,
         CreateChildContainerCommand,
         CreateInstanceCommand,
+        DisposeContainerCommand,
         GetInstanceCommand,
         HasInstanceOrMappingCommand,
         MapFactoryCommand,
         MapInstanceCommand,
         MapTypeCommand,
         RemoveInstanceAndMappingCommand,
-        ResetContainerCommand,
         SetParentContainerCommand,
         ValidateContainerCommand {
 

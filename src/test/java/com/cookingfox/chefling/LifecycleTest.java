@@ -50,10 +50,10 @@ public class LifecycleTest extends AbstractTest {
     }
 
     @Test
-    public void reset_should_call_lifecycle_destroy() throws Exception {
+    public void disposeContainer_should_call_lifecycle_destroy() throws Exception {
         LifecycleWithCallLog instance = container.getInstance(LifecycleWithCallLog.class);
 
-        container.resetContainer();
+        container.disposeContainer();
 
         assertEquals(1, instance.initializeCalls.size());
         assertEquals(1, instance.disposeCalls.size());

@@ -3,6 +3,7 @@ package com.cookingfox.chefling.impl.command;
 import com.cookingfox.chefling.AbstractTest;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.CheflingContainerListener;
+import com.cookingfox.chefling.impl.Chefling;
 import com.cookingfox.chefling.impl.helper.DefaultCheflingContainerListener;
 import com.cookingfox.fixtures.chefling.NoMethodImplementation;
 import com.cookingfox.fixtures.chefling.NoMethodInterface;
@@ -14,28 +15,42 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for {@link ResetContainerCommandImpl}.
+ * Unit tests for {@link DisposeContainerCommandImpl}.
  */
-public class ResetContainerCommandImplTest extends AbstractTest {
+public class DisposeContainerCommandImplTest extends AbstractTest {
 
     @Test
-    public void should_remove_mappings_and_instances() throws Exception {
+    public void should_remove_mappings_and_instances_and_listeners() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.getInstance(NoMethodInterface.class);
 
-        container.resetContainer();
+        container.disposeContainer();
 
         assertFalse(container.hasInstanceOrMapping(NoMethodInterface.class));
+
+        assertTrue(container.containerListeners.isEmpty());
+        assertTrue(container.instances.isEmpty());
+        assertTrue(container.mappings.isEmpty());
     }
 
     @Test
-    public void should_reinitialize_container() throws Exception {
-        assertTrue(container.hasInstanceOrMapping(CheflingContainer.class));
+    public void should_remove_children_and_parent() throws Exception {
+        CommandContainer childContainer = (CommandContainer) Chefling.createContainer();
+        CommandContainer parentContainer = (CommandContainer) Chefling.createContainer();
 
-        container.resetContainer();
+        container.addChildContainer(childContainer);
+        container.setParentContainer(parentContainer);
 
-        assertTrue(container.hasInstanceOrMapping(CheflingContainer.class));
-        assertSame(container, container.getInstance(CheflingContainer.class));
+        container.disposeContainer();
+
+        assertTrue(container.children.isEmpty());
+        assertNull(container.parent);
+
+        assertTrue(childContainer.children.isEmpty());
+        assertNull(childContainer.parent);
+
+        assertTrue(parentContainer.children.isEmpty());
+        assertNull(parentContainer.parent);
     }
 
     @Test
@@ -57,7 +72,7 @@ public class ResetContainerCommandImplTest extends AbstractTest {
                 }
         ));
 
-        container.resetContainer();
+        container.disposeContainer();
 
         assertEquals(1, preContainerDisposeCalls.get());
         assertEquals(1, postContainerDisposeCalls.get());
@@ -71,7 +86,7 @@ public class ResetContainerCommandImplTest extends AbstractTest {
 
         assertTrue(container.containerListeners.contains(listener));
 
-        container.resetContainer();
+        container.disposeContainer();
 
         assertFalse(container.containerListeners.contains(listener));
     }

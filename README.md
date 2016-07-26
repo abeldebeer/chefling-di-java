@@ -174,7 +174,7 @@ that have been mapped using the `map...` methods, even `mapInstance()`. For exam
 is mapped to a specific instance of the class, and it implements the `CheflingLifecycle` interface, 
 then its `initialize()` method will be called.
 
-- The `CheflingContainer#removeInstanceAndMapping()` and `CheflingContainer#resetContainer()` 
+- The `CheflingContainer#removeInstanceAndMapping()` and `CheflingContainer#disposeContainer()`
 methods will call the `CheflingLifecycle#dispose()` method of instances that implement the 
 `CheflingLifecycle` interface.
 

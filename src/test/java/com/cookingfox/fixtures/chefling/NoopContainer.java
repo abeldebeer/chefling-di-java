@@ -54,7 +54,7 @@ public class NoopContainer implements CheflingContainer {
     }
 
     @Override
-    public void resetContainer() {
+    public void disposeContainer() {
 
     }
 

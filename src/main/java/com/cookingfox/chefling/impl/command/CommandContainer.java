@@ -52,15 +52,15 @@ public class CommandContainer implements CheflingContainer {
     //----------------------------------------------------------------------------------------------
 
     protected AddChildContainerCommand addChildContainer = new AddChildContainerCommandImpl(this);
-    protected CreateChildContainerCommand createChild = new CreateChildContainerCommandImpl(this);
+    protected CreateChildContainerCommand createChildContainer = new CreateChildContainerCommandImpl(this);
     protected CreateInstanceCommand createInstance = new CreateInstanceCommandImpl(this);
+    protected DisposeContainerCommand disposeContainer = new DisposeContainerCommandImpl(this);
     protected GetInstanceCommand getInstance = new GetInstanceCommandImpl(this);
     protected HasInstanceOrMappingCommand hasInstanceOrMapping = new HasInstanceOrMappingCommandImpl(this);
     protected MapFactoryCommand mapFactory = new MapFactoryCommandImpl(this);
     protected MapInstanceCommand mapInstance = new MapInstanceCommandImpl(this);
     protected MapTypeCommand mapType = new MapTypeCommandImpl(this);
     protected RemoveInstanceAndMappingCommand removeInstanceAndMapping = new RemoveInstanceAndMappingCommandImpl(this);
-    protected ResetContainerCommand resetContainer = new ResetContainerCommandImpl(this);
     protected SetParentContainerCommand setParentContainer = new SetParentContainerCommandImpl(this);
     protected ValidateContainerCommand validateContainer = new ValidateContainerCommandImpl(this);
 
@@ -69,7 +69,7 @@ public class CommandContainer implements CheflingContainer {
     //----------------------------------------------------------------------------------------------
 
     public CommandContainer() {
-        resetContainer();
+        initializeContainer();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -88,7 +88,12 @@ public class CommandContainer implements CheflingContainer {
 
     @Override
     public CheflingContainer createChildContainer() {
-        return createChild.createChildContainer();
+        return createChildContainer.createChildContainer();
+    }
+
+    @Override
+    public void disposeContainer() {
+        disposeContainer.disposeContainer();
     }
 
     @Override
@@ -122,11 +127,6 @@ public class CommandContainer implements CheflingContainer {
     }
 
     @Override
-    public void resetContainer() {
-        resetContainer.resetContainer();
-    }
-
-    @Override
     public void setParentContainer(CheflingContainer container) {
         setParentContainer.setParentContainer(container);
     }
@@ -147,6 +147,15 @@ public class CommandContainer implements CheflingContainer {
      */
     protected void addContainerListeners(Set<CheflingContainerListener> containerListeners) {
         this.containerListeners.addAll(containerListeners);
+    }
+
+    /**
+     * Initialize the container.
+     */
+    protected void initializeContainer() {
+        // set references to current container instance
+        instances.put(CheflingContainer.class, this);
+        instances.put(CommandContainer.class, this);
     }
 
 }
