@@ -35,4 +35,16 @@ public final class Chefling {
         return CommandContainerBuilder.createContainer();
     }
 
+    /**
+     * Creates a new container using the provided builder, validates the container configuration and
+     * disposes the container.
+     *
+     * @param builder The builder instance to create the container.
+     */
+    public static void validateBuilderAndContainer(CheflingBuilder builder) {
+        CheflingContainer container = builder.buildContainer();
+        container.validateContainer();
+        container.disposeContainer();
+    }
+
 }

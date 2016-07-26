@@ -8,9 +8,9 @@ import com.cookingfox.chefling.api.CheflingLifecycle;
  */
 public class RequiresProperErrorMessage {
 
-    // package-level constructor
-    RequiresProperErrorMessage() {
-    }
+    //----------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    //----------------------------------------------------------------------------------------------
 
     // unresolvable parameters: from `java.` package
     public RequiresProperErrorMessage(String string, Object object) {
@@ -18,6 +18,25 @@ public class RequiresProperErrorMessage {
 
     // unresolvable parameters: from Chefling package
     public RequiresProperErrorMessage(CheflingLifecycle lifecycle, CheflingFactory factory) {
+    }
+
+    // dependency on enum
+    public RequiresProperErrorMessage(OneValueEnum oneValueEnum) {
+    }
+
+    // dependency on member class
+    public RequiresProperErrorMessage(MemberClass memberClass) {
+    }
+
+    // package-level constructor
+    RequiresProperErrorMessage() {
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // MEMBER CLASSES
+    //----------------------------------------------------------------------------------------------
+
+    public class MemberClass {
     }
 
 }

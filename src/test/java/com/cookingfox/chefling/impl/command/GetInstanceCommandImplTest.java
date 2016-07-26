@@ -167,6 +167,28 @@ public class GetInstanceCommandImplTest extends AbstractTest {
     }
 
     @Test
+    public void should_call_lifecycle_initialize_of_mapped_instance() throws Exception {
+        LifecycleWithCallLog lifecycleWithCallLog = new LifecycleWithCallLog();
+
+        container.mapInstance(LifecycleWithCallLog.class, lifecycleWithCallLog);
+
+        LifecycleWithCallLog result = container.getInstance(LifecycleWithCallLog.class);
+
+        assertSame(lifecycleWithCallLog, result);
+        assertTrue(lifecycleWithCallLog.initializeCalls.size() == 1);
+    }
+
+    @Test
+    public void should_call_lifecycle_initialize_of_saved_instance_only_once() throws Exception {
+        // call a few times
+        container.getInstance(LifecycleWithCallLog.class);
+        container.getInstance(LifecycleWithCallLog.class);
+        LifecycleWithCallLog result = container.getInstance(LifecycleWithCallLog.class);
+
+        assertTrue(result.initializeCalls.size() == 1);
+    }
+
+    @Test
     public void should_pass_concurrency_test() {
         Runnable test = new Runnable() {
             @Override

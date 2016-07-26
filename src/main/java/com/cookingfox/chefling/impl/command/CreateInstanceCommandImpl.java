@@ -22,7 +22,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
     /**
      * Cache for selected constructor + parameter types, since this is an expensive operation.
      */
-    protected final static LinkedHashMap<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
+    protected final static Map<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -152,8 +152,8 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         Map<Integer, List<ResolvabilityResult>> resultMap = buildResultMap(constructors);
 
         // select resolvable constructor
-        for (Map.Entry<Integer, List<ResolvabilityResult>> entry : resultMap.entrySet()) {
-            for (ResolvabilityResult result : entry.getValue()) {
+        for (List<ResolvabilityResult> resultList : resultMap.values()) {
+            for (ResolvabilityResult result : resultList) {
                 if (result.isResolvable()) {
                     // constructor is resolvable: return it
                     return result.constructor;
@@ -232,22 +232,20 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
      * @return The error message.
      */
     protected String buildErrorMessage(Class type, Map<Integer, List<ResolvabilityResult>> resultMap) {
-        // build error message
         StringBuilder errorBuilder = new StringBuilder();
         errorBuilder.append("it does not have constructors that are resolvable by the container:\n\n");
 
-        Iterator iterator = resultMap.entrySet().iterator();
+        Iterator<List<ResolvabilityResult>> iterator = resultMap.values().iterator();
 
         while (iterator.hasNext()) {
-            // noinspection unchecked
-            Map.Entry<Integer, List<ResolvabilityResult>> entry = (Map.Entry) iterator.next();
-            List<ResolvabilityResult> resultList = entry.getValue();
+            List<ResolvabilityResult> resultList = iterator.next();
+            int totalResults = resultList.size();
 
             // add error report entry for every resolvability result
-            for (int i = 0; i < resultList.size(); i++) {
+            for (int i = 0; i < totalResults; i++) {
                 addErrorReportEntry(errorBuilder, resultList.get(i), type);
 
-                if (i < resultList.size() - 1) {
+                if (i < totalResults - 1) {
                     errorBuilder.append("\n");
                 }
             }
@@ -255,8 +253,6 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
             if (iterator.hasNext()) {
                 errorBuilder.append("\n");
             }
-
-            iterator.remove();
         }
 
         return errorBuilder.toString();
@@ -274,7 +270,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         String modifierName = Modifier.toString(result.getModifiers());
 
         if (modifierName.isEmpty()) {
-            modifierName = "non-public";
+            modifierName = "package-level";
         }
 
         errorBuilder.append(String.format("[%s] %s ( ", modifierName, type.getSimpleName()));
@@ -295,11 +291,11 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         errorBuilder.append(" )\n");
 
         if (!result.isPublic()) {
-            errorBuilder.append(String.format("The constructor is %s\n", modifierName));
+            errorBuilder.append(String.format("The constructor has %s access.\n", modifierName));
         } else if (!result.unresolvable.isEmpty()) {
             // loop through unresolvable parameters and print their exception messages
             for (UnresolvableParameter notResolvable : result.unresolvable) {
-                errorBuilder.append(String.format("Parameter #%d: %s\n",
+                errorBuilder.append(String.format("Parameter #%d: %s.\n",
                         notResolvable.parameterIndex + 1, notResolvable.exception.getMessage()));
             }
         }

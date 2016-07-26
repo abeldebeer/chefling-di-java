@@ -37,13 +37,9 @@ public class GetInstanceCommandImpl extends AbstractCommand implements GetInstan
     public <T> T getInstance(Class<T> type) {
         assertNonNull(type, "type");
 
-        CommandContainer existingOwner = findOneWithInstanceOrMapping(_container, type);
+        CommandContainer owner = findOneWithInstanceOrMapping(_container, type);
 
-        if (existingOwner == null) {
-            return createInstance(type);
-        }
-
-        return useMapping(existingOwner, type);
+        return owner == null ? createInstance(type) : useOwnerInstanceOrMapping(owner, type);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -135,20 +131,22 @@ public class GetInstanceCommandImpl extends AbstractCommand implements GetInstan
      * @throws ContainerException when the instance could not be created.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T useMapping(CommandContainer owner, Class<T> type) {
-        Object mapping = findInstanceOrMapping(owner, type);
+    protected <T> T useOwnerInstanceOrMapping(CommandContainer owner, Class<T> type) {
+        T instance = (T) owner.instances.get(type);
 
-        if (type.isInstance(mapping)) {
-            // existing mapping is instance: save on mapping owner
-            owner.instances.put(type, mapping);
+        // saved instance: return it
+        if (instance != null) {
+            return instance;
+        }
 
-            return (T) mapping;
-        } else if (mapping instanceof Class) {
-            // existing mapping is another type: use it to get the instance
+        Object mapping = owner.mappings.get(type);
+
+        // existing mapping is another type: use it to get the instance
+        if (mapping instanceof Class) {
             return getInstance((Class<T>) mapping);
         }
 
-        // create the instance
+        // no existing instance or mapping: create a new instance
         return createInstance(type);
     }
 
