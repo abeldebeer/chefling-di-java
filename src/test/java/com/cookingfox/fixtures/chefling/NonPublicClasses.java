@@ -5,10 +5,17 @@ package com.cookingfox.fixtures.chefling;
  */
 public class NonPublicClasses {
 
+    static class PackageLevelClass {
+    }
+
     private static class PrivateClass {
     }
 
     protected static class ProtectedClass {
+    }
+
+    public static Class getPackageLevelClass() {
+        return PackageLevelClass.class;
     }
 
     public static Class getPrivateClass() {

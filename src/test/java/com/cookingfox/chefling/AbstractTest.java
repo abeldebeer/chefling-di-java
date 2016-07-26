@@ -51,6 +51,7 @@ public abstract class AbstractTest {
             SimpleJavaFileObject.class,
             ExampleAnnotation.class,
             boolean.class,
+            NonPublicClasses.getPackageLevelClass(),
             NonPublicClasses.getPrivateClass(),
             NonPublicClasses.getProtectedClass(),
             HasMember.getMemberClass(),
@@ -76,6 +77,7 @@ public abstract class AbstractTest {
         notAllowedInstances.put(HashMap.class, getMock(HashMap.class));
         notAllowedInstances.put(SimpleJavaFileObject.class, getMock(SimpleJavaFileObject.class));
         notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
+        notAllowedInstances.put(NonPublicClasses.getPackageLevelClass(), getMock(NonPublicClasses.getPackageLevelClass()));
         notAllowedInstances.put(NonPublicClasses.getPrivateClass(), getMock(NonPublicClasses.getPrivateClass()));
         notAllowedInstances.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()));
         notAllowedInstances.put(HasMember.getMemberClass(), getMock(HasMember.getMemberClass()));
