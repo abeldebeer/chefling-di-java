@@ -62,9 +62,9 @@ and add the project declaration to your `pom.xml`:
 
 - Dependency injection without annotations: keeps your code clean.
 - Automatic resolving of dependencies using reflection and constructor injection.
-- [Lifecycle](#lifecycle) hooks for the creation and destruction phases.
+- [Lifecycle](#lifecycle) hooks for the instance creation and destruction phases.
 - [Builder](#builder) to control configuration and initialization order.
-- [Modular container configurations](#Modular-container-configurations) support through composite
+- [Modular container configurations](#modular-container-configurations) support through composite
 containers.
 
 ## Usage
@@ -86,7 +86,7 @@ This provides you with an instance of the default container implementation.
 It is also possible to use the designated Builder class:
 
 ```java
-CheflingContainer container = Chefling.builder().addConfig(/* (omitted) */).buildContainer();
+CheflingContainer container = Chefling.createBuilder().buildContainer();
 ```
 
 See [Builder](#builder) for more information. Also see
@@ -163,6 +163,13 @@ MyInterface resolved = container.getInstance(MyInterface.class);
 If the `Factory` returns null or something that is not an instance of the expected type, an 
 exception will be thrown.
 
+### Clean up: dispose container
+
+It is important to clean up your object references at the end of your application (segment) to avoid
+memory leaks. Use `CheflingContainer#disposeContainer()` to remove all mappings, created instances
+and other references. Please note that after this call, the container will be in an unusable state,
+so you should re-create it.
+
 ### Lifecycle
 
 The [`CheflingLifecycle` interface](src/main/java/com/cookingfox/chefling/api/CheflingLifecycle.java)
@@ -203,7 +210,7 @@ CheflingConfig initAppConfig = new CheflingConfig() {
     }
 };
 
-CheflingContainer container = new Chefling.Builder()
+CheflingContainer container = Chefling.createBuilder()
     .addConfig(libraryConfig)
     .addConfig(initAppConfig)
     .buildContainer();
@@ -216,6 +223,27 @@ modularity.
 The [`CheflingBuilder`](src/main/java/com/cookingfox/chefling/api/CheflingBuilder.java) also
 contains a `removeConfig()` method which can be used to override a `CheflingConfig` (for example
 for testing) before it is built.
+
+#### Builder and container event listener
+
+Apart from the "instance [lifecycle](#lifecycle)", the container has its own lifecycle too: the
+`CheflingBuilder` creates a container, configures it, and later the container can be disposed using
+`CheflingContainer#disposeContainer()`. The `CheflingContainerListener` provides the following hooks
+to which you can respond:
+
+- `preBuilderApply`: Triggered by `CheflingBuilder#buildContainer()`. Called before all added
+`CheflingConfig` instances are applied. At this point the config mappings are not yet available.
+- `postBuilderApply`: Called after the `CheflingBuilder` applied all added `CheflingConfig`
+instances. At this point all config mappings are available.
+- `preContainerDispose`: Triggered by `CheflingContainer#disposeContainer()`. Called before the
+container disposes all stored instances and clears all mappings. At this point all instances and
+mappings are still available.
+- `postContainerDispose`: Called after the container disposed all stored instances and cleared all
+mappings. At this point the container is in a completely disposed state, which means it should not
+be accessed anymore.
+
+If you do not want to implement all listener methods, you can also extend
+`DefaultCheflingContainerListener` and only override the methods you are interested in.
 
 ### Modular container configurations
 
@@ -264,7 +292,11 @@ Since dependencies are resolved at runtime, it can be useful to make sure your c
 correct during the development phase. To have Chefling resolve all mappings, use the 
 `CheflingContainer#validateContainer()` method. This will bring any configuration issues to light.
 Note that resolving the full object graph is an expensive operation, so it should only be used
-during development.
+during development as a test.
+
+To validate the full container initialization and destruction flow, you can use
+`Chefling#validateBuilderAndContainer(CheflingBuilder)` which builds the container, validates it
+and then disposes it.
 
 __WARNING: Make sure to remove this call for production builds!__
 
