@@ -4,7 +4,6 @@ import com.cookingfox.chefling.api.CheflingFactory;
 import com.cookingfox.chefling.api.CheflingLifecycle;
 import com.cookingfox.chefling.api.command.CreateInstanceCommand;
 import com.cookingfox.chefling.api.exception.*;
-import com.cookingfox.chefling.impl.helper.ConstructorParameters;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -22,7 +21,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
     /**
      * Cache for selected constructor + parameter types, since this is an expensive operation.
      */
-    protected final static Map<Class, ConstructorParameters> TYPE_CACHE = new LinkedHashMap<>();
+    protected final static Map<Class, ConstructorParameters> PARAM_CACHE = new LinkedHashMap<>();
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -56,7 +55,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
             instance = resolveUsingFactory((CheflingFactory<T>) existing, type);
         } else {
             // no existing mapping or instance: create instance using provided type
-            instance = constructInstance(type);
+            instance = createInstanceUsingCache(type);
         }
 
         // call life cycle initialize
@@ -77,15 +76,15 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
      * @param type The type to instantiate.
      * @param <T>  Ensures the returned object is cast to the expected type.
      * @return New instance of the type.
-     * @throws ContainerException
+     * @throws ContainerException when a new instance can not be constructed.
      */
-    protected <T> T constructInstance(Class<T> type) {
+    protected <T> T createInstanceUsingCache(Class<T> type) {
         // cached constructor + parameters for this type
-        ConstructorParameters cached = TYPE_CACHE.get(type);
+        ConstructorParameters cached = PARAM_CACHE.get(type);
 
         // resolve using cache
         if (cached != null) {
-            return newInstance(type, cached.constructor, cached.parameterTypes);
+            return createNewInstance(type, cached.constructor, cached.parameterTypes);
         }
 
         // determine default constructor + parameters
@@ -93,10 +92,10 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         Class[] parameterTypes = constructor.getParameterTypes();
 
         // create instance
-        T instance = newInstance(type, constructor, parameterTypes);
+        T instance = createNewInstance(type, constructor, parameterTypes);
 
         // success: cache constructor + parameters for this type
-        TYPE_CACHE.put(type, new ConstructorParameters(constructor, parameterTypes));
+        PARAM_CACHE.put(type, new ConstructorParameters(constructor, parameterTypes));
 
         return instance;
     }
@@ -109,10 +108,10 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
      * @param parameterTypes The parameter types of the constructor.
      * @param <T>            Ensures the returned object is cast to the expected type.
      * @return New instance of the type.
-     * @throws ContainerException
+     * @throws ContainerException when an error occurs.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T newInstance(Class<T> type, Constructor constructor, Class[] parameterTypes)
+    protected <T> T createNewInstance(Class<T> type, Constructor constructor, Class[] parameterTypes)
             throws ContainerException {
         Object[] parameters = new Object[parameterTypes.length];
 
@@ -134,7 +133,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
      *
      * @param type The type to get the constructor for.
      * @return Constructor, if a resolvable one can be found.
-     * @throws TypeNotAllowedException
+     * @throws TypeNotAllowedException when the type is not instantiable.
      */
     protected Constructor getDefaultConstructor(Class type) throws TypeNotAllowedException {
         isInstantiable(type);
@@ -308,7 +307,7 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
      * @param type    The expected type that the factory should return.
      * @param <T>     Ensures the return value is cast to expected type.
      * @return The created instance.
-     * @throws ContainerException
+     * @throws ContainerException when the factory throws or returns an invalid value.
      */
     protected <T> T resolveUsingFactory(CheflingFactory<T> factory, Class<T> type) {
         T instance = factory.createInstance(_container);
@@ -327,16 +326,16 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
     //----------------------------------------------------------------------------------------------
 
     /**
-     * Represents information for an unresolvable constructor parameter.
+     * Wraps a type's selected constructor + parameter types, so it can be cached.
      */
-    protected static class UnresolvableParameter {
+    protected static class ConstructorParameters {
 
-        protected final int parameterIndex;
-        protected final Exception exception;
+        public final Constructor constructor;
+        public final Class[] parameterTypes;
 
-        protected UnresolvableParameter(int parameterIndex, Exception exception) {
-            this.parameterIndex = parameterIndex;
-            this.exception = exception;
+        public ConstructorParameters(Constructor constructor, Class[] parameterTypes) {
+            this.constructor = constructor;
+            this.parameterTypes = parameterTypes;
         }
 
     }
@@ -365,6 +364,21 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
 
         protected boolean isResolvable() {
             return isPublic() && unresolvable.isEmpty();
+        }
+
+    }
+
+    /**
+     * Represents information for an unresolvable constructor parameter.
+     */
+    protected static class UnresolvableParameter {
+
+        protected final int parameterIndex;
+        protected final Exception exception;
+
+        protected UnresolvableParameter(int parameterIndex, Exception exception) {
+            this.parameterIndex = parameterIndex;
+            this.exception = exception;
         }
 
     }

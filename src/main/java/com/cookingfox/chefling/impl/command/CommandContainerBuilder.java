@@ -37,6 +37,8 @@ public class CommandContainerBuilder implements CheflingBuilder {
 
     /**
      * Creates a new instance of the default Chefling {@link CheflingContainer} implementation.
+     *
+     * @return A new container instance.
      */
     public static CheflingContainer createContainer() {
         return new CommandContainer();

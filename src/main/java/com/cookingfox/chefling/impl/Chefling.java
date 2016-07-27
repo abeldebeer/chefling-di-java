@@ -23,6 +23,8 @@ public final class Chefling {
 
     /**
      * Creates a new Chefling Builder.
+     *
+     * @return A new Chefling Builder.
      */
     public static CheflingBuilder builder() {
         return new CommandContainerBuilder();
@@ -30,6 +32,8 @@ public final class Chefling {
 
     /**
      * Creates a new instance of the default Chefling {@link CheflingContainer} implementation.
+     *
+     * @return A new instance of the default Chefling {@link CheflingContainer} implementation.
      */
     public static CheflingContainer createContainer() {
         return CommandContainerBuilder.createContainer();

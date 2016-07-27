@@ -146,32 +146,32 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
 
     @Test
     public void should_use_type_cache() throws Exception {
-        assertFalse(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(OneParamConstructor.class));
-        assertFalse(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(NoConstructor.class));
+        assertFalse(CreateInstanceCommandImpl.PARAM_CACHE.containsKey(OneParamConstructor.class));
+        assertFalse(CreateInstanceCommandImpl.PARAM_CACHE.containsKey(NoConstructor.class));
 
         // depends on `NoConstructor`
         container.createInstance(OneParamConstructor.class);
 
-        assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(OneParamConstructor.class));
-        assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(NoConstructor.class));
+        assertTrue(CreateInstanceCommandImpl.PARAM_CACHE.containsKey(OneParamConstructor.class));
+        assertTrue(CreateInstanceCommandImpl.PARAM_CACHE.containsKey(NoConstructor.class));
 
         // use cached constructor parameters
         container.createInstance(OneParamConstructor.class);
     }
 
     //----------------------------------------------------------------------------------------------
-    // TESTS: constructInstance
+    // TESTS: createInstanceUsingCache
     //----------------------------------------------------------------------------------------------
 
     @Test
     public void constructInstance_should_return_instance_created_with_type_cache() throws Exception {
         CreateInstanceCommandImpl createInstanceCommand = new CreateInstanceCommandImpl(container);
 
-        createInstanceCommand.constructInstance(NoConstructor.class);
+        createInstanceCommand.createInstanceUsingCache(NoConstructor.class);
 
-        assertTrue(CreateInstanceCommandImpl.TYPE_CACHE.containsKey(NoConstructor.class));
+        assertTrue(CreateInstanceCommandImpl.PARAM_CACHE.containsKey(NoConstructor.class));
 
-        NoConstructor createdWithCache = createInstanceCommand.constructInstance(NoConstructor.class);
+        NoConstructor createdWithCache = createInstanceCommand.createInstanceUsingCache(NoConstructor.class);
 
         assertNotNull(createdWithCache);
     }

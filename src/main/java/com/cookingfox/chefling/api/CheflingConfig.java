@@ -13,7 +13,7 @@ public interface CheflingConfig {
      * Apply a configuration to the container.
      *
      * @param container The container instance that is being configured.
-     * @throws ContainerException
+     * @throws ContainerException when an error occurs.
      */
     void apply(CheflingContainer container);
 

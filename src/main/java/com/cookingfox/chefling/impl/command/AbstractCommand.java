@@ -50,7 +50,7 @@ public abstract class AbstractCommand {
      *
      * @param type  The type to map.
      * @param value The value for the mapping.
-     * @throws ContainerException
+     * @throws ContainerException when an error occurs.
      */
     protected void addMapping(Class type, Object value) {
         isAllowed(type);
@@ -69,7 +69,7 @@ public abstract class AbstractCommand {
      *
      * @param value The value to check.
      * @param name  The name of the variable.
-     * @throws NullValueNotAllowedException
+     * @throws NullValueNotAllowedException when the value is null.
      */
     protected void assertNonNull(Object value, String name) throws NullValueNotAllowedException {
         if (value == null) {
@@ -82,7 +82,7 @@ public abstract class AbstractCommand {
      * instance. Throws when there is a duplicate mapping or instance.
      *
      * @param container The new container.
-     * @throws ContainerException
+     * @throws ContainerException there is a configuration conflict.
      */
     protected void checkMappingConflicts(CommandContainer container) {
         for (Class type : compileTypes(container)) {
@@ -235,7 +235,7 @@ public abstract class AbstractCommand {
      * Is this type allowed to be mapped in the container?
      *
      * @param type The type to validate.
-     * @throws TypeNotAllowedException
+     * @throws TypeNotAllowedException when the type is not allowed.
      */
     protected void isAllowed(Class type) throws TypeNotAllowedException {
         if (isInPackage(type, PACKAGE_JAVAX)) {
@@ -263,7 +263,7 @@ public abstract class AbstractCommand {
      * Can this type be instantiated?
      *
      * @param type The type to validate.
-     * @throws TypeNotAllowedException
+     * @throws TypeNotAllowedException when the type is not allowed or not instantiable.
      */
     protected void isInstantiable(Class type) throws TypeNotAllowedException {
         isAllowed(type);

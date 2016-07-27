@@ -46,6 +46,9 @@ public class MapFactoryCommandImpl extends AbstractCommand implements MapFactory
 
     /**
      * Attempt to extract the generic ("parameterized") type from the factory.
+     *
+     * @param factoryClass The class of the Chefling factory.
+     * @return The generic type of the Chefling factory.
      */
     @SuppressWarnings("unchecked")
     protected Class getGenericType(Class<? extends CheflingFactory> factoryClass) {

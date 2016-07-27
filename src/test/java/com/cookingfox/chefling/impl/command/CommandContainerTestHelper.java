@@ -9,7 +9,7 @@ public class CommandContainerTestHelper {
      * Clears the type cache, to make sure the command container is clean for every test.
      */
     public static void CLEAR_TYPE_CACHE() {
-        CreateInstanceCommandImpl.TYPE_CACHE.clear();
+        CreateInstanceCommandImpl.PARAM_CACHE.clear();
     }
 
 }
