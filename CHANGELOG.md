@@ -1,5 +1,16 @@
 # Chefling DI for Java: Change Log
 
+## [7.0.0](../../tree/v7.0.0) (2016-07-27)
+
+- Introduces `CheflingContainerListener` with methods for hooking into the configuration and
+disposal phases of the container.
+- Renames `CheflingContainer#resetContainer()` to `CheflingContainer#disposeContainer()` to better
+indicate the effect of the operation.
+- Renames `Chefling#builder()` to `Chefling#createBuilder()`.
+- `CheflingContainer#disposeContainer()` also clears container children and parent references.
+- Adds `Chefling#validateBuilderAndContainer()` helper method for validating the complete container
+flow, from builder configuration to container disposal.
+
 ## [6.2.1](../../tree/v6.2.1) (2016-07-08)
 
 - Fixes factory generic type validation with more complex factory object graph.
