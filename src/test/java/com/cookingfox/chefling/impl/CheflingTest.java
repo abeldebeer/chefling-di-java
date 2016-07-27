@@ -40,7 +40,7 @@ public class CheflingTest {
 
     @Test
     public void builder_should_return_new_builder() throws Exception {
-        assertTrue(Chefling.builder() instanceof CommandContainerBuilder);
+        assertTrue(Chefling.createBuilder() instanceof CommandContainerBuilder);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public class CheflingTest {
 
         final Collection<ContainerEventsEnum> actualEvents = new LinkedList<>();
 
-        CheflingBuilder builder = Chefling.builder()
+        CheflingBuilder builder = Chefling.createBuilder()
                 .addConfig(new CheflingConfig() {
                     @Override
                     public void apply(CheflingContainer container) {

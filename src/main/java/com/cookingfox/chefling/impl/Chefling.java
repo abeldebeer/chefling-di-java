@@ -26,7 +26,7 @@ public final class Chefling {
      *
      * @return A new Chefling Builder.
      */
-    public static CheflingBuilder builder() {
+    public static CheflingBuilder createBuilder() {
         return new CommandContainerBuilder();
     }
 
