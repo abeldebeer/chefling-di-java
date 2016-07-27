@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Package info -->
@@ -75,22 +77,22 @@
         <java.version>1.7</java.version>
 
         <!-- Plugin versions -->
+        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-release-plugin.version>2.5.1</maven-release-plugin.version>
-        <maven-javadoc-plugin.version>2.10.2</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
 
         <!-- Dependency versions -->
         <junit.version>4.12</junit.version>
-        <mockito.version>2.0.31-beta</mockito.version>
+        <mockito.version>2.0.90-beta</mockito.version>
     </properties>
 
     <!-- Build -->
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -163,4 +165,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
 </project>
