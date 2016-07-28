@@ -11,3 +11,5 @@ Take the following steps to release a new version of the library to Bintray (jCe
     c. Publish to Maven Central by clicking the "Maven Central" link.
 5. Describe the changes of this release in the [CHANGELOG](../CHANGELOG.md).
 6. Update the version number in the [README](../README.md).
+7. Push changes to GitHub.
+8. Add release notes on GitHub, which is typically the same as the CHANGELOG additions.
