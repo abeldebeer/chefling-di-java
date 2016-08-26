@@ -13,8 +13,4 @@ public class ContainerBuilderException extends RuntimeException {
         super(message, cause);
     }
 
-    public ContainerBuilderException(Throwable cause) {
-        super(cause);
-    }
-
 }

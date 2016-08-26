@@ -9,10 +9,6 @@ public class ContainerException extends RuntimeException {
         super(message);
     }
 
-    public ContainerException(Throwable cause) {
-        super(cause);
-    }
-
     public ContainerException(String message, Throwable cause) {
         super(message, cause);
     }
