@@ -21,7 +21,7 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
 
     @Test
     public void should_throw_if_type_not_instantiable() {
-        for (Class type : notInstantiableTypes) {
+        for (Class type : NOT_INSTANTIABLE_TYPES) {
             try {
                 container.createInstance(type);
 
@@ -121,7 +121,7 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
     }
 
     /**
-     * Note: this test is just for checking the exception output.
+     * Note: this test is only here to inspect and improve the error output.
      */
     @Test
     public void should_provide_expected_stack_trace() throws Exception {
@@ -133,7 +133,7 @@ public class CreateInstanceCommandImplTest extends AbstractTest {
     }
 
     /**
-     * Note: this test is just for checking the exception output.
+     * Note: this test is only here to inspect and improve the error output.
      */
     @Test
     public void should_create_proper_error_message() throws Exception {

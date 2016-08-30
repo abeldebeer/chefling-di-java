@@ -290,8 +290,10 @@ public class CreateInstanceCommandImpl extends AbstractCommand implements Create
         errorBuilder.append(" )\n");
 
         if (!result.isPublic()) {
-            errorBuilder.append(String.format("The constructor has %s access.\n", modifierName));
-        } else if (!result.unresolvable.isEmpty()) {
+            errorBuilder.append(String.format("The constructor has %s access - must be public.\n", modifierName));
+        }
+
+        if (!result.unresolvable.isEmpty()) {
             // loop through unresolvable parameters and print their exception messages
             for (UnresolvableParameter notResolvable : result.unresolvable) {
                 errorBuilder.append(String.format("Parameter #%d: %s.\n",

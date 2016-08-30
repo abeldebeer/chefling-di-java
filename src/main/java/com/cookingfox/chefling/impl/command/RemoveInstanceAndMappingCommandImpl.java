@@ -73,11 +73,9 @@ public class RemoveInstanceAndMappingCommandImpl extends AbstractCommand impleme
         // call destroy method for life cycle objects
         lifecycleDispose(typeOwner.instances.get(type));
 
-        synchronized (_container) {
-            // remove type from maps
-            typeOwner.instances.remove(type);
-            typeOwner.mappings.remove(type);
-        }
+        // remove type from maps
+        typeOwner.instances.remove(type);
+        typeOwner.mappings.remove(type);
     }
 
     /**

@@ -11,6 +11,7 @@ import com.cookingfox.chefling.impl.helper.DefaultCheflingContainerListener;
 import com.cookingfox.fixtures.chefling.AddToListConfig;
 import com.cookingfox.fixtures.chefling.NoConstructor;
 import com.cookingfox.fixtures.chefling.NoopConfig;
+import com.cookingfox.fixtures.chefling.NoopContainer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -100,6 +101,11 @@ public class CommandContainerBuilderTest {
     @Test(expected = NullPointerException.class)
     public void applyToContainer_should_throw_if_container_null() throws Exception {
         builder.applyToContainer(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void applyToContainer_should_throw_if_not_command_container() throws Exception {
+        builder.applyToContainer(new NoopContainer());
     }
 
     @Test

@@ -74,6 +74,10 @@ public class CommandContainerBuilder implements CheflingBuilder {
     public CheflingContainer applyToContainer(CheflingContainer container) {
         requireNonNull(container, "Container can not be null");
 
+        if (!(container instanceof CommandContainer)) {
+            throw new IllegalArgumentException("Expected a `CommandContainer` instance");
+        }
+
         // container listener: pre builder apply
         for (CheflingContainerListener containerListener : containerListeners) {
             containerListener.preBuilderApply(container);
@@ -94,9 +98,7 @@ public class CommandContainerBuilder implements CheflingBuilder {
         }
 
         // add container listeners so they can be used to during the dispose phase
-        if (container instanceof CommandContainer) {
-            ((CommandContainer) container).addContainerListeners(containerListeners);
-        }
+        ((CommandContainer) container).addContainerListeners(containerListeners);
 
         return container;
     }

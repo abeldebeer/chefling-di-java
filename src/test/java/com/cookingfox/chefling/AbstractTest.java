@@ -13,8 +13,9 @@ import org.mockito.Mockito;
 
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -37,17 +38,17 @@ public abstract class AbstractTest {
     }
 
     //----------------------------------------------------------------------------------------------
-    // HELPERS
+    // CONSTANTS
     //----------------------------------------------------------------------------------------------
 
     /**
      * Examples of types that are not instantiable.
      */
-    protected final Class[] notInstantiableTypes = {
+    protected static final Class[] NOT_INSTANTIABLE_TYPES = {
             Object.class,
             Class.class,
             String.class,
-            HashMap.class,
+            Map.class,
             SimpleJavaFileObject.class,
             ExampleAnnotation.class,
             boolean.class,
@@ -67,14 +68,23 @@ public abstract class AbstractTest {
     };
 
     /**
-     * Returns a map of classes that are not allowed and their instances.
+     * Examples of types that are not allowed, with instances.
      */
-    protected HashMap<Class, Object> getNotAllowedInstances() {
-        HashMap<Class, Object> notAllowedInstances = new HashMap<>();
+    protected final static Map<Class, Object> NOT_ALLOWED_INSTANCES;
+
+    /**
+     * Examples of types that are not allowed, with sub types.
+     */
+    protected final static Map<Class, Class> NOT_ALLOWED_SUB_TYPES;
+
+    static {
+        /* NOT ALLOWED INSTANCES */
+
+        Map<Class, Object> notAllowedInstances = new LinkedHashMap<>();
         notAllowedInstances.put(Object.class, new Object());
         notAllowedInstances.put(Class.class, Object.class);
         notAllowedInstances.put(String.class, "");
-        notAllowedInstances.put(HashMap.class, getMock(HashMap.class));
+        notAllowedInstances.put(Map.class, getMock(Map.class));
         notAllowedInstances.put(SimpleJavaFileObject.class, getMock(SimpleJavaFileObject.class));
         notAllowedInstances.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class));
         notAllowedInstances.put(NonPublicClasses.getPackageLevelClass(), getMock(NonPublicClasses.getPackageLevelClass()));
@@ -82,8 +92,8 @@ public abstract class AbstractTest {
         notAllowedInstances.put(NonPublicClasses.getProtectedClass(), getMock(NonPublicClasses.getProtectedClass()));
         notAllowedInstances.put(HasMember.getMemberClass(), getMock(HasMember.getMemberClass()));
         notAllowedInstances.put(OneValueEnum.class, OneValueEnum.VALUE);
-        notAllowedInstances.put(Throwable.class, new Throwable());
-        notAllowedInstances.put(ContainerException.class, new ContainerException(""));
+        notAllowedInstances.put(Throwable.class, new Throwable("example"));
+        notAllowedInstances.put(ContainerException.class, new ContainerException("example"));
         notAllowedInstances.put(CheflingContainer.class, new CommandContainer());
         notAllowedInstances.put(CheflingFactory.class, getMock(CheflingFactory.class));
         notAllowedInstances.put(CheflingLifecycle.class, getMock(CheflingLifecycle.class));
@@ -91,16 +101,13 @@ public abstract class AbstractTest {
         // Note: can not use boolean in this context, because it will fail the `instanceof` test
         // notAllowedInstances.put(boolean.class, false);
 
-        return notAllowedInstances;
-    }
+        NOT_ALLOWED_INSTANCES = Collections.unmodifiableMap(notAllowedInstances);
 
-    /**
-     * Returns a map of classes that are not allowed and their sub classes.
-     */
-    protected HashMap<Class, Class> getNotAllowedSubTypes() {
-        HashMap<Class, Class> notAllowedSubTypes = new HashMap<>();
+        /* NOT ALLOWED SUB TYPES */
+
+        Map<Class, Class> notAllowedSubTypes = new LinkedHashMap<>();
         notAllowedSubTypes.put(Object.class, getMock(Object.class).getClass());
-        notAllowedSubTypes.put(HashMap.class, LinkedHashMap.class);
+        notAllowedSubTypes.put(Map.class, LinkedHashMap.class);
         notAllowedSubTypes.put(JavaFileObject.class, SimpleJavaFileObject.class);
         notAllowedSubTypes.put(ExampleAnnotation.class, getMock(ExampleAnnotation.class).getClass());
         notAllowedSubTypes.put(Number.class, Integer.class);
@@ -118,10 +125,21 @@ public abstract class AbstractTest {
         // notAllowedSubTypes.put(String.class, getMock(String.class).getClass());
         // notAllowedSubTypes.put(OneValueEnum.class, getMock(OneValueEnum.class).getClass());
 
-        return notAllowedSubTypes;
+        NOT_ALLOWED_SUB_TYPES = Collections.unmodifiableMap(notAllowedSubTypes);
     }
 
-    protected Object getMock(Class aClass) {
+    //----------------------------------------------------------------------------------------------
+    // HELPERS
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a mock implementation of the provided class.
+     *
+     * @param aClass The class to mock.
+     * @param <T>    Indicates the concrete type.
+     * @return A mock implementation of the provided class.
+     */
+    protected static <T> T getMock(Class<T> aClass) {
         return Mockito.mock(aClass);
     }
 
@@ -131,7 +149,7 @@ public abstract class AbstractTest {
      * @param test       The test to execute
      * @param numThreads The number of threads to run this test on, concurrently
      */
-    protected void runConcurrencyTest(final Runnable test, int numThreads) {
+    protected static void runConcurrencyTest(final Runnable test, int numThreads) {
         final CountDownLatch latch = new CountDownLatch(1);
 
         Runnable testWrapper = new Runnable() {

@@ -86,37 +86,29 @@ public class GetInstanceCommandImpl extends AbstractCommand implements GetInstan
      */
     protected StringBuilder getDependencyTrace() {
         StringBuilder builder = new StringBuilder();
-        Class first = null;
-        Class previous = null;
+        Class first = currentlyResolving.getFirst();
+        Class previous = first;
 
-        for (Class current : currentlyResolving) {
-            // store first entry
-            if (first == null) {
-                first = current;
-            }
+        if (currentlyResolving.size() > 1) {
+            // start at second
+            for (int i = 1; i < currentlyResolving.size(); i++) {
+                Class current = currentlyResolving.get(i);
 
-            // set previous to current entry and re-run
-            if (previous == null) {
+                // add trace: previous > current
+                builder.append(previous.getName());
+                builder.append(" > ");
+                builder.append(current.getName());
+                builder.append("\n");
+
+                // previous is current
                 previous = current;
-                continue;
             }
-
-            // add trace: previous > current
-            builder.append(previous.getName());
-            builder.append(" > ");
-            builder.append(current.getName());
-            builder.append("\n");
-
-            // set previous to current
-            previous = current;
         }
 
         // add trace: previous (last) > first
-        if (previous != null) {
-            builder.append(previous.getName());
-            builder.append(" > ");
-            builder.append(first.getName());
-        }
+        builder.append(previous.getName());
+        builder.append(" > ");
+        builder.append(first.getName());
 
         return builder;
     }

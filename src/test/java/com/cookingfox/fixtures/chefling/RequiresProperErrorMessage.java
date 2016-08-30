@@ -28,6 +28,10 @@ public class RequiresProperErrorMessage {
     public RequiresProperErrorMessage(MemberClass memberClass) {
     }
 
+    // private and unresolvable
+    private RequiresProperErrorMessage(String string, CheflingLifecycle lifecycle) {
+    }
+
     // package-level constructor
     RequiresProperErrorMessage() {
     }

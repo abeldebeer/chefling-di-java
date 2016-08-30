@@ -216,4 +216,24 @@ public class GetInstanceCommandImplTest extends AbstractTest {
         }
     }
 
+    /**
+     * Note: this test is only here to inspect and improve the error output.
+     */
+    @Test
+    public void should_create_proper_error_message_circular() {
+        try {
+            container.getInstance(CircularSimple.A.class);
+
+            fail("Expected exception");
+        } catch (ContainerException e) {
+            // e.printStackTrace();
+
+            assertTrue(e.getMessage().contains(String.format("%s > %s",
+                    CircularSimple.A.class.getName(), CircularSimple.B.class.getName())));
+
+            assertTrue(e.getMessage().contains(String.format("%s > %s",
+                    CircularSimple.B.class.getName(), CircularSimple.A.class.getName())));
+        }
+    }
+
 }

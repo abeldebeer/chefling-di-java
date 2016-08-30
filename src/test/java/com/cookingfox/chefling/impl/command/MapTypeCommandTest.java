@@ -46,7 +46,7 @@ public class MapTypeCommandTest extends AbstractTest {
 
     @Test
     public void should_throw_if_base_type_not_allowed() throws Exception {
-        for (Map.Entry<Class, Class> entry : getNotAllowedSubTypes().entrySet()) {
+        for (Map.Entry<Class, Class> entry : NOT_ALLOWED_SUB_TYPES.entrySet()) {
             try {
                 container.mapType(entry.getKey(), entry.getValue());
 

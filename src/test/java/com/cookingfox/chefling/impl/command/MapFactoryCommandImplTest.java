@@ -44,7 +44,7 @@ public class MapFactoryCommandImplTest extends AbstractTest {
             }
         };
 
-        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
+        for (Map.Entry<Class, Object> entry : NOT_ALLOWED_INSTANCES.entrySet()) {
             try {
                 container.mapFactory(entry.getKey(), factory);
 

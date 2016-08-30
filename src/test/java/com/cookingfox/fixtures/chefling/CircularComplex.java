@@ -24,7 +24,7 @@ public class CircularComplex {
         }
     }
 
-    public static interface CInterface {
+    public interface CInterface {
     }
 
     public static class C implements CInterface {

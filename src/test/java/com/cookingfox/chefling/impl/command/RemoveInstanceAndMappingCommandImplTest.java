@@ -27,15 +27,18 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void should_stored_instance() throws Exception {
+    public void should_remove_stored_instance() throws Exception {
         container.getInstance(NoConstructor.class);
+
+        assertTrue(container.hasInstanceOrMapping(NoConstructor.class));
+
         container.removeInstanceAndMapping(NoConstructor.class);
 
         assertFalse(container.hasInstanceOrMapping(NoConstructor.class));
     }
 
     @Test
-    public void should_mapped_instance() throws Exception {
+    public void should_remove_mapped_instance() throws Exception {
         NoConstructor instance = new NoConstructor();
 
         container.mapInstance(NoConstructor.class, instance);
@@ -48,7 +51,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void should_subtype_mapping() throws Exception {
+    public void should_remove_subtype_mapping() throws Exception {
         container.mapType(NoMethodInterface.class, NoMethodImplementation.class);
 
         assertTrue(container.hasInstanceOrMapping(NoMethodInterface.class));
@@ -59,7 +62,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void should_factory_mapping() throws Exception {
+    public void should_remove_factory_mapping() throws Exception {
         CheflingFactory<NoConstructor> factory = new CheflingFactory<NoConstructor>() {
             @Override
             public NoConstructor createInstance(CheflingContainer container) {
@@ -92,7 +95,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void quadruply_mapped_types_top_should_top() throws Exception {
+    public void should_remove_top_for_quadruply_mapped_types_top() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
@@ -107,7 +110,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test(expected = RemoveTypeNotAllowedException.class)
-    public void quadruply_mapped_types_root_should_throw() throws Exception {
+    public void should_throw_for_remove_quadruply_mapped_types_root() throws Exception {
         container.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.mapType(QuadruplyTyped.C.class, QuadruplyTyped.D.class);
         container.mapType(QuadruplyTyped.B.class, QuadruplyTyped.C.class);
@@ -117,7 +120,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test(expected = RemoveTypeNotAllowedException.class)
-    public void quadruply_mapped_types_from_children_root_should_throw() throws Exception {
+    public void should_throw_for_remove_quadruply_mapped_types_children_root() throws Exception {
         CheflingContainer childA = new CommandContainer();
         childA.mapType(QuadruplyTyped.D.class, QuadruplyTyped.E.class);
         container.addChildContainer(childA);
@@ -138,7 +141,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void should_mapping_from_parent() throws Exception {
+    public void should_remove_mapping_from_parent() throws Exception {
         CheflingContainer parentContainer = new CommandContainer();
         parentContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.setParentContainer(parentContainer);
@@ -151,7 +154,7 @@ public class RemoveInstanceAndMappingCommandImplTest extends AbstractTest {
     }
 
     @Test
-    public void should_mapping_from_child() throws Exception {
+    public void should_remove_mapping_from_child() throws Exception {
         CheflingContainer childContainer = new CommandContainer();
         childContainer.mapType(NoMethodInterface.class, NoMethodImplementation.class);
         container.addChildContainer(childContainer);

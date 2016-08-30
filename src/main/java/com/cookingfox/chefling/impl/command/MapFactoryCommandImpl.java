@@ -56,7 +56,7 @@ public class MapFactoryCommandImpl extends AbstractCommand implements MapFactory
         Type[] genericInterfaces = factoryClass.getGenericInterfaces();
 
         // no generic interfaces: factory might be in super class
-        if (genericInterfaces == null || genericInterfaces.length == 0) {
+        if (genericInterfaces.length == 0) {
             Class superClass = factoryClass.getSuperclass();
 
             // super class is null or root class (Object)

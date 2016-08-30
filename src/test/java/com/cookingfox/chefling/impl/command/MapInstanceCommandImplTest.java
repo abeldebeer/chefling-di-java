@@ -30,7 +30,7 @@ public class MapInstanceCommandImplTest extends AbstractTest {
 
     @Test
     public void should_throw_if_type_not_allowed() {
-        for (Map.Entry<Class, Object> entry : getNotAllowedInstances().entrySet()) {
+        for (Map.Entry<Class, Object> entry : NOT_ALLOWED_INSTANCES.entrySet()) {
             try {
                 container.mapInstance(entry.getKey(), entry.getValue());
 
