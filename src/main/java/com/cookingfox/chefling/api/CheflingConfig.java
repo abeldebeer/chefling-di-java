@@ -1,6 +1,6 @@
 package com.cookingfox.chefling.api;
 
-import com.cookingfox.chefling.api.exception.ContainerException;
+import com.cookingfox.chefling.api.exception.ContainerBuilderException;
 
 /**
  * Helper interface for streamlining the container configuration process. Use the
@@ -13,7 +13,7 @@ public interface CheflingConfig {
      * Apply a configuration to the container.
      *
      * @param container The container instance that is being configured.
-     * @throws ContainerException when an error occurs.
+     * @throws ContainerBuilderException when an error occurs.
      */
     void apply(CheflingContainer container);
 

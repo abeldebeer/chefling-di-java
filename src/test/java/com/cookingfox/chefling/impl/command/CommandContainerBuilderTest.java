@@ -65,9 +65,9 @@ public class CommandContainerBuilderTest {
         builder.addConfig(second);
         builder.addConfig(third);
 
-        assertTrue(builder.configs.contains(first));
-        assertTrue(builder.configs.contains(second));
-        assertTrue(builder.configs.contains(third));
+        assertTrue(builder.containsConfig(first));
+        assertTrue(builder.containsConfig(second));
+        assertTrue(builder.containsConfig(third));
     }
 
     //----------------------------------------------------------------------------------------------
@@ -92,6 +92,15 @@ public class CommandContainerBuilderTest {
         CheflingBuilder result = builder.addContainerListener(new DefaultCheflingContainerListener());
 
         assertSame(builder, result);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // TESTS: apply
+    //----------------------------------------------------------------------------------------------
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void apply_should_throw_if_called_directly() throws Exception {
+        builder.apply(CommandContainerBuilder.createContainer());
     }
 
     //----------------------------------------------------------------------------------------------
@@ -245,11 +254,11 @@ public class CommandContainerBuilderTest {
 
         builder.addConfig(config);
 
-        assertTrue(builder.configs.contains(config));
+        assertTrue(builder.containsConfig(config));
 
         builder.removeConfig(config);
 
-        assertFalse(builder.configs.contains(config));
+        assertFalse(builder.containsConfig(config));
     }
 
     @Test

@@ -6,15 +6,9 @@ import com.cookingfox.chefling.api.exception.ContainerBuilderException;
  * Helper interface for streamlining the container configuration and initialization process. Added
  * {@link CheflingConfig} instances will be executed in sequence.
  */
-public interface CheflingBuilder {
+public interface CheflingBuilder extends CheflingConfigCollection {
 
-    /**
-     * Add a container configuration.
-     *
-     * @param config The configuration to apply to the container.
-     * @return The current builder instance.
-     * @throws ContainerBuilderException when the config is invalid.
-     */
+    @Override
     CheflingBuilder addConfig(CheflingConfig config);
 
     /**
@@ -44,13 +38,7 @@ public interface CheflingBuilder {
      */
     CheflingContainer buildContainer();
 
-    /**
-     * Remove a container configuration.
-     *
-     * @param config The configuration object to remove.
-     * @return The current builder instance.
-     * @throws ContainerBuilderException when the config is invalid.
-     */
+    @Override
     CheflingBuilder removeConfig(CheflingConfig config);
 
     /**

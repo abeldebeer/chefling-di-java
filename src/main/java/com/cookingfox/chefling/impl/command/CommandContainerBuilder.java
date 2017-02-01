@@ -5,6 +5,7 @@ import com.cookingfox.chefling.api.CheflingConfig;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.CheflingContainerListener;
 import com.cookingfox.chefling.api.exception.ContainerBuilderException;
+import com.cookingfox.chefling.impl.CheflingConfigSet;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,16 +16,11 @@ import static java.util.Objects.requireNonNull;
  * Implementation of {@link CheflingBuilder} that is used to configure and create an instance of the
  * {@link CommandContainer}.
  */
-public class CommandContainerBuilder implements CheflingBuilder {
+public class CommandContainerBuilder extends CheflingConfigSet implements CheflingBuilder {
 
     //----------------------------------------------------------------------------------------------
     // PROPERTIES
     //----------------------------------------------------------------------------------------------
-
-    /**
-     * Collection of configuration objects.
-     */
-    protected final Set<CheflingConfig> configs = new LinkedHashSet<>();
 
     /**
      * Collection of container listeners.
@@ -50,13 +46,7 @@ public class CommandContainerBuilder implements CheflingBuilder {
 
     @Override
     public CheflingBuilder addConfig(CheflingConfig config) {
-        if (configs.contains(requireNonNull(config, "Config can not be null"))) {
-            throw new ContainerBuilderException("Config was already added");
-        }
-
-        configs.add(config);
-
-        return this;
+        return (CheflingBuilder) super.addConfig(config);
     }
 
     @Override
@@ -68,6 +58,19 @@ public class CommandContainerBuilder implements CheflingBuilder {
         containerListeners.add(listener);
 
         return this;
+    }
+
+    /**
+     * WARNING: this method is not meant to be called directly! Instead, call
+     * {@link #applyToContainer(CheflingContainer)}.
+     *
+     * @param container The container instance that is being configured.
+     * @throws UnsupportedOperationException when this method is called directly.
+     */
+    @Override
+    public void apply(CheflingContainer container) {
+        throw new UnsupportedOperationException("Do not call this method directly, instead, call " +
+                "`applyToContainer(CheflingContainer)`");
     }
 
     @Override
@@ -83,14 +86,8 @@ public class CommandContainerBuilder implements CheflingBuilder {
             containerListener.preBuilderApply(container);
         }
 
-        // apply all configs
-        for (CheflingConfig config : configs) {
-            try {
-                config.apply(container);
-            } catch (Exception e) {
-                throw new ContainerBuilderException("An error occurred during build container", e);
-            }
-        }
+        // apply all configs to container
+        super.apply(container);
 
         // container listener: post builder apply
         for (CheflingContainerListener containerListener : containerListeners) {
@@ -109,14 +106,13 @@ public class CommandContainerBuilder implements CheflingBuilder {
     }
 
     @Override
+    public boolean containsConfig(CheflingConfig config) {
+        return super.containsConfig(config);
+    }
+
+    @Override
     public CheflingBuilder removeConfig(CheflingConfig config) {
-        if (!configs.contains(requireNonNull(config, "Config can not be null"))) {
-            throw new ContainerBuilderException("Can not remove config that is not added: " + config);
-        }
-
-        configs.remove(config);
-
-        return this;
+        return (CheflingBuilder) super.removeConfig(config);
     }
 
     @Override
