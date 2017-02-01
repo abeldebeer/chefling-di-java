@@ -226,6 +226,14 @@ The [`CheflingBuilder`](src/main/java/com/cookingfox/chefling/api/CheflingBuilde
 contains a `removeConfig()` method which can be used to override a `CheflingConfig` (for example
 for testing) before it is built.
 
+The last part of the code example above could also be rewritten using a `CheflingConfigSet`:
+
+```java
+CheflingContainer container = Chefling.createBuilder()
+    .addConfig(new CheflingConfigSet(libraryConfig, initAppConfig))
+    .buildContainer();
+```
+
 #### Builder and container event listener
 
 Apart from the "instance [lifecycle](#lifecycle)", the container has its own lifecycle too: the

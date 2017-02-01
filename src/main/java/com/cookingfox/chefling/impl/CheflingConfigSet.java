@@ -5,7 +5,6 @@ import com.cookingfox.chefling.api.CheflingConfigCollection;
 import com.cookingfox.chefling.api.CheflingContainer;
 import com.cookingfox.chefling.api.exception.ContainerBuilderException;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,14 +24,21 @@ public class CheflingConfigSet implements CheflingConfig, CheflingConfigCollecti
     /**
      * Collection of configuration objects.
      */
-    protected final Set<CheflingConfig> configs;
+    protected final Set<CheflingConfig> configs = new LinkedHashSet<>();
 
     //----------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * Create a new config set.
+     *
+     * @param configs Variable collection of configuration objects to add immediately.
+     */
     public CheflingConfigSet(CheflingConfig... configs) {
-        this.configs = new LinkedHashSet<>(Arrays.asList(configs));
+        for (CheflingConfig config : configs) {
+            addConfig(config);
+        }
     }
 
     //----------------------------------------------------------------------------------------------
