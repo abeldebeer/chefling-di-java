@@ -1,5 +1,10 @@
 # Chefling DI for Java: Change Log
 
+## [7.1.1](../../tree/v7.1.1) (2017-02-01)
+
+- Makes `CheflingConfigSet` varargs constructor use `#addConfig()`.
+- Adds `CheflingConfigSet` example to README.
+
 ## [7.1.0](../../tree/v7.1.0) (2017-02-01)
 
 - Introduces `CheflingConfigCollection` and `CheflingConfigSet` implementation.
