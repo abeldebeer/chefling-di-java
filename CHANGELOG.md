@@ -1,5 +1,9 @@
 # Chefling DI for Java: Change Log
 
+## [7.1.0](../../tree/v7.1.0) (2017-02-01)
+
+- Introduces `CheflingConfigCollection` and `CheflingConfigSet` implementation.
+
 ## [7.0.0](../../tree/v7.0.0) (2016-07-27)
 
 - Introduces `CheflingContainerListener` with methods for hooking into the configuration and

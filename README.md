@@ -33,7 +33,7 @@ and add the project to the `dependencies` block in your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.cookingfox:chefling-di-java:7.0.0'
+    compile 'com.cookingfox:chefling-di-java:7.1.0'
 }
 ```
 
@@ -56,7 +56,7 @@ and add the project declaration to your `pom.xml`:
 <dependency>
     <groupId>com.cookingfox</groupId>
     <artifactId>chefling-di-java</artifactId>
-    <version>7.0.0</version>
+    <version>7.1.0</version>
 </dependency>
 ```
 
@@ -72,7 +72,7 @@ containers.
 ## Usage
 
 You can find the Javadocs on
-[javadoc.io](http://www.javadoc.io/doc/com.cookingfox/chefling-di-java/7.0.0).
+[javadoc.io](http://www.javadoc.io/doc/com.cookingfox/chefling-di-java/7.1.0).
 
 ### Create a Chefling container
 
